@@ -5,6 +5,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+import datetime
 
 headers = {
             "Host": "api-portal.tokyodisneyresort.jp",
@@ -22,16 +23,20 @@ headers = {
             "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA=="
         }
 url = 'https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions'
+url2 = 'https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars'
 
 class Top(View):
 
     def get(self, request):
         parksConditions = rq.get(url,headers=headers).json()
+        time = timezone.now()
+        parkInfos = [info for info in rq.get(url2,headers=headers).json() if info['date']==time.strftime('%Y-%m-%d')]
         info = []
-        for schedule,ticketSale in zip(parksConditions['schedules'], parksConditions['ticketSales']):
+        for schedule, ticketSale, parkInfo in zip(parksConditions['schedules'], parksConditions['ticketSales'], parkInfos):
             info.append({
                 'schedule': schedule,
                 'ticketSale': ticketSale,
+                'parkInfo': parkInfo,
             })
         return render(request, 'top/top.html', {'parksConditions': info})
 

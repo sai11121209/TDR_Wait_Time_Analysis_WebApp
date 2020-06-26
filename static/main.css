@@ -23,6 +23,9 @@ body {
     scroll-padding-top: 100px;
     color: #222222;
 }
+ul {
+    padding: 0;
+}
 ul li {
     list-style: none;
 }
@@ -86,25 +89,25 @@ header a {
 @media screen and (min-width:0px){
     header {
         height: 60px;
+        width: 100vw;
     }
     .header {
     z-index: 1;
     filter:alpha(opacity=50);
     -moz-opacity: 0.5;
-    width: 100%;
+    width: 100vw;
     height: 60px;
     position: fixed;
     flex-direction: row;
     background-color: rgba(0, 0, 0, 0.55);
     color: #FFF;
-    min-width: 599px;
     filter: drop-shadow(0px 2px 3px #666);
     }
-    .headerTitle {
+    .headerNav {
         top: 0;
-        padding-left: 10px;
-        margin: auto;
-        position: fixed;
+        height: 100%;
+        width: 100%;
+        text-align: center;
     }
 }
 @media screen and (min-width:600px){
@@ -121,31 +124,17 @@ header a {
     flex-direction: row;
     background-color: rgba(0, 0, 0, 0.55);
     color: #FFF;
-    min-width: 1002px;
     filter: drop-shadow(0px 2px 3px #666);
     }
-    .headerTitle {
+    .headerNav {
         top: 0;
-        padding-left: 50px;
-        margin: auto;
-        position: fixed;
+        height: 100%;
+        text-align: center;
     }
 }
-.headerNav {
-    margin: 35px 30% 35px 30%;
-    font-size: 20px;
-}
-.headerNav ul {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-.headerNav ul li {
-    list-style-type: none;
-    width: 100px;
+.headerNav li {
+    padding: 2%;
     display: inline;
-    position: relative;
-    text-align: center;
 }
 .header a {
     color: #FFF;
@@ -168,26 +157,6 @@ header a {
 .header a:hover::after {
     transform: scale(1, 1);
 }
-.headerNav ul li ul {
-    display: none;
-}
-.headerNav ul li:hover ul {
-    display: flex;
-    flex-direction: column;
-    background: rgba(0, 0, 0, 0.55);
-    width: 100%;
-    padding: 20px;
-    margin-left: -20px;
-    border-radius: 5px;
-    filter: drop-shadow(0px 2px 3px #666);
-}
-.headerNav ul li ul li {
-    margin-bottom: 10px;
-    text-align: start;
-}
-.headerNav ul li ul li p {
-    margin: 0;
-}
 .headerUser {
     padding-right: 50px;
     position: fixed;
@@ -195,26 +164,6 @@ header a {
     top: 0;
     height: 100%;
     font-size: 17px;
-}
-.headerUser ul li ul {
-    display: none;
-}
-.headerUser ul li:hover ul {
-    display: flex;
-    flex-direction: column;
-    background: rgba(0, 0, 0, 0.55);
-    width: 100%;
-    padding: 20px;
-    margin-left: -20px;
-    border-radius: 5px;
-    filter: drop-shadow(0px 2px 3px #666);
-}
-.headerUser ul li ul li {
-    margin-bottom: 10px;
-    text-align: start;
-}
-.headerUser ul li ul li p {
-    margin: 0;
 }
 #contents {
     background-color: #F5F5F5;

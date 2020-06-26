@@ -8,14 +8,16 @@
 Top
 {% endblock title %}
 
-{% block titleh1 %}
-Top
-{% endblock titleh1 %}
 
 {% block contents %}
     <div id="mainTop">
         {% for parksCondition in parksConditions %}
-            <p><a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">{{ parksCondition.ticketSale.message }}</p>
+            <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}"><p>{{ parksCondition.ticketSale.message }}</p>
+            {% if parksCondition.parkInfo.closedDay %}
+                <p>閉園日</p>
+            {% else %}
+                <p>{{ parksCondition.parkInfo.openTime }}~{{ parksCondition.parkInfo.closeTime }}</p></a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock contents %}

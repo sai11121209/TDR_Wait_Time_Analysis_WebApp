@@ -29,7 +29,7 @@ class Home(View):
 
     def get(self, request, park_type):
         attractions = [attraction for attraction in rq.get(url,headers=headers).json()['attractions'] if attraction['parkType'] == park_type]
-        return render(request, f'attraction/home.html', {'attractions': attractions})
+        return render(request, 'attraction/home.html', {'attractions': attractions, 'parkType': park_type})
 
 class Detail(View):
 

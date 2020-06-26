@@ -3,22 +3,28 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'attraction/home.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'attraction/tdlhome.css' %}">
+{% if parkType == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdlhome.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdshome.css' %}">
+{% endif %}
 {% endblock stylesheet %}
 
-{% block title %}東京ディズニーランドアトラクション一覧{% endblock %}
 
-{% block titleh1 %}東京ディズニーランド{% endblock %}
+{% block title %}{{parkType}}アトラクション一覧{% endblock %}
 
 {% block contents %}
 <div id="tdlhome">
     {% for attraction in attractions %}
+    <a href="{% url 'information:detail' attraction_name=attraction.name park_type=attraction.parkType facility_code=attraction.facilityCode %}">
         <div id={{ attraction.name }} class="attractions">
-            <a href="{% url 'information:detail' attraction_name=attraction.name park_type=attraction.parkType facility_code=attraction.facilityCode %}">
+            <div>
                 <img src={{ attraction.images.0 }}>
-                <h4>{{ attraction.name }}</h4>
-            </a>
+                <h3>{{ attraction.name }}</h3>
+            </div>
+            <h4>150分待ち</h4>
         </div>
+    </a>
     {% endfor %}
 </div>
 {% endblock contents %}

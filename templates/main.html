@@ -18,16 +18,10 @@
         <div id="top">
             <header>
                 <div class="header">
-                    <div class="headerTitle">
-                        <h1>{% block titleh1 %}{% endblock %}</h1>
-                    </div>
                     <div class="headerNav">
                         <ul>
-                            <li><a href="{% url 'information:home' park_type='TDL' %}">⌵ attraction<span></span></a>
-                                <ul>
-                                    <li><a href="{% url 'information:home' park_type='TDS' %}"><p>TDL</p></a></li>
-                                </ul>
-                            </li>
+                            <li><a href="{% url 'information:home' park_type='TDL' %}">TDL</a></li>
+                            <li><a href="{% url 'information:home' park_type='TDS' %}">TDS</a></li>
                         </ul>
                     </div>
                 </div>
