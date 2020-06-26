@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ja">
+    <head>
+    {% block extrahead %}
+        <meta http-equiv="content-type" charset="utf-8">
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Noto+Sans+JP:400,700" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Noto+Serif+JP" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+        {% block stylesheet %}
+        {% endblock stylesheet %}
+        <script src="{% static 'mysite.js' %}"></script>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <div id="top">
+            <header>
+                <div class="header">
+                    <div class="headerTitle">
+                        <h1>{% block titleh1 %}{% endblock %}</h1>
+                    </div>
+                    <div class="headerNav">
+                        <ul>
+                            <li><a href="{% url 'information:home' park_type='TDL' %}">⌵ attraction<span></span></a>
+                                <ul>
+                                    <li><a href="{% url 'information:home' park_type='TDS' %}"><p>TDL</p></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+            <div id="contents">
+                <div class="contentsWall">
+                    {% block contentsWall %}
+                    <div class="contentsIn">
+                        {% block contents %}
+                        {% endblock contents %}
+                    </div>
+                    {% endblock contentsWall %}
+                </div>
+            </div>
+            <footer>
+            {% block footer %}
+                <div class="footerIn">
+                    <small>©2020 Yuta Saikawa All Right Reserved.</small><br>
+                    <small><a href="{% url 'admin:index' %}">管理者サイト</a></small>
+                </div>
+            {% endblock footer %}
+            </footer>
+        </div>
+    </body>
+    {% endblock %}
+</html>

@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'top/top.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}
+Top
+{% endblock title %}
+
+{% block titleh1 %}
+Top
+{% endblock titleh1 %}
+
+{% block contents %}
+    <div id="mainTop">
+        {% for parksCondition in parksConditions %}
+            <p><a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">{{ parksCondition.ticketSale.message }}</p>
+        {% endfor %}
+    </div>
+{% endblock contents %}

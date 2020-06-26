@@ -1,0 +1,62 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/detail.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}{{ info.area.name }}{% endblock %}
+
+{% block titleh1 %}{{ info.area.name }}{% endblock %}
+
+{% block contentsWall %}
+<img src={{ info.images.0 }}>
+<div class="contentsIn">
+    <div id="detail">
+        <div id="detail-heade">
+            {% if info.sponsor != None %}
+                <small>提供:　{{ info.sponsor }}</small>
+            {% endif %}
+            {% if info.parkType == 'TDL' %}
+                <p>東京ディズニーランド　{{ info.area.name }}</p>
+            {% else %}
+                <p>東京ディズニーシー　{{ info.area.name }}</p>
+            {% endif %}
+            <h2>{{ info.name }}</h2>
+            <p>{{ info.overview }}</p>
+        </div>
+        {% if info.effects|length != 0 %}
+            <div id="effect">
+                <h3>タイプ</h3>
+                {% for effect in info.effects %}
+                    <p>{{ effect.name }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if info.tags|length != 0 %}
+            <div id="tags">
+                <h3>特徴</h3>
+                {% for tag in info.tags %}
+                    <p>{{ tag.name }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if info.restrictions|length != 0 %}
+            <div id="srestrictions">
+                <h3>利用制限</h3>
+                {% for restriction in info.restrictions %}
+                    <p>{{ restriction.message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if info.accessibilities|length != 0 %}
+            <div id="accessibilities">
+                <h3>バリアフリー</h3>
+                {% for accessibilitie in info.accessibilities %}
+                    <p>{{ accessibilitie.name }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock contentsWall %}

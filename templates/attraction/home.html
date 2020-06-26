@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/home.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/tdlhome.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}東京ディズニーランドアトラクション一覧{% endblock %}
+
+{% block titleh1 %}東京ディズニーランド{% endblock %}
+
+{% block contents %}
+<div id="tdlhome">
+    {% for attraction in attractions %}
+        <div id={{ attraction.name }} class="attractions">
+            <a href="{% url 'information:detail' attraction_name=attraction.name park_type=attraction.parkType facility_code=attraction.facilityCode %}">
+                <img src={{ attraction.images.0 }}>
+                <h4>{{ attraction.name }}</h4>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+{% endblock contents %}
