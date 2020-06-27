@@ -27,31 +27,7 @@ url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 
 
-class Home(View):
-    def get(self, request, park_type):
-        attractions = [
-            attraction
-            for attraction in rq.get(url, headers=headers).json()["attractions"]
-            if attraction["parkType"] == park_type
-        ]
-        return render(
-            request,
-            "attraction/home.html",
-            {"attractions": attractions, "parkType": park_type},
-        )
-
-
-class Detail(View):
-    def get(self, request, attraction_name, park_type, facility_code):
-        attractions = rq.get(url, headers=headers).json()["attractions"]
-        for attraction in attractions:
-            if attraction["name"] == attraction_name:
-                info = attraction
-                break
-        return render(request, "attraction/detail.html", {"info": info})
-
-
-class WaitTime(View):
+class standbyTime(View):
     def get(self, request, attraction_name, park_type, facility_code):
         attractions = rq.get(url, headers=headers).json()["attractions"]
         for attraction in attractions:

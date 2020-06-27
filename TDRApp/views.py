@@ -5,6 +5,8 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.utils.timezone import localtime # 追加
+from datetime import datetime as dt
 import datetime
 
 headers = {
@@ -29,14 +31,20 @@ class Top(View):
 
     def get(self, request):
         parksConditions = rq.get(url,headers=headers).json()
-        time = timezone.now()
-        parkInfos = [info for info in rq.get(url2,headers=headers).json() if info['date']==time.strftime('%Y-%m-%d')]
+        parksCalendars = rq.get(url2,headers=headers).json()
+        time = localtime(timezone.now())
+        print(time.strftime('%Y-%m-%d'))
+        parkInfos = [info for info in parksCalendars if info['date']==time.strftime('%Y-%m-%d')]
+        nextOpenInfos = [info for info in parksCalendars if info['closedDay'] == False]
+        nowOpenInfos = [True if info['closedDay']==False and dt.strptime(info['openTime'], '%H:%M') <= time.strftime('%H:%M') <= dt.strptime(info['closeTime'], '%H:%M') else False for info in parkInfos]
         info = []
-        for schedule, ticketSale, parkInfo in zip(parksConditions['schedules'], parksConditions['ticketSales'], parkInfos):
+        for schedule, ticketSale, parkInfo, nextOpenInfo, nowOpenInfo in zip(parksConditions['schedules'], parksConditions['ticketSales'], parkInfos, nextOpenInfos, nowOpenInfos):
             info.append({
                 'schedule': schedule,
                 'ticketSale': ticketSale,
                 'parkInfo': parkInfo,
+                'nextOpenInfo': nextOpenInfo,
+                'nowOpenInfo': nowOpenInfo,
             })
         return render(request, 'top/top.html', {'parksConditions': info})
 

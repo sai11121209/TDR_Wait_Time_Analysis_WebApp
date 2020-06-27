@@ -15,35 +15,42 @@
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
-        <div id="top">
-            <header>
-                <div class="header">
-                    <div class="headerNav">
-                        <ul>
-                            <li><a href="{% url 'information:home' park_type='TDL' %}">TDL</a></li>
-                            <li><a href="{% url 'information:home' park_type='TDS' %}">TDS</a></li>
-                        </ul>
+        <div id="loader">
+            <img src="{% static 'imgs/loading.gif' %}" alt="Now Loading..." width="20px" height="20px" />
+        </div>
+        <div id="fade"></div>
+        <div id="container">
+            <div id="top">
+                <header>
+                    <div class="header">
+                        <div class="headerNav">
+                            <ul>
+                                <li><a href="{% url 'top' %}">TOP</a></li>
+                                <li><a href="{% url 'information:home' park_type='TDL' %}">TDL</a></li>
+                                <li><a href="{% url 'information:home' park_type='TDS' %}">TDS</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </header>
+                <div id="contents">
+                    <div class="contentsWall">
+                        {% block contentsWall %}
+                        <div class="contentsIn">
+                            {% block contents %}
+                            {% endblock contents %}
+                        </div>
+                        {% endblock contentsWall %}
                     </div>
                 </div>
-            </header>
-            <div id="contents">
-                <div class="contentsWall">
-                    {% block contentsWall %}
-                    <div class="contentsIn">
-                        {% block contents %}
-                        {% endblock contents %}
+                <footer>
+                {% block footer %}
+                    <div class="footerIn">
+                        <small>©2020 Yuta Saikawa All Right Reserved.</small><br>
+                        <small><a href="{% url 'admin:index' %}">管理者サイト</a></small>
                     </div>
-                    {% endblock contentsWall %}
-                </div>
+                {% endblock footer %}
+                </footer>
             </div>
-            <footer>
-            {% block footer %}
-                <div class="footerIn">
-                    <small>©2020 Yuta Saikawa All Right Reserved.</small><br>
-                    <small><a href="{% url 'admin:index' %}">管理者サイト</a></small>
-                </div>
-            {% endblock footer %}
-            </footer>
         </div>
     </body>
     {% endblock %}

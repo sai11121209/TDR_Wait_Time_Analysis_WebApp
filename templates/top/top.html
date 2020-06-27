@@ -1,7 +1,10 @@
 {% extends 'main.html' %}
 {% load static %}
+
 {% block stylesheet %}
     <link rel="stylesheet" type="text/css" href="{% static 'top/top.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
 {% endblock stylesheet %}
 
 {% block title %}
@@ -12,12 +15,30 @@ Top
 {% block contents %}
     <div id="mainTop">
         {% for parksCondition in parksConditions %}
-            <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}"><p>{{ parksCondition.ticketSale.message }}</p>
-            {% if parksCondition.parkInfo.closedDay %}
-                <p>閉園日</p>
-            {% else %}
-                <p>{{ parksCondition.parkInfo.openTime }}~{{ parksCondition.parkInfo.closeTime }}</p></a>
-            {% endif %}
+        <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">
+            <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
+                {% if parksCondition.schedule.parkType == 'TDL' %}
+                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                    {% else %}
+                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                    {% endif %}
+                {% else %}
+                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% else %}
+                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% endif %}
+                {% endif %}
+                <h1>{{ parksCondition.ticketSale.message }}</h1>
+                {% if parksCondition.parkInfo.closedDay %}
+                    <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
+                    <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
+                {% else %}
+                    <p>{{ parksCondition.parkInfo.openTime }}-{{ parksCondition.parkInfo.closeTime }}</p>
+                {% endif %}
+            </div>
+        </a>
         {% endfor %}
     </div>
 {% endblock contents %}
