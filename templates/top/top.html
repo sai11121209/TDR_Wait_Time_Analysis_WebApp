@@ -13,20 +13,30 @@ Top
 {% block contents %}
     <div id="mainTop">
         {% for parksCondition in parksConditions %}
-            <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">
+        <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">
+            <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
                 {% if parksCondition.schedule.parkType == 'TDL' %}
-                    <img src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                    {% else %}
+                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                    {% endif %}
                 {% else %}
-                    <img src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% else %}
+                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% endif %}
                 {% endif %}
-                <p>{{ parksCondition.ticketSale.message }}</p>
+                <h1>{{ parksCondition.ticketSale.message }}</h1>
                 {% if parksCondition.parkInfo.closedDay %}
-                    <p>閉園日</p>
-                    <!--<p>次回開園日{{ parksCondition.nextOpen.date }}</p>
-                    <p>{{ parksCondition.nextOpen.openTime }}~{{ parksCondition.nextOpen.closeTime }}</p>-->
+                    <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
+                    <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
                 {% else %}
-                    <p>{{ parksCondition.parkInfo.openTime }}~{{ parksCondition.parkInfo.closeTime }}</p></a>
+                    <p>{{ parksCondition.parkInfo.openTime }}-{{ parksCondition.parkInfo.closeTime }}</p>
                 {% endif %}
+            </div>
+        </a>
         {% endfor %}
     </div>
 {% endblock contents %}

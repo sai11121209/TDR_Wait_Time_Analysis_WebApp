@@ -21,7 +21,7 @@ body {
     margin: 0;
     font-size: 1.6em;
     scroll-padding-top: 100px;
-    color: #222222;
+    color: #00284D;
 }
 ul {
     padding: 0;
@@ -133,7 +133,7 @@ header a {
     }
 }
 .headerNav li {
-    padding: 2%;
+    padding: 3%;
     display: inline;
 }
 .header a {

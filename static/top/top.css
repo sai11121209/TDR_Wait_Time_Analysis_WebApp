@@ -1,4 +1,32 @@
+.header {
+    background-color: rgba(175, 238, 238, 0.55);
+}
 #mainTop img {
     width: 100%;
     object-fit: cover;
+}
+.parksCondition {
+    position: relative;
+}
+#TDL {
+    color: #FF8C00;
+}
+#TDS {
+    color: #00FFFF;
+}
+.parksCondition h1{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: calc(50% - 100px);
+    text-align: center;
+    font-weight: bold;
+    line-height: 50px;
+}
+.parksCondition h2, h3{
+    text-align: center;
+    color: #00284D;
+}
+.closedDay {
+    filter: grayscale(100%);
 }

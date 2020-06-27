@@ -1,3 +1,6 @@
+.header, .footerIn {
+    background-color: rgba(255, 20, 147, 0.55);
+}
 .attractions div img {
     border: 2px solid #FF8C00;
 }
