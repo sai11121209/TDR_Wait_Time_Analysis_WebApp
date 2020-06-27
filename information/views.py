@@ -5,6 +5,10 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+import sys
+
+sys.path.append("../")
+from standbyTime.models import standbyTimeData
 
 # Create your views here.
 
@@ -34,9 +38,17 @@ class Home(View):
             for attraction in rq.get(url, headers=headers).json()["attractions"]
             if attraction["parkType"] == park_type
         ]
+        for i, attraction in enumerate(attractions):
+            st = (
+                standbyTimeData.objects.filter(facility_code=attraction["facilityCode"])
+                .order_by("time")
+                .reverse()[0]
+            )
+            attractions[i]["standbyTime"] = st.standby_time
+            attractions[i]["operatingStatus"] = st.operating_status
         return render(
             request,
-            "attraction/home.html",
+            "information/home.html",
             {"attractions": attractions, "parkType": park_type},
         )
 
@@ -48,7 +60,7 @@ class Detail(View):
             if attraction["name"] == attraction_name:
                 info = attraction
                 break
-        return render(request, "attraction/detail.html", {"info": info})
+        return render(request, "information/detail.html", {"info": info})
 
 
 class WaitTime(View):
@@ -58,4 +70,4 @@ class WaitTime(View):
             if attraction["name"] == attraction_name:
                 info = attraction
                 break
-        return render(request, "attraction/detail.html", {"info": info})
+        return render(request, "information/detail.html", {"info": info})

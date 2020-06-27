@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'standbyTime/standbyTime.css' %}">
+{% if parkType == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+<!--<script src="{% static 'standbyTime/standbyTime.js' %}"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+{% endblock stylesheet %}
+
+
+{% block title %}{{info.name}}待ち時間解析{% endblock %}
+{% block contentsWall %}
+<img src={{ info.images.0 }}>
+<div class="contentsIn">
+    <div id="standby-time">
+        <h2>{{info.name}}</h2>
+        <canvas id="ct-chart"></canvas>
+        <script type="text/javascript">
+        var ctx = document.getElementById("ct-chart");
+        var myRadarChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ data.1|safe }},
+                datasets: [{
+                    label: "スタンバイ待ち時間",
+                    data: {{ data.0|safe }},
+                    backgroundColor: "rgba(75,192,192,0.4)",
+                    borderColor: "rgba(75,192,192,1)",
+                }]},
+            options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+        });
+        </script>
+        <h3>本日の平均待ち時間は約{{ data.2 }}分です。</h3>
+        <h3>本日のスタンバイ稼働率{{ data.3 }}%です。</h3>
+    </div>
+</div>
+{% endblock contentsWall %}

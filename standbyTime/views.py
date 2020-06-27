@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 import requests as rq
-from django.contrib.auth.models import User
+from .models import standbyTimeData
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+import statistics
 
 # Create your views here.
 
@@ -30,8 +31,28 @@ url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 class standbyTime(View):
     def get(self, request, attraction_name, park_type, facility_code):
         attractions = rq.get(url, headers=headers).json()["attractions"]
+        st = [
+            std.standby_time if std.standby_time else -1
+            for std in standbyTimeData.objects.filter(facility_code=facility_code)
+        ]
+        t = [
+            std.time.strftime("%H:%M")
+            for std in standbyTimeData.objects.filter(facility_code=facility_code)
+        ]
+        stmeans = [i for i in st if i != -1]
+        stmean = int(sum(stmeans) / len(stmeans))
+        if -1 in st:
+            stin = int((len(stmeans) / len(st)) * 100)
+        else:
+            stin = 100
+        data = [st, t, stmean, stin]
         for attraction in attractions:
             if attraction["name"] == attraction_name:
                 info = attraction
                 break
-        return render(request, "attraction/detail.html", {"info": info})
+        return render(
+            request,
+            "standbyTime/standbyTime.html",
+            {"data": data, "info": info, "parkType": park_type},
+        )
+

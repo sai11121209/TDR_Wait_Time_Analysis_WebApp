@@ -22,7 +22,11 @@
                 <img src={{ attraction.images.0 }}>
                 <h3>{{ attraction.name }}</h3>
             </div>
-            <h4>150分待ち</h4>
+            {% if attraction.standbyTime %}
+                <h4>{{ attraction.standbyTime }}分待ち</h4>
+            {% else %}
+                <h4>{{ attraction.operatingStatus }}</h4>
+            {% endif %}
             {% if attraction.fastpass %}
                 <h5>FP対象</h5>
             {% endif %}
