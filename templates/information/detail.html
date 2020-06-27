@@ -28,7 +28,9 @@
                 <p>東京ディズニーシー　{{ info.area.name }}</p>
             {% endif %}
             <h2>{{ info.name }}</h2>
-            <a href="{% url 'standbyTime:standbytime' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">スタンバイ待ち時間</a>
+            {% if now_open_info %}
+                <a href="{% url 'standbyTime:standbytime' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">スタンバイ待ち時間</a>
+            {% endif %}
             <p>{{ info.overview | safe }}</p>
         </div>
         {% if info.effects|length != 0 %}

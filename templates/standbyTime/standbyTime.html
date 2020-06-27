@@ -19,6 +19,13 @@
 <div class="contentsIn">
     <div id="standby-time">
         <h2>{{info.name}}</h2>
+        {% if now_open_info %}
+        {% if data.0|length != 1 %}
+        {% if info.standbyTime %}
+            <h3>現在の待ち時間は{{ info.standbyTime }}</h3>
+        {% else %}
+            <h3>現在の待ち時間はありません</h3>
+        {% endif %}
         <canvas id="ct-chart"></canvas>
         <script type="text/javascript">
         var ctx = document.getElementById("ct-chart");
@@ -45,6 +52,12 @@
         </script>
         <h3>本日の平均待ち時間は約{{ data.2 }}分です。</h3>
         <h3>本日のスタンバイ稼働率{{ data.3 }}%です。</h3>
+        {% else %}
+        <h3>{{ data }}</h3>
+        {% endif %}
+        {% else %}
+        <h3>ただいま閉園中です。</h3>
+        {% endif %}
     </div>
 </div>
 {% endblock contentsWall %}

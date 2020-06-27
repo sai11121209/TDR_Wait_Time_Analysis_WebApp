@@ -29,23 +29,34 @@ url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 
 
 class standbyTime(View):
-    def get(self, request, attraction_name, park_type, facility_code):
+    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
         attractions = rq.get(url, headers=headers).json()["attractions"]
-        st = [
-            std.standby_time if std.standby_time else -1
-            for std in standbyTimeData.objects.filter(facility_code=facility_code)
-        ]
-        t = [
-            std.time.strftime("%H:%M")
-            for std in standbyTimeData.objects.filter(facility_code=facility_code)
-        ]
-        stmeans = [i for i in st if i != -1]
-        stmean = int(sum(stmeans) / len(stmeans))
-        if -1 in st:
-            stin = int((len(stmeans) / len(st)) * 100)
+        st = []
+        maindata = standbyTimeData.objects.filter(facility_code=facility_code).order_by(
+            "time"
+        )
+        if "中止" not in maindata.reverse()[0].operating_status:
+            for std in maindata:
+                if std.standby_time or std.operating_status == "運営中":
+                    if std.standby_time:
+                        st.append(std.standby_time)
+                    else:
+                        st.append(0)
+                else:
+                    st.append(-1)
+            t = [
+                std.time.strftime("%H:%M")
+                for std in standbyTimeData.objects.filter(facility_code=facility_code)
+            ]
+            stmeans = [i for i in st if i != -1]
+            stmean = int(sum(stmeans) / len(stmeans))
+            if -1 in st:
+                stin = int((len(stmeans) / len(st)) * 100)
+            else:
+                stin = 100
+            data = [st, t, stmean, stin]
         else:
-            stin = 100
-        data = [st, t, stmean, stin]
+            data = maindata.reverse()[0].operating_status
         for attraction in attractions:
             if attraction["name"] == attraction_name:
                 info = attraction
@@ -53,6 +64,11 @@ class standbyTime(View):
         return render(
             request,
             "standbyTime/standbyTime.html",
-            {"data": data, "info": info, "parkType": park_type},
+            {
+                "now_open_info": now_open_info,
+                "data": data,
+                "info": info,
+                "parkType": park_type,
+            },
         )
 
