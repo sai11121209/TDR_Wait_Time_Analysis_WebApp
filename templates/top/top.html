@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% load static %}
+
 {% block stylesheet %}
     <link rel="stylesheet" type="text/css" href="{% static 'top/top.css' %}">
 {% endblock stylesheet %}
@@ -12,12 +13,20 @@ Top
 {% block contents %}
     <div id="mainTop">
         {% for parksCondition in parksConditions %}
-            <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}"><p>{{ parksCondition.ticketSale.message }}</p>
-            {% if parksCondition.parkInfo.closedDay %}
-                <p>閉園日</p>
-            {% else %}
-                <p>{{ parksCondition.parkInfo.openTime }}~{{ parksCondition.parkInfo.closeTime }}</p></a>
-            {% endif %}
+            <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">
+                {% if parksCondition.schedule.parkType == 'TDL' %}
+                    <img src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                {% else %}
+                    <img src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                {% endif %}
+                <p>{{ parksCondition.ticketSale.message }}</p>
+                {% if parksCondition.parkInfo.closedDay %}
+                    <p>閉園日</p>
+                    <!--<p>次回開園日{{ parksCondition.nextOpen.date }}</p>
+                    <p>{{ parksCondition.nextOpen.openTime }}~{{ parksCondition.nextOpen.closeTime }}</p>-->
+                {% else %}
+                    <p>{{ parksCondition.parkInfo.openTime }}~{{ parksCondition.parkInfo.closeTime }}</p></a>
+                {% endif %}
         {% endfor %}
     </div>
 {% endblock contents %}

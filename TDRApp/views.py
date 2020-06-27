@@ -5,6 +5,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.utils.timezone import localtime # 追加
 import datetime
 
 headers = {
@@ -29,14 +30,17 @@ class Top(View):
 
     def get(self, request):
         parksConditions = rq.get(url,headers=headers).json()
-        time = timezone.now()
+        time = localtime(timezone.now())
+        print(time.strftime('%Y-%m-%d'))
         parkInfos = [info for info in rq.get(url2,headers=headers).json() if info['date']==time.strftime('%Y-%m-%d')]
         info = []
+        print(parksConditions)
         for schedule, ticketSale, parkInfo in zip(parksConditions['schedules'], parksConditions['ticketSales'], parkInfos):
             info.append({
                 'schedule': schedule,
                 'ticketSale': ticketSale,
                 'parkInfo': parkInfo,
             })
+        print(info)
         return render(request, 'top/top.html', {'parksConditions': info})
 
