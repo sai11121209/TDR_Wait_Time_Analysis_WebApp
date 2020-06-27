@@ -1,6 +1,3 @@
-.header {
-    background-color: rgba(175, 238, 238, 0.55);
-}
 #mainTop img {
     width: 100%;
     object-fit: cover;
@@ -9,7 +6,7 @@
     position: relative;
 }
 #TDL {
-    color: #FF8C00;
+    color: #FF1493;
 }
 #TDS {
     color: #00FFFF;

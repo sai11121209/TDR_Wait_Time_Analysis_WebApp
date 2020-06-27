@@ -3,6 +3,11 @@
 
 {% block stylesheet %}
 <link rel="stylesheet" type="text/css" href="{% static 'attraction/detail.css' %}">
+{% if info.parkType == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
 {% endblock stylesheet %}
 
 {% block title %}{{ info.area.name }}{% endblock %}
@@ -23,7 +28,7 @@
                 <p>東京ディズニーシー　{{ info.area.name }}</p>
             {% endif %}
             <h2>{{ info.name }}</h2>
-            <p>{{ info.overview }}</p>
+            <p>{{ info.overview | safe }}</p>
         </div>
         {% if info.effects|length != 0 %}
             <div id="effect">
