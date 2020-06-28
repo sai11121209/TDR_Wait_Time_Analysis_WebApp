@@ -9,7 +9,7 @@ from django.utils.timezone import localtime  # 追加
 from datetime import datetime as dt
 
 sys.path.append("../")
-from standbytime.models import standbyTimeData
+from standbytime.models import *
 
 # Create your views here.
 
@@ -60,11 +60,23 @@ class Home(View):
             if attraction["parkType"] == park_type
         ]
         for i, attraction in enumerate(attractions):
-            st = (
-                standbyTimeData.objects.filter(facility_code=attraction["facilityCode"])
-                .order_by("time")
-                .reverse()[0]
-            )
+            if park_type == "TDL":
+                st = (
+                    standbyTimeDataTDL.objects.filter(
+                        facility_code=attraction["facilityCode"]
+                    )
+                    .order_by("time")
+                    .reverse()[0]
+                )
+            else:
+                st = (
+                    standbyTimeDataTDS.objects.filter(
+                        facility_code=attraction["facilityCode"]
+                    )
+                    .order_by("time")
+                    .reverse()[0]
+                )
+
             attractions[i]["standbyTime"] = st.standby_time
             attractions[i]["operatingStatus"] = st.operating_status
             # 画面表示の順番変更時はこれ以降で入れ替えること
