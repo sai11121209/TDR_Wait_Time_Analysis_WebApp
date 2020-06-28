@@ -6,23 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('standbyTime', '0001_initial'),
+        ("standbytime", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='standbytimedata',
-            old_name='Facility_FastPass_End',
-            new_name='facility_fastpass_end',
+            model_name="standbytimedata",
+            old_name="Facility_FastPass_End",
+            new_name="facility_fastpass_end",
         ),
         migrations.RenameField(
-            model_name='standbytimedata',
-            old_name='Facility_FastPass_Start',
-            new_name='facility_fastpass_start',
+            model_name="standbytimedata",
+            old_name="Facility_FastPass_Start",
+            new_name="facility_fastpass_start",
         ),
         migrations.RenameField(
-            model_name='standbytimedata',
-            old_name='Facility_FastPass_Status',
-            new_name='facility_fastpass_status',
+            model_name="standbytimedata",
+            old_name="Facility_FastPass_Status",
+            new_name="facility_fastpass_status",
         ),
     ]

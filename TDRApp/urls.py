@@ -24,5 +24,5 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),  # [追加]
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("information.urls")),
-    path("", include("standbyTime.urls")),
+    path("", include("standbytime.urls")),
 ]

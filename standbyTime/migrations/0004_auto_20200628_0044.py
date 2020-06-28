@@ -7,13 +7,13 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('standbyTime', '0003_auto_20200627_1532'),
+        ("standbytime", "0003_auto_20200627_1532"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='standbytimedata',
-            name='time',
+            model_name="standbytimedata",
+            name="time",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
     ]
