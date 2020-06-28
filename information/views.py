@@ -38,16 +38,20 @@ class Home(View):
         parksCalendars = rq.get(url3, headers=headers).json(strict=False)
         attractions_conditions = rq.get(url2, headers=headers).json(strict=False)
         time = localtime(timezone.now())
+        parkInfo = None
         for info in parksCalendars:
             if (
                 info["date"] == time.strftime("%Y-%m-%d")
                 and info["parkType"] == park_type
             ):
                 parkInfo = info
-        if parkInfo["closedDay"] == False and dt.strptime(
-            parkInfo["openTime"], "%H:%M"
-        ) <= time.strftime("%H:%M") <= dt.strptime(parkInfo["closeTime"], "%H:%M"):
-            nowOpenInfo = True
+        if parkInfo:
+            if parkInfo["closedDay"] == False and dt.strptime(
+                parkInfo["openTime"], "%H:%M"
+            ) <= time.strftime("%H:%M") <= dt.strptime(parkInfo["closeTime"], "%H:%M"):
+                nowOpenInfo = True
+            else:
+                nowOpenInfo = False
         else:
             nowOpenInfo = False
         attractions = [
