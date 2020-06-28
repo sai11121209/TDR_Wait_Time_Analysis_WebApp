@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 import requests as rq
-from .models import standbyTimeData
+from .models import *
 from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
@@ -43,9 +43,14 @@ class standbytime(View):
         fp = []
         fps = []
         fpe = []
-        maindata = standbyTimeData.objects.filter(facility_code=facility_code).order_by(
-            "time"
-        )
+        if park_type == "TDL":
+            maindata = standbyTimeDataTDL.objects.filter(
+                facility_code=facility_code
+            ).order_by("time")
+        else:
+            maindata = standbyTimeDataTDS.objects.filter(
+                facility_code=facility_code
+            ).order_by("time")
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
                 if std.standby_time or std.operating_status == "運営中":
@@ -64,10 +69,20 @@ class standbytime(View):
                 else:
                     st.append(-1)
             fp = [fps, fpe]
-            t = [
-                std.time.strftime("%H:%M")
-                for std in standbyTimeData.objects.filter(facility_code=facility_code)
-            ]
+            if park_type == "TDL":
+                t = [
+                    std.time.strftime("%H:%M")
+                    for std in standbyTimeDataTDL.objects.filter(
+                        facility_code=facility_code
+                    )
+                ]
+            else:
+                t = [
+                    std.time.strftime("%H:%M")
+                    for std in standbyTimeDataTDS.objects.filter(
+                        facility_code=facility_code
+                    )
+                ]
             stmeans = [i for i in st if i != -1]
             stmean = int(sum(stmeans) / len(stmeans))
             if -1 in st:
