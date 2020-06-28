@@ -9,7 +9,7 @@ from django.utils.timezone import localtime  # 追加
 from datetime import datetime as dt
 
 sys.path.append("../")
-from standbyTime.models import standbyTimeData
+from standbytime.models import standbyTimeData
 
 # Create your views here.
 
