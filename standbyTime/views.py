@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 import requests as rq
 from .models import standbyTimeData
 from django.views import View
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from datetime import datetime as dt
@@ -50,9 +49,6 @@ class standbyTime(View):
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
                 if std.standby_time or std.operating_status == "運営中":
-                    print(type(std.time))
-                    print(type(dt.strptime("19:00", "%H:%M")))
-                    # and std.time <= dt.strptime(parksCalendars["closeTime"], "%H:%M")
                     if std.standby_time:
                         st.append(std.standby_time)
                     else:

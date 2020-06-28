@@ -21,6 +21,8 @@ from . import views
 urlpatterns = [
     path("", views.Top.as_view(), name="top"),
     path("admin/", admin.site.urls),
+    path("accounts/", include("accounts.urls")),  # [追加]
+    path("accounts/", include("django.contrib.auth.urls")),
     path("", include("information.urls")),
     path("", include("standbyTime.urls")),
 ]
