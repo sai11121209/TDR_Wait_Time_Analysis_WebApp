@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 import requests as rq
-from django.contrib.auth.models import User
+from .models import standbyTimeData
 from django.views import View
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from datetime import datetime as dt
 
 # Create your views here.
 
@@ -25,13 +25,67 @@ headers = {
 }
 url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
+url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 
 class standbyTime(View):
-    def get(self, request, attraction_name, park_type, facility_code):
+    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
         attractions = rq.get(url, headers=headers).json()["attractions"]
+        if park_type == "TDL":
+            parksCalendars = rq.get(url3, headers=headers).json()[0]
+        else:
+            parksCalendars = rq.get(url3, headers=headers).json()[1]
         for attraction in attractions:
             if attraction["name"] == attraction_name:
                 info = attraction
                 break
-        return render(request, "attraction/detail.html", {"info": info})
+        st = []
+        fp = []
+        fps = []
+        fpe = []
+        maindata = standbyTimeData.objects.filter(facility_code=facility_code).order_by(
+            "time"
+        )
+        if "中止" not in maindata.reverse()[0].operating_status:
+            for std in maindata:
+                if std.standby_time or std.operating_status == "運営中":
+                    if std.standby_time:
+                        st.append(std.standby_time)
+                    else:
+                        st.append(0)
+                    if info["fastpass"]:
+                        if std.facility_fastpass_start:
+                            # .strftime("%H:%M")
+                            fps.append(std.facility_fastpass_start.strftime("%H:%M"))
+                            fpe.append(std.facility_fastpass_end.strftime("%H:%M"))
+                        else:
+                            fps.append(0)
+                            fpe.append(0)
+                else:
+                    st.append(-1)
+            fp = [fps, fpe]
+            t = [
+                std.time.strftime("%H:%M")
+                for std in standbyTimeData.objects.filter(facility_code=facility_code)
+            ]
+            stmeans = [i for i in st if i != -1]
+            stmean = int(sum(stmeans) / len(stmeans))
+            if -1 in st:
+                stin = int((len(stmeans) / len(st)) * 100)
+            else:
+                stin = 100
+            data = [st, t, stmean, stin]
+        else:
+            data = maindata.reverse()[0].operating_status
+        return render(
+            request,
+            "standbyTime/standbyTime.html",
+            {
+                "now_open_info": now_open_info,
+                "data": data,
+                "info": info,
+                "parkType": park_type,
+                "fp": fp,
+            },
+        )
+

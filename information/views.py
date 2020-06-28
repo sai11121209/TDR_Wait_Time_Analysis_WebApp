@@ -2,9 +2,14 @@ from django.shortcuts import render, redirect
 import requests as rq
 from django.contrib.auth.models import User
 from django.views import View
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+import sys
+from django.utils.timezone import localtime  # 追加
+from datetime import datetime as dt
+
+sys.path.append("../")
+from standbyTime.models import standbyTimeData
 
 # Create your views here.
 
@@ -25,37 +30,60 @@ headers = {
 }
 url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
+url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 
 class Home(View):
     def get(self, request, park_type):
+        parksCalendars = rq.get(url3, headers=headers).json()
+        attractions_conditions = rq.get(url2, headers=headers).json()
+        time = localtime(timezone.now())
+        for info in parksCalendars:
+            if (
+                info["date"] == time.strftime("%Y-%m-%d")
+                and info["parkType"] == park_type
+            ):
+                parkInfo = info
+        if parkInfo["closedDay"] == False and dt.strptime(
+            parkInfo["openTime"], "%H:%M"
+        ) <= time.strftime("%H:%M") <= dt.strptime(parkInfo["closeTime"], "%H:%M"):
+            nowOpenInfo = True
+        else:
+            nowOpenInfo = False
         attractions = [
             attraction
             for attraction in rq.get(url, headers=headers).json()["attractions"]
             if attraction["parkType"] == park_type
         ]
+        for i, attraction in enumerate(attractions):
+            st = (
+                standbyTimeData.objects.filter(facility_code=attraction["facilityCode"])
+                .order_by("time")
+                .reverse()[0]
+            )
+            attractions[i]["standbyTime"] = st.standby_time
+            attractions[i]["operatingStatus"] = st.operating_status
+            # 画面表示の順番変更時はこれ以降で入れ替えること
         return render(
             request,
-            "attraction/home.html",
-            {"attractions": attractions, "parkType": park_type},
+            "information/home.html",
+            {
+                "attractions": attractions,
+                "now_open_info": nowOpenInfo,
+                "parkType": park_type,
+            },
         )
 
 
 class Detail(View):
-    def get(self, request, attraction_name, park_type, facility_code):
+    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
         attractions = rq.get(url, headers=headers).json()["attractions"]
         for attraction in attractions:
             if attraction["name"] == attraction_name:
                 info = attraction
                 break
-        return render(request, "attraction/detail.html", {"info": info})
-
-
-class WaitTime(View):
-    def get(self, request, attraction_name, park_type, facility_code):
-        attractions = rq.get(url, headers=headers).json()["attractions"]
-        for attraction in attractions:
-            if attraction["name"] == attraction_name:
-                info = attraction
-                break
-        return render(request, "attraction/detail.html", {"info": info})
+        return render(
+            request,
+            "information/detail.html",
+            {"now_open_info": now_open_info, "info": info},
+        )

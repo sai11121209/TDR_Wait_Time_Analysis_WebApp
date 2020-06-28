@@ -16,13 +16,21 @@
 {% block contents %}
 <div id="home">
     {% for attraction in attractions %}
-    <a href="{% url 'information:detail' attraction_name=attraction.name park_type=attraction.parkType facility_code=attraction.facilityCode %}">
+    <a href="{% url 'information:detail' now_open_info=now_open_info attraction_name=attraction.name park_type=attraction.parkType facility_code=attraction.facilityCode %}">
         <div id={{ attraction.name }} class="attractions">
             <div>
                 <img src={{ attraction.images.0 }}>
                 <h3>{{ attraction.name }}</h3>
             </div>
-            <h4>150分待ち</h4>
+            {% if now_open_info %}
+                {% if attraction.standbyTime and now_open_info %}
+                    <h4>{{ attraction.standbyTime }}分待ち</h4>
+                {% else %}
+                    <h4>{{ attraction.operatingStatus }}</h4>
+                {% endif %}
+            {% else %}
+            <h4>現在閉園中</h4>
+            {% endif %}
             {% if attraction.fastpass %}
                 <h5>FP対象</h5>
             {% endif %}

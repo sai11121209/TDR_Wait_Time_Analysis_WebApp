@@ -25,9 +25,11 @@
                     <div class="header">
                         <div class="headerNav">
                             <ul>
+                            {% if 'login' not in request.path %}
                                 <li><a href="{% url 'top' %}">TOP</a></li>
-                                <li><a href="{% url 'information:home' park_type='TDL' %}">TDL</a></li>
-                                <li><a href="{% url 'information:home' park_type='TDS' %}">TDS</a></li>
+                                <li><a href="{% url 'information:home'  park_type='TDL' %}">TDL</a></li>
+                                <li><a href="{% url 'information:home'  park_type='TDS' %}">TDS</a></li>
+                            {% endif %}
                             </ul>
                         </div>
                     </div>

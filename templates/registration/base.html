@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accounts/accounts.css' %}">
+{% endblock stylesheet %}
+
+{% block contents %}
+    <div class="contentsWall">
+        <div class="contentsIn">
+            {% block contentsIn %}
+            {% block contentsId %}<div>{% endblock contentsId %}
+                <form method="POST" novalidate>
+                    <ul>
+                        {% csrf_token %}
+                        {{ form.as_ul}}
+                        <button type="submit">{% block buttontext %}{% endblock buttontext %}</button>
+                    </ul>
+                </form>
+            {% endblock contentsIn %}
+            </div>
+        </div>
+    </div>
+{% endblock contents %}

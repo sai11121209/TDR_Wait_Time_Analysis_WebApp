@@ -16,4 +16,4 @@ class standbyTimeData(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
