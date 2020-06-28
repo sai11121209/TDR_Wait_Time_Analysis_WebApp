@@ -1,0 +1,110 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'standbytime/standbytime.css' %}">
+{% if parkType == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+<!--<script src="{% static 'standbyTime/standbyTime.js' %}"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+{% endblock stylesheet %}
+
+
+{% block title %}{{info.name}}待ち時間解析{% endblock %}
+{% block contentsWall %}
+<img src={{ info.images.0 }}>
+<div class="contentsIn">
+    <div id="standby-time">
+        <h2>{{info.name}}</h2>
+        <!--製作中は表示できるようにするため"== Ture"はずします-->
+        {% if now_open_info %}
+        {% if data.0|length != 1 %}
+        {% if info.standbyTime %}
+            <h3>現在の待ち時間は{{ info.standbyTime }}</h3>
+        {% else %}
+            <h3>現在の待ち時間はありません</h3>
+        {% endif %}
+        <div class="figure">
+            <canvas id="standby"></canvas>
+            <script type="text/javascript">
+            var ctx = document.getElementById("standby");
+            var myRadarChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ data.1|safe }},
+                    datasets: [{
+                        label: "スタンバイ待ち時間",
+                        data: {{ data.0|safe }},
+                        backgroundColor: "rgba(75,192,192,0.4)",
+                        borderColor: "rgba(75,192,192,1)",
+                    }]},
+                options: {
+                    maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+            });
+            </script>
+        </div>
+        <h3>本日の平均待ち時間は約{{ data.2 }}分です。</h3>
+        <h3>本日のスタンバイ稼働率{{ data.3 }}%です。</h3>
+        {% if info.fastpass %}
+        <div class="figure">
+            <canvas id="fastpass"></canvas>
+            <script type="text/javascript">
+            var ctx = document.getElementById("fastpass");
+            var myRadarChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ data.1|safe }},
+                    datasets: [{
+                        label: "ファストパス開始時間",
+                        data: {{ fp.0|safe }},
+                        borderColor: "rgba(75,192,192,1)",
+                    },
+                    {    label: "ファストパス終了時間",
+                        data: {{ fp.1|safe }},
+                        borderColor: "rgba(75,192,192,1)",
+                    }]},
+                options: {
+                    maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        type : 'time',
+                        distribution: 'series',
+                        time : {
+                            format: "HH:mm",
+                            unit: 'hour',
+                            parser: 'hh:mm',
+                            unit : 'minute',
+                            unitStepSize : 200,
+                            displayFormats : {
+                                'minute': 'HH:mm',
+                                'hour': 'HH:mm',
+                                second: this.timeFormat
+                            }
+                        },
+                }]
+                }
+            }
+            });
+            </script>
+        </div>
+        {% endif %}
+        {% else %}
+        <h3>{{ data }}</h3>
+        {% endif %}
+        {% else %}
+        <h3>ただいま閉園中です。</h3>
+        {% endif %}
+    </div>
+</div>
+{% endblock contentsWall %}
