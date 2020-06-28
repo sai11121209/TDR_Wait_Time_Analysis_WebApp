@@ -1,0 +1,5 @@
+<your_venv>
+__pycache__
+staticfiles
+local_settings.py
+*.py[co]
