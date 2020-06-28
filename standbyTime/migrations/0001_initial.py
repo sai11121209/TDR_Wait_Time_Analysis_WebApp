@@ -8,23 +8,33 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='standbyTimeData',
+            name="standbyTimeData",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('facility_code', models.IntegerField()),
-                ('standby_time', models.IntegerField(null=True)),
-                ('time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('operating_status', models.CharField(max_length=60, null=True)),
-                ('operating_status_start', models.TimeField(null=True)),
-                ('operating_status_end', models.TimeField(null=True)),
-                ('Facility_FastPass_Status', models.CharField(max_length=60, null=True)),
-                ('Facility_FastPass_Start', models.TimeField(null=True)),
-                ('Facility_FastPass_End', models.TimeField(null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("facility_code", models.IntegerField()),
+                ("standby_time", models.IntegerField(null=True)),
+                ("time", models.DateTimeField(default=django.utils.timezone.now)),
+                ("operating_status", models.CharField(max_length=60, null=True)),
+                ("operating_status_start", models.DateTimeField(null=True)),
+                ("operating_status_end", models.DateTimeField(null=True)),
+                (
+                    "Facility_FastPass_Status",
+                    models.CharField(max_length=60, null=True),
+                ),
+                ("Facility_FastPass_Start", models.DateTimeField(null=True)),
+                ("Facility_FastPass_End", models.DateTimeField(null=True)),
             ],
         ),
     ]
