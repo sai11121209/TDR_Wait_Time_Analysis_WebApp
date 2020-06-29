@@ -49,15 +49,7 @@ def insertdata(parkType):
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
     for attractions_condition, attraction in zip(attractions_conditions, attractions):
-        if parkInfo[attraction["parkType"]][
-            "closedDay"
-        ] == False and datetime.datetime.strptime(
-            parkInfo[attraction["parkType"]]["openTime"], "%H:%M"
-        ) <= time.strftime(
-            "%H:%M"
-        ) <= datetime.datetime.strptime(
-            parkInfo[attraction["parkType"]]["closeTime"], "%H:%M"
-        ):
+        if attraction["parkType"] == parkType:
             standby_time = None
             operating_status_start = None
             operating_status_end = None
