@@ -23,7 +23,8 @@ headers = {
 url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
-sched = BlockingScheduler()
+sched1 = BlockingScheduler()
+sched2 = BlockingScheduler()
 
 parksCalendars = rq.get(url3, headers=headers).json(strict=False)
 time = localtime(timezone.now())
@@ -40,7 +41,7 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
     start_date=f'{parkInfo["TDL"]["data"]} {parkInfo["TDL"]["openTime"]}:00',
     end_date=f'{parkInfo["TDL"]["data"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
-def timed_job():
+def timed_job1():
     tasks.insertdata("TDL")
     print("This job is run every three minutes.")
 
@@ -51,7 +52,7 @@ def timed_job():
     start_date=f'{parkInfo["TDS"]["data"]} {parkInfo["TDS"]["openTime"]}:00',
     end_date=f'{parkInfo["TDS"]["data"]} {parkInfo["TDS"]["closeTime"]}:00',
 )
-def timed_job():
+def timed_job2():
     tasks.insertdata("TDS")
     print("This job is run every three minutes.")
 
