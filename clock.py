@@ -38,8 +38,8 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 @sched1.scheduled_job(
     "interval",
     minutes="0-59",
-    start_date=f'{parkInfo["TDL"]["data"]} {parkInfo["TDL"]["openTime"]}:00',
-    end_date=f'{parkInfo["TDL"]["data"]} {parkInfo["TDL"]["closeTime"]}:00',
+    start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
+    end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
 def timed_job1():
     tasks.insertdata("TDL")
@@ -49,8 +49,8 @@ def timed_job1():
 @sched2.scheduled_job(
     "interval",
     minutes="0-59",
-    start_date=f'{parkInfo["TDS"]["data"]} {parkInfo["TDS"]["openTime"]}:00',
-    end_date=f'{parkInfo["TDS"]["data"]} {parkInfo["TDS"]["closeTime"]}:00',
+    start_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["openTime"]}:00',
+    end_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["closeTime"]}:00',
 )
 def timed_job2():
     tasks.insertdata("TDS")
