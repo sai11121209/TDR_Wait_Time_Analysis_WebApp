@@ -26,12 +26,8 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-while True:
-    try:
-        parksCalendars = rq.get(url3, headers=headers).json(strict=False)
-        break
-    except:
-        pass
+parksCalendars = rq.get(url3, headers=headers).json()
+
 
 time = localtime(timezone.now())
 parkInfo = {}
