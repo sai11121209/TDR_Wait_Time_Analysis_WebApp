@@ -26,13 +26,18 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-parksCalendars = rq.get(url3, headers=headers).json(strict=False)
+while True:
+    try:
+        parksCalendars = rq.get(url3, headers=headers).json(strict=False)
+        break
+    except:
+        pass
+
 time = localtime(timezone.now())
 parkInfo = {}
 for info in parksCalendars:
     if info["date"] == time.strftime("%Y-%m-%d"):
         parkInfo[info["parkType"]] = info
-url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 
 @sched1.scheduled_job(
