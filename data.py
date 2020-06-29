@@ -1,4 +1,3 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
 import tasks
 import requests as rq
 from django.utils import timezone
@@ -23,44 +22,18 @@ headers = {
 url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
-sched1 = BlockingScheduler()
-sched2 = BlockingScheduler()
 
-while True:
-    try:
-        parksCalendars = rq.get(url3, headers=headers).json(strict=False)
-        break
-    except:
-        pass
-
+parksCalendars = rq.get(url3, headers=headers).json(strict=False)
 time = localtime(timezone.now())
-parkInfo = {}
+parkInfos = []
 for info in parksCalendars:
     if info["date"] == time.strftime("%Y-%m-%d"):
-        parkInfo[info["parkType"]] = info
+        parkInfos.append(info)
+url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
+for parkInfo in parkInfos:
 
-@sched1.scheduled_job(
-    "interval",
-    minutes=1,
-    start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
-    end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
-)
-def timed_job1():
-    tasks.insertdata("TDL")
-    print("This job is run every three minutes.")
+    def timed_job():
+        tasks.insertdata(parkInfo["parkType"])
+        print("This job is run every three minutes.")
 
-
-@sched2.scheduled_job(
-    "interval",
-    minutes=1,
-    start_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["openTime"]}:00',
-    end_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["closeTime"]}:00',
-)
-def timed_job2():
-    tasks.insertdata("TDS")
-    print("This job is run every three minutes.")
-
-
-sched1.start()
-sched2.start()
