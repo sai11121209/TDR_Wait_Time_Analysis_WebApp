@@ -1,5 +1,4 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
-from standbytime.models import *
 import tasks
 
 sched = BlockingScheduler()
