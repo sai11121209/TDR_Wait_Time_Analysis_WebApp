@@ -35,7 +35,7 @@ print(f"res: {datas}json: {datas.json()['attractions'][0]['id']}")
 datas3 = rq.get(url3, headers=headers).json()
 print(f"res: {datas}json: {datas.json()['ticketSales'][0]['message']}")
 datas4 = rq.get(url4, headers=headers).json()
-print(f"res: {datas}json: {datas.json()['attractions'][0]['name']}")
+print(f"res: {datas}json: {datas.json()[0]['parkType']}")
 # parksCalendars = api.get_parks_calendars()
 exit(0)
 
