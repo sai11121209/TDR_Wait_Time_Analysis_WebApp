@@ -29,11 +29,8 @@ url2 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 class Top(View):
     def get(self, request):
-        try:
-            parksConditions = rq.get(url, headers=headers).json(strict=False)
-            parksCalendars = rq.get(url2, headers=headers).json(strict=False)
-        except:
-            return redirect("top")
+        parksConditions = rq.get(url, headers=headers).json()
+        parksCalendars = rq.get(url2, headers=headers).json()
         time = localtime(timezone.now())
         print(time.strftime("%Y-%m-%d"))
         parkInfos = [
