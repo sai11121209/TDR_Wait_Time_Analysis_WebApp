@@ -23,14 +23,15 @@ def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
     count = 0
     while True:
+        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_f_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
             print(data.history)
             return data.json()
             break
         except:
+            data.cookies.clear()
             print("g_f_except")
             count += 1
             if count >= 5:
@@ -43,14 +44,15 @@ def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
     count = 0
     while True:
+        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_f_c_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
             print(data.history)
             return data.json()
             break
         except:
+            data.cookies.clear()
             print("g_f_c_except")
             count += 1
             if count >= 5:
@@ -63,14 +65,15 @@ def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
     count = 0
     while True:
+        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_p_co_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
             print(data.history)
             return data.json()
             break
         except:
+            data.cookies.clear()
             print("g_p_co_except")
             count += 1
             if count >= 5:
@@ -83,14 +86,16 @@ def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
     count = 0
     while True:
+        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_p_ca_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
             print(data.history)
             return data.json()
             break
         except:
+            data.cookies.clear()
+            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print("g_p_ca_except")
             count += 1
             if count >= 5:
