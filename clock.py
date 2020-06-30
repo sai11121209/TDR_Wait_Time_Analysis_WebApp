@@ -28,12 +28,10 @@ url4 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-parksCalendars = api.get_parks_calendars()
-
 
 time = localtime(timezone.now())
 parkInfo = {}
-for info in parksCalendars:
+for info in api.get_parks_calendars():
     if info["date"] == time.strftime("%Y-%m-%d"):
         parkInfo[info["parkType"]] = info
 
@@ -45,7 +43,7 @@ for info in parksCalendars:
     end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
 def timed_job1():
-    tasks.insertdata("TDL")
+    tasks.insertdata("TDL", api.get_parks_calendars())
     print("This job is run every three minutes.")
 
 
@@ -56,7 +54,7 @@ def timed_job1():
     end_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["closeTime"]}:00',
 )
 def timed_job2():
-    tasks.insertdata("TDS")
+    tasks.insertdata("TDS", api.get_parks_calendars())
     print("This job is run every three minutes.")
 
 

@@ -11,11 +11,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TDRApp.settings")
 
 
-def insertdata(parkType):
+def insertdata(parkType, parksCalendars):
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDL
 
-    parksCalendars = api.get_parks_calendars()
     time = localtime(timezone.now())
     parkInfo = {}
     for info in parksCalendars:
