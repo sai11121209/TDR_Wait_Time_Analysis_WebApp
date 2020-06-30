@@ -19,7 +19,7 @@ class Top(View):
         time = localtime(timezone.now())
         print(time.strftime("%h-%m-%d"))
         parkInfos = [
-            info for info in parksCalendars if info["date"] == time.strftime("%h-%m-%d")
+            info for info in parksCalendars if info["date"] == time.strftime("%Y-%m-%d")
         ]
         nextOpenInfos = [info for info in parksCalendars if info["closedDay"] == False]
         nowOpenInfos = [
@@ -53,5 +53,5 @@ class Top(View):
 
 class apierror(View):
     def get(self, request):
-        return render(request, "top/apierror")
+        return render(request, "top/apierror.html")
 
