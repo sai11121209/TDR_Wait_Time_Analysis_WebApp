@@ -22,8 +22,9 @@ headers = {
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
     count = 0
+    r = rq.session()
     while True:
-        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_f_try")
             print(data)
@@ -43,8 +44,9 @@ def get_facilities():
 def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
     count = 0
+    r = rq.session()
     while True:
-        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_f_c_try")
             print(data)
@@ -64,8 +66,9 @@ def get_facilities_conditions():
 def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
     count = 0
+    r = rq.session()
     while True:
-        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_p_co_try")
             print(data)
@@ -85,8 +88,9 @@ def get_parks_conditions():
 def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
     count = 0
+    r = rq.session()
     while True:
-        data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
             print("g_p_ca_try")
             print(data)
