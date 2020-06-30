@@ -18,6 +18,8 @@ headers = {
     "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA==",
 }
 
+sess = rq.session()
+
 
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
@@ -25,7 +27,7 @@ def get_facilities():
     while True:
         try:
             print("g_f_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
             return data.json()
             break
         except:
@@ -43,7 +45,7 @@ def get_facilities_conditions():
     while True:
         try:
             print("g_f_c_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
             return data.json()
             break
         except:
@@ -61,7 +63,7 @@ def get_parks_conditions():
     while True:
         try:
             print("g_p_co_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
             return data.json()
             break
         except:
@@ -79,7 +81,7 @@ def get_parks_calendars():
     while True:
         try:
             print("g_p_ca_try")
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
             return data.json()
             break
         except:
