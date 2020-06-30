@@ -17,9 +17,9 @@ class Top(View):
         parksCalendars = api.get_parks_calendars()
         parksConditions = api.get_parks_conditions()
         time = localtime(timezone.now())
-        print(time.strftime("%Y-%m-%d"))
+        print(time.strftime("%h-%m-%d"))
         parkInfos = [
-            info for info in parksCalendars if info["date"] == time.strftime("%Y-%m-%d")
+            info for info in parksCalendars if info["date"] == time.strftime("%h-%m-%d")
         ]
         nextOpenInfos = [info for info in parksCalendars if info["closedDay"] == False]
         nowOpenInfos = [
