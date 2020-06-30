@@ -38,7 +38,7 @@ for info in parks_calendars:
 
 @sched.scheduled_job(
     "interval",
-    minutes="1-59",
+    minutes=1,
     # start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
     # end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
