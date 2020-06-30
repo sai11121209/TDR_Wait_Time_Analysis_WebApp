@@ -32,9 +32,9 @@ def timed_job_TDL():
     else:
         print("This job is run every three minutes.TDL")
     if (
-        dt.strptime(parkInfo["TDS"]["openTime"], "%H:%M")
+        parkInfo["TDS"]["openTime"]
         <= time.strftime("%H:%M")
-        <= dt.strptime(parkInfo["TDS"]["closeTime"], "%H:%M")
+        <= parkInfo["TDS"]["closeTime"]
     ):
         tasks.insertdata("TDS", parkInfo)
         print(parkInfo)
