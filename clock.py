@@ -3,7 +3,7 @@ import tasks
 import requests as rq
 from django.utils import timezone
 from django.utils.timezone import localtime  # 追加
-import datetime
+from datetime import datetime as dt
 import api
 
 headers = {
@@ -26,40 +26,40 @@ url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
 url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
 url4 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
-sched1 = BlockingScheduler()
-sched2 = BlockingScheduler()
+sched = BlockingScheduler()
 
-time = localtime(timezone.now())
-parkInfo = {}
 parks_calendars = api.get_parks_calendars()
-for info in parks_calendars:
-    if info["date"] == time.strftime("%Y-%m-%d"):
-        parkInfo[info["parkType"]] = info
 
 
-@sched1.scheduled_job(
-    "interval",
-    minutes=1,
-    # start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
-    # end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
+@sched.scheduled_job(
+    "interval", minutes=1, start_date="08:00", end_date="22:00",
 )
 def timed_job_TDL():
-    # tasks.insertdata("TDL",parkInfo)
-    print(parkInfo)
-    print("This job is run every three minutes.1")
+    parkInfo = {}
+    time = localtime(timezone.now())
+    for info in parks_calendars:
+        if info["date"] == time.strftime("%Y-%m-%d"):
+            parkInfo[info["parkType"]] = info
+    if (
+        dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M")
+        <= time.strftime("%H:%M")
+        <= dt.strptime(parkInfo["TDL"]["closeTime"], "%H:%M")
+    ):
+        tasks.insertdata("TDL", parkInfo)
+        print(parkInfo)
+        print("This job is run every three minutes.1")
+    else:
+        print("This job is run every three minutes.TDL")
+    if (
+        dt.strptime(parkInfo["TDS"]["openTime"], "%H:%M")
+        <= time.strftime("%H:%M")
+        <= dt.strptime(parkInfo["TDS"]["closeTime"], "%H:%M")
+    ):
+        tasks.insertdata("TDS", parkInfo)
+        print(parkInfo)
+        print("This job is run every three minutes.1")
+    else:
+        print("This job is run every three minutes.TDS")
 
 
-@sched2.scheduled_job(
-    "interval",
-    minutes=1,
-    # start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
-    # end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
-)
-def timed_job_TDR():
-    # tasks.insertdata("TDS", parkInfo)
-    print(parkInfo)
-    print("This job is run every three minutes.2")
-
-
-sched1.start()
-sched2.start()
+sched.start()
