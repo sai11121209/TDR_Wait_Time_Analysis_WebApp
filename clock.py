@@ -28,20 +28,7 @@ url4 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-datas = rq.get(url, headers=headers)
-print(f"res: {datas}")
-print(f"json: {datas.json()['attractions'][0]['name']}")
-datas2 = rq.get(url2, headers=headers)
-print(f"res: {datas2}")
-print(f"json: {datas2.json()['attractions'][0]['id']}")
-datas3 = rq.get(url3, headers=headers)
-print(f"res: {datas3}")
-print(f"json: {datas3.json()['ticketSales'][0]['message']}")
-datas4 = rq.get(url4, headers=headers)
-print(f"res: {datas4}")
-print(f"json: {datas4.json()[0]['parkType']}")
-# parksCalendars = api.get_parks_calendars()
-exit(0)
+parksCalendars = api.get_parks_calendars()
 
 
 time = localtime(timezone.now())

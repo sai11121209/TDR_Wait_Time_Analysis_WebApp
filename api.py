@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 import requests as rq
 import time
 
@@ -20,6 +21,7 @@ headers = {
 
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
+    count = 0
     while True:
         try:
             print("g_f_try")
@@ -27,11 +29,16 @@ def get_facilities():
             break
         except:
             print("g_f_except")
-            time.sleep(1)
+            count += 1
+            if count >= 5:
+                return　redirect("apierror")
+            else:
+                time.sleep(1)
 
 
 def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
+    count = 0
     while True:
         try:
             print("g_f_c_try")
@@ -39,11 +46,16 @@ def get_facilities_conditions():
             break
         except:
             print("g_f_c_except")
-            time.sleep(1)
+            count += 1
+            if count >= 5:
+                return redirect("apierror")
+            else:
+                time.sleep(1)
 
 
 def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
+    count = 0
     while True:
         try:
             print("g_p_co_try")
@@ -51,11 +63,16 @@ def get_parks_conditions():
             break
         except:
             print("g_p_co_except")
-            time.sleep(1)
+            count += 1
+            if count >= 5:
+                return redirect("apierror")
+            else:
+                time.sleep(1)
 
 
 def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
+    count = 0
     while True:
         try:
             print("g_p_ca_try")
@@ -63,4 +80,8 @@ def get_parks_calendars():
             break
         except:
             print("g_p_ca_except")
-            time.sleep(1)
+            count += 1
+            if count >= 5:
+                return redirect("apierror")
+            else:
+                time.sleep(1)

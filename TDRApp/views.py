@@ -50,3 +50,8 @@ class Top(View):
             )
         return render(request, "top/top.html", {"parksConditions": info})
 
+
+class apierror(View):
+    def get(self, request):
+        return render(request, "top/apierror")
+
