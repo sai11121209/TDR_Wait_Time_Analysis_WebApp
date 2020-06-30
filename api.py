@@ -1,4 +1,5 @@
 import requests as rq
+import time
 
 headers = {
     "Host": "api-portal.tokyodisneyresort.jp",
@@ -19,19 +20,39 @@ headers = {
 
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
-    return rq.get(url, headers=headers).json()
+    while True:
+        try:
+            return rq.get(url, headers=headers).json()
+        except:
+            time.sleep(1)
+            continue
 
 
 def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
-    return rq.get(url, headers=headers).json()
+    while True:
+        try:
+            return rq.get(url, headers=headers).json()
+        except:
+            time.sleep(1)
+            continue
 
 
 def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
-    return rq.get(url, headers=headers).json()
+    while True:
+        try:
+            return rq.get(url, headers=headers).json()
+        except:
+            time.sleep(1)
+            continue
 
 
 def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
-    return rq.get(url, headers=headers).json()
+    while True:
+        try:
+            return rq.get(url, headers=headers).json()
+        except:
+            time.sleep(1)
+            continue
