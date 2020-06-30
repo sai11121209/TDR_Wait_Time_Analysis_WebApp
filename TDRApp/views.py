@@ -29,7 +29,6 @@ url2 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 class Top(View):
     def get(self, request):
-        parksConditions = rq.get(url, headers=headers).json()
         parksCalendars = rq.get(url2, headers=headers).json()
         time = localtime(timezone.now())
         print(time.strftime("%Y-%m-%d"))
@@ -47,6 +46,7 @@ class Top(View):
             for info in parkInfos
         ]
         info = []
+        parksConditions = rq.get(url, headers=headers).json()
         for schedule, ticketSale, parkInfo, nextOpenInfo, nowOpenInfo in zip(
             parksConditions["schedules"],
             parksConditions["ticketSales"],

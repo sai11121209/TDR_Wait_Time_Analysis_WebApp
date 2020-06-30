@@ -5,6 +5,7 @@ import requests as rq
 from django.utils import timezone
 from django.utils.timezone import localtime  # 追加
 import datetime
+import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TDRApp.settings")
@@ -34,20 +35,21 @@ def insertdata(parkType):
     url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
     url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
-    attractions = sorted(
-        rq.get(url, headers=headers).json(strict=False)["attractions"],
-        key=lambda x: x["facilityCode"],
-    )
-    attractions_conditions = sorted(
-        rq.get(url2, headers=headers).json(strict=False)["attractions"],
-        key=lambda x: x["facilityCode"],
-    )
     parksCalendars = rq.get(url3, headers=headers).json(strict=False)
     time = localtime(timezone.now())
     parkInfo = {}
     for info in parksCalendars:
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
+    attractions = sorted(
+        rq.get(url, headers=headers).json(strict=False)["attractions"],
+        key=lambda x: x["facilityCode"],
+    )
+    time.sleep(0.5)
+    attractions_conditions = sorted(
+        rq.get(url2, headers=headers).json(strict=False)["attractions"],
+        key=lambda x: x["facilityCode"],
+    )
     for attractions_condition, attraction in zip(attractions_conditions, attractions):
         if attraction["parkType"] == parkType:
             standby_time = None
