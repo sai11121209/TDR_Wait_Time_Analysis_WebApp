@@ -2,9 +2,6 @@ from django.shortcuts import redirect
 import requests as rq
 import time
 
-from requests.models import codes
-import backoff
-
 headers = {
     "Host": "api-portal.tokyodisneyresort.jp",
     "X-PORTAL-DEVICE-ID": "OWNlNjIwT/EFcUXy8B9esqO2oh0JN7Rl0xIBYOvLCxgTPc8VuQi8Zosvw3OTfZKdGLZ/4mRAs3mgz8yuTuZdTvBtu2X/Rg==",
@@ -21,51 +18,91 @@ headers = {
     "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA==",
 }
 
-s = rq.Session()
 
-
-def checkrscode(r):
-    if r.response in None:
-        return True
-    code = r.response.status_code
-    return 400 <= code < 500
-
-
-@backoff.on_exception(
-    backoff.expo,
-    rq.exceptions.RequestException,
-    jitter=backoff.full_jitter,
-    max_time=300,
-    giveup=checkrscode,
-)
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
-    data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
-    jdata = data
-    print(data.raise_for_status())
-    return jdata.json()
+    count = 0
+    r = rq.session()
+    while True:
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
+        try:
+            print("g_f_try")
+            print(data)
+            print(data.history)
+            return data.json()
+            break
+        except:
+            data.cookies.clear()
+            print("g_f_except")
+            count += 1
+            if count >= 2:
+                return False
+            else:
+                time.sleep(4)
 
 
 def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
-    data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
-    jdata = data
-    print(data.raise_for_status())
-    return jdata.json()
+    count = 0
+    r = rq.session()
+    while True:
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
+        try:
+            print("g_f_c_try")
+            print(data)
+            print(data.history)
+            return data.json()
+            break
+        except:
+            data.cookies.clear()
+            print("g_f_c_except")
+            count += 1
+            if count >= 2:
+                return False
+            else:
+                time.sleep(4)
 
 
 def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
-    data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
-    jdata = data
-    print(data.raise_for_status())
-    return jdata.json()
+    count = 0
+    r = rq.session()
+    while True:
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
+        try:
+            print("g_p_co_try")
+            print(data)
+            print(data.history)
+            return data.json()
+            break
+        except:
+            data.cookies.clear()
+            print("g_p_co_except")
+            count += 1
+            if count >= 2:
+                return False
+            else:
+                time.sleep(4)
 
 
 def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
-    data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
-    jdata = data
-    print(data.raise_for_status())
-    return jdata.json()
-
+    count = 0
+    r = rq.session()
+    while True:
+        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
+        try:
+            print("g_p_ca_try")
+            print(data)
+            print(data.history)
+            return data.json()
+            break
+        except:
+            data.cookies.clear()
+            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
+            print("g_p_ca_except")
+            count += 1
+            if count >= 2:
+                return False
+            else:
+                time.sleep(4)
