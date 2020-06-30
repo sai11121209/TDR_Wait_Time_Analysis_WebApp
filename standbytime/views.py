@@ -30,7 +30,7 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 class standbytime(View):
     def get(self, request, now_open_info, attraction_name, park_type, facility_code):
-        attractions = rq.get(url, headers=headers).json(strict=False)["attractions"]
+        attractions = rq.get(url, headers=headers).json()["attractions"]
         if park_type == "TDL":
             parksCalendars = rq.get(url3, headers=headers).json()[0]
         else:

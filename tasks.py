@@ -35,19 +35,18 @@ def insertdata(parkType):
     url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
     url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
-    parksCalendars = rq.get(url3, headers=headers).json(strict=False)
+    parksCalendars = rq.get(url3, headers=headers).json()
     time = localtime(timezone.now())
     parkInfo = {}
     for info in parksCalendars:
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
     attractions = sorted(
-        rq.get(url, headers=headers).json(strict=False)["attractions"],
+        rq.get(url, headers=headers).json()["attractions"],
         key=lambda x: x["facilityCode"],
     )
-    time.sleep(0.5)
     attractions_conditions = sorted(
-        rq.get(url2, headers=headers).json(strict=False)["attractions"],
+        rq.get(url2, headers=headers).json()["attractions"],
         key=lambda x: x["facilityCode"],
     )
     for attractions_condition, attraction in zip(attractions_conditions, attractions):
