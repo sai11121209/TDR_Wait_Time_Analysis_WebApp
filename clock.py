@@ -23,11 +23,23 @@ headers = {
 }
 url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
 url2 = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
+url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
 url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-parksCalendars = api.get_parks_calendars()
+datas = rq.get(url, headers=headers)
+print(f"res: {datas}json: {datas.json()}")
+datas2 = rq.get(url2, headers=headers).json()
+print(f"res: {datas}json: {datas.json()}")
+datas3 = rq.get(url3, headers=headers).json()
+print(f"res: {datas}json: {datas.json()}")
+datas4 = rq.get(url4, headers=headers).json()
+print(f"res: {datas}json: {datas.json()}")
+datas5 = rq.get(url5, headers=headers).json()
+print(f"res: {datas}json: {datas.json()}")
+# parksCalendars = api.get_parks_calendars()
+break
 
 
 time = localtime(timezone.now())
