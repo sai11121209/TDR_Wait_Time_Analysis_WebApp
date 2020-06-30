@@ -29,9 +29,7 @@ url4 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched = BlockingScheduler()
 
 
-@sched.scheduled_job(
-    "interval", minutes=1, start_time="08:00:00", end_time="22:00:00",
-)
+@sched.scheduled_job("interval", minutes=1)
 def timed_job_TDL():
     parkInfo = {}
     parks_calendars = api.get_parks_calendars()
