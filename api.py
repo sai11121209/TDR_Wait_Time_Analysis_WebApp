@@ -1,6 +1,8 @@
 from django.shortcuts import redirect
 import requests as rq
 import time
+import urllib3
+import json
 
 headers = {
     "Host": "api-portal.tokyodisneyresort.jp",
@@ -18,7 +20,7 @@ headers = {
     "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA==",
 }
 
-sess = rq.session()
+http = urllib3.PoolManager()
 
 
 def get_facilities():
@@ -27,8 +29,8 @@ def get_facilities():
     while True:
         try:
             print("g_f_try")
-            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
-            return data.json()
+            data = http.request("GET", url, headers=headers,)
+            return json.loads(data)
             break
         except:
             print("g_f_except")
@@ -45,8 +47,8 @@ def get_facilities_conditions():
     while True:
         try:
             print("g_f_c_try")
-            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
-            return data.json()
+            data = http.request("GET", url, headers=headers,)
+            return json.loads(data)
             break
         except:
             print("g_f_c_except")
@@ -63,8 +65,8 @@ def get_parks_conditions():
     while True:
         try:
             print("g_p_co_try")
-            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
-            return data.json()
+            data = http.request("GET", url, headers=headers,)
+            return json.loads(data)
             break
         except:
             print("g_p_co_except")
@@ -81,8 +83,8 @@ def get_parks_calendars():
     while True:
         try:
             print("g_p_ca_try")
-            data = sess.get(url, headers=headers, timeout=(3.0, 7.5))
-            return data.json()
+            data = http.request("GET", url, headers=headers,)
+            return json.loads(data)
             break
         except:
             print("g_p_ca_except")
