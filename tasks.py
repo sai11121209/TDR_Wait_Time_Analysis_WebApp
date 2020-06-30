@@ -15,11 +15,6 @@ def insertdata(parkType, parksCalendars):
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDL
 
-    time = localtime(timezone.now())
-    parkInfo = {}
-    for info in parksCalendars:
-        if info["date"] == time.strftime("%Y-%m-%d"):
-            parkInfo[info["parkType"]] = info
     attractions = sorted(
         api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
     )

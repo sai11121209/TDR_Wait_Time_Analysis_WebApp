@@ -30,7 +30,8 @@ sched = BlockingScheduler()
 
 time = localtime(timezone.now())
 parkInfo = {}
-for info in api.get_parks_calendars():
+parks_calendars = api.get_parks_calendars()
+for info in parks_calendars:
     if info["date"] == time.strftime("%Y-%m-%d"):
         parkInfo[info["parkType"]] = info
 
@@ -42,12 +43,12 @@ for info in api.get_parks_calendars():
     # end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
 def timed_job_TDL():
-    # tasks.insertdata("TDL", api.get_parks_calendars())
+    # tasks.insertdata("TDL",parkInfo)
     print("This job is run every three minutes.1")
 
 
 def timed_job_TDR():
-    # tasks.insertdata("TDS", api.get_parks_calendars())
+    # tasks.insertdata("TDS", parkInfo)
     print("This job is run every three minutes.2")
 
 
