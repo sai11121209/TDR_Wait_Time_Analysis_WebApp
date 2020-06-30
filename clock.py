@@ -32,7 +32,7 @@ parks_calendars = api.get_parks_calendars()
 
 
 @sched.scheduled_job(
-    "interval", minutes=1, start_date="08:00:00", end_date="22:00:00",
+    "interval", minutes=1, start_time="08:00:00", end_time="22:00:00",
 )
 def timed_job_TDL():
     parkInfo = {}
