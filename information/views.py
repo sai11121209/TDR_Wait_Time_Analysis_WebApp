@@ -28,9 +28,12 @@ class Home(View):
             ):
                 parkInfo = info
         if parkInfo:
-            if parkInfo["closedDay"] == False and dt.strptime(
-                parkInfo["openTime"], "%H:%M"
-            ) <= time.strftime("%H:%M") <= dt.strptime(parkInfo["closeTime"], "%H:%M"):
+            if (
+                parkInfo["closedDay"] == False
+                and parkInfo["openTime"]
+                <= time.strftime("%H:%M")
+                <= parkInfo["closeTime"]
+            ):
                 nowOpenInfo = True
             else:
                 nowOpenInfo = False

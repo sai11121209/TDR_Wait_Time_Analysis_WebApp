@@ -22,9 +22,9 @@ def timed_job_TDL():
     print(dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M"))
     print(type(dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M")))
     if (
-        dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M")
+        parkInfo["TDL"]["openTime"]
         <= time.strftime("%H:%M")
-        <= dt.strptime(parkInfo["TDL"]["closeTime"], "%H:%M")
+        <= parkInfo["TDL"]["closeTime"]
     ):
         tasks.insertdata("TDL", parkInfo)
         print(parkInfo)
