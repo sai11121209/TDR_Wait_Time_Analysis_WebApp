@@ -34,10 +34,10 @@ def get_facilities():
             data.cookies.clear()
             print("g_f_except")
             count += 1
-            if count >= 5:
+            if count >= 2:
                 return False
             else:
-                time.sleep(1)
+                time.sleep(4)
 
 
 def get_facilities_conditions():
@@ -55,10 +55,10 @@ def get_facilities_conditions():
             data.cookies.clear()
             print("g_f_c_except")
             count += 1
-            if count >= 5:
-                return F
+            if count >= 2:
+                return False
             else:
-                time.sleep(1)
+                time.sleep(4)
 
 
 def get_parks_conditions():
@@ -76,10 +76,10 @@ def get_parks_conditions():
             data.cookies.clear()
             print("g_p_co_except")
             count += 1
-            if count >= 5:
+            if count >= 2:
                 return False
             else:
-                time.sleep(1)
+                time.sleep(4)
 
 
 def get_parks_calendars():
@@ -98,7 +98,7 @@ def get_parks_calendars():
             data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print("g_p_ca_except")
             count += 1
-            if count >= 5:
+            if count >= 2:
                 return False
             else:
-                time.sleep(1)
+                time.sleep(4)
