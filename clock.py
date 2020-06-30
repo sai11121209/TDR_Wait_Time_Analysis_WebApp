@@ -17,6 +17,10 @@ def timed_job_TDL():
     for info in parks_calendars:
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
+    print(time.strftime("%H:%M"))
+    print(type(time.strftime("%H:%M")))
+    print(dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M"))
+    print(type(dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M")))
     if (
         dt.strptime(parkInfo["TDL"]["openTime"], "%H:%M")
         <= time.strftime("%H:%M")
