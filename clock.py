@@ -17,25 +17,21 @@ def timed_job_TDL():
     for info in parks_calendars:
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
-    """
     if (
         parkInfo["TDL"]["openTime"]
         <= time.strftime("%H:%M")
         <= parkInfo["TDL"]["closeTime"]
-    ):"""
-    if True:
+    ):
         tasks.insertdata("TDL", parkInfo)
         print(parkInfo)
         print("This job is run every three minutes.1")
     else:
         print("This job is run every three minutes.TDL")
-    """
     if (
         parkInfo["TDS"]["openTime"]
         <= time.strftime("%H:%M")
         <= parkInfo["TDS"]["closeTime"]
-    ):"""
-    if True:
+    ):
         tasks.insertdata("TDS", parkInfo)
         print(parkInfo)
         print("This job is run every three minutes.1")
