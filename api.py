@@ -22,9 +22,11 @@ def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
     while True:
         try:
+            print("g_f_try")
             return rq.get(url, headers=headers).json()
             break
         except:
+            print("g_f_except")
             time.sleep(1)
 
 
@@ -32,9 +34,11 @@ def get_facilities_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
     while True:
         try:
+            print("g_f_c_try")
             return rq.get(url, headers=headers).json()
             break
         except:
+            print("g_f_c_except")
             time.sleep(1)
 
 
@@ -42,9 +46,11 @@ def get_parks_conditions():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
     while True:
         try:
+            print("g_p_co_try")
             return rq.get(url, headers=headers).json()
             break
         except:
+            print("g_p_co_except")
             time.sleep(1)
 
 
@@ -52,7 +58,9 @@ def get_parks_calendars():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
     while True:
         try:
+            print("g_p_ca_try")
             return rq.get(url, headers=headers).json()
             break
         except:
+            print("g_p_ca_except")
             time.sleep(1)
