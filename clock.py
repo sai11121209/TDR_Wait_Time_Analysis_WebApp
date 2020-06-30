@@ -42,9 +42,9 @@ for info in api.get_parks_calendars():
     # start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
     # end_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["closeTime"]}:00',
 )
-def timed_job1():
+def timed_job():
     # tasks.insertdata("TDL", api.get_parks_calendars())
-    print("This job is run every three minutes.")
+    print("This job is run every three minutes.1")
 
 
 @sched2.scheduled_job(
@@ -53,9 +53,9 @@ def timed_job1():
     # start_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["openTime"]}:00',
     # end_date=f'{parkInfo["TDS"]["date"]} {parkInfo["TDS"]["closeTime"]}:00',
 )
-def timed_job2():
+def timed_job():
     # tasks.insertdata("TDS", api.get_parks_calendars())
-    print("This job is run every three minutes.")
+    print("This job is run every three minutes.2")
 
 
 sched1.start()
