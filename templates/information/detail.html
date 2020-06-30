@@ -29,8 +29,15 @@
             {% endif %}
             <h2>{{ info.name }}</h2>
             <!--製作中は表示できるようにするため"== Ture"はずします-->
-            {% if now_open_info %}
-                <a href="{% url 'standbytime:standbytime' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">スタンバイ待ち時間</a>
+            {% if now_open_info == True %}
+            <section id="inner-contents">
+                <div>
+                    <a href="{% url 'standbytime:standbytime' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+                        <img src="{% static 'imgs/graph.png' %}">
+                        <p>待ち時間解析</p>
+                    </a>
+                </div>
+            </section>
             {% else %}
                 <h3>閉園中はこの機能をご利用いただけません。</h3>
             {% endif %}

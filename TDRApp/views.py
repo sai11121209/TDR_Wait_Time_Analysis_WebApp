@@ -25,9 +25,7 @@ class Top(View):
         nowOpenInfos = [
             True
             if info["closedDay"] == False
-            and dt.strptime(info["openTime"], "%H:%M")
-            <= time.strftime("%H:%M")
-            <= dt.strptime(info["closeTime"], "%H:%M")
+            and info["openTime"] <= time.strftime("%H:%M") <= info["closeTime"]
             else False
             for info in parkInfos
         ]
