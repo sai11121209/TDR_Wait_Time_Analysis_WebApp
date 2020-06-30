@@ -25,13 +25,14 @@ def get_facilities():
     while True:
         try:
             print("g_f_try")
-            return rq.get(url, headers=headers).json()
+            data = rq.get(url, headers=headers)
+            return data.json()
             break
         except:
             print("g_f_except")
             count += 1
             if count >= 5:
-                return　redirect("apierror")
+                return False
             else:
                 time.sleep(1)
 
@@ -42,13 +43,14 @@ def get_facilities_conditions():
     while True:
         try:
             print("g_f_c_try")
-            return rq.get(url, headers=headers).json()
+            data = rq.get(url, headers=headers)
+            return data.json()
             break
         except:
             print("g_f_c_except")
             count += 1
             if count >= 5:
-                return redirect("apierror")
+                return F
             else:
                 time.sleep(1)
 
@@ -59,13 +61,14 @@ def get_parks_conditions():
     while True:
         try:
             print("g_p_co_try")
-            return rq.get(url, headers=headers).json()
+            data = rq.get(url, headers=headers)
+            return data.json()
             break
         except:
             print("g_p_co_except")
             count += 1
             if count >= 5:
-                return redirect("apierror")
+                return False
             else:
                 time.sleep(1)
 
@@ -76,12 +79,13 @@ def get_parks_calendars():
     while True:
         try:
             print("g_p_ca_try")
-            return rq.get(url, headers=headers).json()
+            data = rq.get(url, headers=headers)
+            return data.json()
             break
         except:
             print("g_p_ca_except")
             count += 1
             if count >= 5:
-                return redirect("apierror")
+                return False
             else:
                 time.sleep(1)
