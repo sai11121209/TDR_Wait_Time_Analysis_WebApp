@@ -23,9 +23,9 @@ def get_facilities():
     while True:
         try:
             return rq.get(url, headers=headers).json()
+            break
         except:
             time.sleep(1)
-            continue
 
 
 def get_facilities_conditions():
@@ -33,9 +33,9 @@ def get_facilities_conditions():
     while True:
         try:
             return rq.get(url, headers=headers).json()
+            break
         except:
             time.sleep(1)
-            continue
 
 
 def get_parks_conditions():
@@ -43,9 +43,9 @@ def get_parks_conditions():
     while True:
         try:
             return rq.get(url, headers=headers).json()
+            break
         except:
             time.sleep(1)
-            continue
 
 
 def get_parks_calendars():
@@ -53,6 +53,6 @@ def get_parks_calendars():
     while True:
         try:
             return rq.get(url, headers=headers).json()
+            break
         except:
             time.sleep(1)
-            continue

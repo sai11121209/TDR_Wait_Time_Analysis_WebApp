@@ -27,7 +27,6 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 sched1 = BlockingScheduler()
 sched2 = BlockingScheduler()
 
-print(rq.get(url3, headers=headers))
 parksCalendars = api.get_parks_calendars()
 
 
