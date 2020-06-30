@@ -33,7 +33,8 @@ Top
                     <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
                     <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
                 {% else %}
-                    <p>{{ parksCondition.parkInfo.openTime }}-{{ parksCondition.parkInfo.closeTime }}</p>
+                    <h2>本日{{ parksCondition.parkInfo.date }}は開園日です</h2>
+                    <h3>本日の営業時間:　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
                 {% endif %}
             </div>
         </a>
