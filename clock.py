@@ -39,7 +39,7 @@ print(f"res: {datas}json: {datas.json()}")
 datas5 = rq.get(url5, headers=headers).json()
 print(f"res: {datas}json: {datas.json()}")
 # parksCalendars = api.get_parks_calendars()
-break
+exit(0)
 
 
 time = localtime(timezone.now())
