@@ -27,6 +27,7 @@ def get_facilities():
             print("g_f_try")
             data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
+            print(data.history)
             return data.json()
             break
         except:
@@ -46,6 +47,7 @@ def get_facilities_conditions():
             print("g_f_c_try")
             data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
+            print(data.history)
             return data.json()
             break
         except:
@@ -65,6 +67,7 @@ def get_parks_conditions():
             print("g_p_co_try")
             data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
+            print(data.history)
             return data.json()
             break
         except:
@@ -84,6 +87,7 @@ def get_parks_calendars():
             print("g_p_ca_try")
             data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print(data)
+            print(data.history)
             return data.json()
             break
         except:
