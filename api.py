@@ -9,7 +9,6 @@ headers = {
     "Accept-Language": "ja-JP;q=1.0, en-JP;q=0.9, en-US;q=0.8",
     "X-PORTAL-OS-VERSION": "iOS 13.5",
     "X-PORTAL-APP-VERSION": "1.4.0",
-    "User-Agent": "TokyoDisneyResortApp/1.4.0 iOS/13.5",
     "Accept-Encoding": "gzip;q=1.0, compress;q=0.5",
     "Connection": "keep-alive",
     "Content-Type": "application/json",
