@@ -36,7 +36,7 @@ for info in parks_calendars:
         parkInfo[info["parkType"]] = info
 
 
-@sched1.scheduled_job(
+@sched.scheduled_job(
     "interval",
     minutes="1-59",
     # start_date=f'{parkInfo["TDL"]["date"]} {parkInfo["TDL"]["openTime"]}:00',
