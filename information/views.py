@@ -35,7 +35,9 @@ url3 = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
 
 class Home(View):
     def get(self, request, park_type):
+        time.sleep(0.5)
         parksCalendars = rq.get(url3, headers=headers).json(strict=False)
+        time.sleep(0.5)
         attractions_conditions = rq.get(url2, headers=headers).json(strict=False)
         time = localtime(timezone.now())
         parkInfo = None
