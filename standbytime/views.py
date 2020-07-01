@@ -4,7 +4,7 @@ from .models import *
 from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from datetime import datetime as dt
+import datetime as dt
 import sys
 
 sys.path.append("../")
@@ -56,14 +56,18 @@ class standbytime(View):
             fp = [fps, fpe]
             if park_type == "TDL":
                 t = [
-                    std.time.strftime("%H:%M")
+                    std.time.astimezone(dt.timezone(dt.timedelta(hours=+9))).strftime(
+                        "%H:%M"
+                    )
                     for std in standbyTimeDataTDL.objects.filter(
                         facility_code=facility_code
                     )
                 ]
             else:
                 t = [
-                    std.time.strftime("%H:%M")
+                    std.time.astimezone(dt.timezone(dt.timedelta(hours=+9))).strftime(
+                        "%H:%M"
+                    )
                     for std in standbyTimeDataTDS.objects.filter(
                         facility_code=facility_code
                     )
