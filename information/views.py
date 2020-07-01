@@ -18,63 +18,35 @@ import urllib.parse
 
 class Home(View):
     def get(self, request, park_type):
-        parksCalendars = api.get_parks_calendars()
-        attractions_conditions = api.get_facilities_conditions()
-        time = localtime(timezone.now())
-        parkInfo = None
-        for info in parksCalendars:
-            if (
-                info["date"] == time.strftime("%Y-%m-%d")
-                and info["parkType"] == park_type
-            ):
-                parkInfo = info
-        if parkInfo:
-            if (
-                parkInfo["closedDay"] == False
-                and parkInfo["openTime"]
-                <= time.strftime("%H:%M")
-                <= parkInfo["closeTime"]
-            ):
-                nowOpenInfo = True
-            else:
-                nowOpenInfo = False
+        if park_type == "TDL":
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
         else:
-            nowOpenInfo = False
-        attractions = [
-            attraction
-            for attraction in api.get_facilities()["attractions"]
-            if attraction["parkType"] == park_type
-        ]
-        for i, attraction in enumerate(attractions):
-            if park_type == "TDL":
-                st = (
-                    standbyTimeDataTDL.objects.filter(
-                        time=localtime(timezone.now()).strftime("%Y-%m-%d"),
-                        facility_code=attraction["facilityCode"],
-                    )
-                    .order_by("time")
-                    .reverse()[0]
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
+        f_attractions_info = []
+        for attraction, attraction_conditions in zip(
+            attractions, attractions_conditions
+        ):
+            if attraction["parkType"] == park_type:
+                f_attractions_info.append(
+                    {
+                        "attraction": attraction,
+                        "attraction_conditions": attraction_conditions,
+                    }
                 )
-            else:
-                st = (
-                    standbyTimeDataTDS.objects.filter(
-                        time=localtime(timezone.now()).strftime("%Y-%m-%d"),
-                        facility_code=attraction["facilityCode"],
-                    )
-                    .order_by("time")
-                    .reverse()[0]
-                )
-
-            attractions[i]["standbyTime"] = st.standby_time
-            attractions[i]["operatingStatus"] = st.operating_status
-            # 画面表示の順番変更時はこれ以降で入れ替えること
         return render(
             request,
             "information/home.html",
             {
-                "attractions": attractions,
-                "now_open_info": nowOpenInfo,
-                "parkType": park_type,
+                "attractions": f_attractions_info,
+                "park_type": park_type,
+                "parks_condition": parks_condition,
             },
         )
 
