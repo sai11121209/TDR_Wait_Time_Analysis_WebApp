@@ -29,7 +29,7 @@
             {% endif %}
             <h2>{{ info.name }}</h2>
             <!--製作中は表示できるようにするため"== Ture"はずします-->
-            {% if now_open_info == True %}
+            {% if now_open_info %}
             <section id="inner-contents">
                 <div>
                     <a href="{% url 'standbytime:standbytime' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
