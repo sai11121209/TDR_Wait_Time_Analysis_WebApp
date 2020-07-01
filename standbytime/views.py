@@ -33,7 +33,6 @@ class standbytime(View):
                 info = attraction_conditions
                 attraction_info = attraction
                 break
-        print(info)
         st = []
         fp = []
         fps = []
@@ -65,8 +64,6 @@ class standbytime(View):
                 else:
                     st.append(-1)
             fp = [fps, fpe]
-            print(localtime(timezone.now()))
-            print(localtime(timezone.now()).strftime("%Y-%m-%d"))
             if park_type == "TDL":
                 t = [
                     std.time.astimezone(dt.timezone(dt.timedelta(hours=+9))).strftime(
