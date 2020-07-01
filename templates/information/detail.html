@@ -12,8 +12,6 @@
 
 {% block title %}{{ info.area.name }}{% endblock %}
 
-{% block titleh1 %}{{ info.area.name }}{% endblock %}
-
 {% block contentsWall %}
 <img src={{ info.images.0 }}>
 <div class="contentsIn">
@@ -28,13 +26,19 @@
                 <p>東京ディズニーシー　{{ info.area.name }}</p>
             {% endif %}
             <h2>{{ info.name }}</h2>
-            <!--製作中は表示できるようにするため"== Ture"はずします-->
-            {% if now_open_info %}
+            <!--製作中は表示できるようにするためTrueにしています 本番 now_open_info-->
+            {% if True %}
             <section id="inner-contents">
                 <div>
                     <a href="{% url 'standbytime:standbytime' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
                         <img src="{% static 'imgs/graph.png' %}">
                         <p>待ち時間解析</p>
+                    </a>
+                </div>
+                <div>
+                    <a href="{% url 'information:map' now_open_info=now_open_info attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+                        <img src="{% static 'imgs/map.png' %}">
+                        <p>マップ</p>
                     </a>
                 </div>
             </section>

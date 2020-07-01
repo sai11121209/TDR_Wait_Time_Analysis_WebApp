@@ -22,20 +22,12 @@ class Top(View):
             info for info in parksCalendars if info["date"] == time.strftime("%Y-%m-%d")
         ]
         nextOpenInfos = [info for info in parksCalendars if info["closedDay"] == False]
-        nowOpenInfos = [
-            True
-            if info["closedDay"] == False
-            and info["openTime"] <= time.strftime("%H:%M") <= info["closeTime"]
-            else False
-            for info in parkInfos
-        ]
         info = []
-        for schedule, ticketSale, parkInfo, nextOpenInfo, nowOpenInfo in zip(
+        for schedule, ticketSale, parkInfo, nextOpenInfo in zip(
             parksConditions["schedules"],
             parksConditions["ticketSales"],
             parkInfos,
             nextOpenInfos,
-            nowOpenInfos,
         ):
             info.append(
                 {
@@ -43,7 +35,6 @@ class Top(View):
                     "ticketSale": ticketSale,
                     "parkInfo": parkInfo,
                     "nextOpenInfo": nextOpenInfo,
-                    "nowOpenInfo": nowOpenInfo,
                 }
             )
         return render(request, "top/top.html", {"parksConditions": info})

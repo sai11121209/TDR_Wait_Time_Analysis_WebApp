@@ -11,6 +11,7 @@ from datetime import datetime as dt
 sys.path.append("../")
 from standbytime.models import *
 import api
+import urllib.parse
 
 # Create your views here.
 
@@ -88,3 +89,18 @@ class Detail(View):
             "information/detail.html",
             {"now_open_info": now_open_info, "info": info},
         )
+
+
+class Map(View):
+    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
+        attractions = api.get_facilities()["attractions"]
+        for attraction in attractions:
+            if attraction["facilityCode"] == str(facility_code):
+                info = attraction
+                break
+        return render(
+            request,
+            "information/map.html",
+            {"now_open_info": now_open_info, "info": info},
+        )
+

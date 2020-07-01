@@ -11,4 +11,9 @@ urlpatterns = [
         views.Detail.as_view(),
         name="detail",
     ),
+    path(
+        "<str:now_open_info>/<str:park_type>/<str:attraction_name>/<int:facility_code>/map",
+        views.Map.as_view(),
+        name="map",
+    ),
 ]
