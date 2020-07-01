@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/map.css' %}">
+{% if info.parkType == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+{% endblock stylesheet %}
+
+{% block title %}{{ info.name }}{% endblock %}
+
+{% block contentsWall %}
+<h1>{{ info.name }}周辺</h1>
+<img src="https://maps.googleapis.com/maps/api/staticmap?center={{ info.latitude }},{{ info.longitude }}&zoom=18&size=640x640&scale=2&maptype=satellite&markers=icon:{{ info.images.0|safe }}%7C{{ info.latitude }},{{ info.longitude }}&key=AIzaSyDGM43drUXL5cZXivN2tB4plkAo-Y05V74">
+<p>短時間に多くマップを呼び出すと正常に表示されない場合があります。</p>
+{% endblock contentsWall %}
