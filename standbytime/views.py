@@ -40,11 +40,13 @@ class standbytime(View):
         fpe = []
         if park_type == "TDL":
             maindata = standbyTimeDataTDL.objects.filter(
-                facility_code=facility_code
+                time=localtime(timezone.now()).strftime("%Y-%m-%d"),
+                facility_code=facility_code,
             ).order_by("time")
         else:
             maindata = standbyTimeDataTDS.objects.filter(
-                facility_code=facility_code
+                time=localtime(timezone.now()).strftime("%Y-%m-%d"),
+                facility_code=facility_code,
             ).order_by("time")
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
