@@ -20,6 +20,7 @@ def insertdata(parkType, parksCalendars):
 
     attractions = None
     attractions_conditions = None
+    """
     with open("attractions", "rb") as web:
         attractions = sorted(
             pickle.load(web)["attractions"], key=lambda x: x["facilityCode"],
@@ -28,6 +29,13 @@ def insertdata(parkType, parksCalendars):
         attractions_conditions = sorted(
             pickle.load(web)["attractions"], key=lambda x: x["facilityCode"],
         )
+    """
+    attractions = sorted(
+        api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+    )
+    attractions_conditions = sorted(
+        api.get_facilities_conditions()["attractions"], key=lambda x: x["facilityCode"],
+    )
     for attractions_condition, attraction in zip(attractions_conditions, attractions):
         if attraction["parkType"] == parkType:
             standby_time = None
