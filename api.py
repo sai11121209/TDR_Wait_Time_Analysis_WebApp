@@ -24,21 +24,16 @@ def get_facilities():
     count = 0
     r = rq.session()
     while True:
-        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
+            data = r.get(url, headers=headers)
             print("g_f_try")
             print(data)
-            print(data.history)
             return data.json()
-            break
         except:
-            data.cookies.clear()
             print("g_f_except")
             count += 1
-            if count >= 2:
+            if count >= 3:
                 return False
-            else:
-                time.sleep(4)
 
 
 def get_facilities_conditions():
@@ -46,21 +41,16 @@ def get_facilities_conditions():
     count = 0
     r = rq.session()
     while True:
-        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
+            data = r.get(url, headers=headers)
             print("g_f_c_try")
             print(data)
-            print(data.history)
             return data.json()
-            break
         except:
-            data.cookies.clear()
             print("g_f_c_except")
             count += 1
-            if count >= 2:
+            if count >= 3:
                 return False
-            else:
-                time.sleep(4)
 
 
 def get_parks_conditions():
@@ -68,21 +58,17 @@ def get_parks_conditions():
     count = 0
     r = rq.session()
     while True:
-        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
+            data = r.get(url, headers=headers)
             print("g_p_co_try")
             print(data)
             print(data.history)
             return data.json()
-            break
         except:
-            data.cookies.clear()
             print("g_p_co_except")
             count += 1
-            if count >= 2:
+            if count >= 3:
                 return False
-            else:
-                time.sleep(4)
 
 
 def get_parks_calendars():
@@ -90,19 +76,14 @@ def get_parks_calendars():
     count = 0
     r = rq.session()
     while True:
-        data = r.get(url, headers=headers, timeout=(3.0, 7.5))
         try:
+            data = r.get(url, headers=headers)
             print("g_p_ca_try")
             print(data)
             print(data.history)
             return data.json()
-            break
         except:
-            data.cookies.clear()
-            data = rq.get(url, headers=headers, timeout=(3.0, 7.5))
             print("g_p_ca_except")
             count += 1
-            if count >= 2:
+            if count >= 3:
                 return False
-            else:
-                time.sleep(4)

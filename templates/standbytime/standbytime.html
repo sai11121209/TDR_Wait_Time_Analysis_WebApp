@@ -15,15 +15,19 @@
 
 {% block title %}{{info.name}}待ち時間解析{% endblock %}
 {% block contentsWall %}
-<img src={{ info.images.0 }}>
+<img src={{ attractionInfo.images.0 }}>
 <div class="contentsIn">
     <div id="standby-time">
         <h2>{{info.name}}</h2>
-        <!--製作中は表示できるようにするため"== Ture"はずします-->
-        {% if now_open_info %}
+        <!--製作中は表示できるようにするためTureにしていますはずします 本番 parksCondition.open-->
+        {% if True %}
         {% if data.0|length != 1 %}
         {% if info.standbyTime %}
-            <h3>現在の待ち時間は{{ info.standbyTime }}</h3>
+            <h3>現在の待ち時間は{{ info.standbyTime }}分です</h3>
+        {% elif info.facilityStatusMessage %}
+            <h3>現在のステータス:　{{ info.facilityStatusMessage }}</h3>
+        {% elif info.operatings.0.operatingStatusMessage %}
+            <h3>現在のステータス:　{{ info.operatings.0.operatingStatusMessage }}</h3>
         {% else %}
             <h3>現在の待ち時間はありません</h3>
         {% endif %}
