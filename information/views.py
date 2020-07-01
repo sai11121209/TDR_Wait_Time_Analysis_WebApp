@@ -49,7 +49,8 @@ class Home(View):
             if park_type == "TDL":
                 st = (
                     standbyTimeDataTDL.objects.filter(
-                        facility_code=attraction["facilityCode"]
+                        time=localtime(timezone.now()).strftime("%Y-%m-%d"),
+                        facility_code=attraction["facilityCode"],
                     )
                     .order_by("time")
                     .reverse()[0]
@@ -57,7 +58,8 @@ class Home(View):
             else:
                 st = (
                     standbyTimeDataTDS.objects.filter(
-                        facility_code=attraction["facilityCode"]
+                        time=localtime(timezone.now()).strftime("%Y-%m-%d"),
+                        facility_code=attraction["facilityCode"],
                     )
                     .order_by("time")
                     .reverse()[0]
