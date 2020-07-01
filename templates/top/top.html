@@ -28,7 +28,9 @@ Top
                         <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
                     {% endif %}
                 {% endif %}
-                <h1>{{ parksCondition.ticketSale.message }}</h1>
+                {% if parksCondition.parkInfo.closedDay %}
+                    <h1>{{ parksCondition.ticketSale.message }}</h1>
+                {% endif %}
                 {% if parksCondition.parkInfo.closedDay %}
                     <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
                     <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>

@@ -58,22 +58,25 @@ def insertdata(parkType, parksCalendars):
                         + datetime.timedelta(hours=9)
                     ).strftime("%H:%M")
             elif attractions_condition["standbyTimeDisplayType"] == "NORMAL":
-                standby_time = attractions_condition["standbyTime"]
-                operating_status = "運営中"
-                operating_status_start = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["startAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
-                operating_status_end = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["endAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
+                try:
+                    standby_time = attractions_condition["standbyTime"]
+                    operating_status = "運営中"
+                except:
+                    operating_status = "準備中"
+                    operating_status_start = (
+                        datetime.datetime.strptime(
+                            attractions_condition["operatings"][0]["startAt"],
+                            "%Y-%m-%dT%H:%M:%S.%fZ",
+                        )
+                        + datetime.timedelta(hours=9)
+                    ).strftime("%H:%M")
+                    operating_status_end = (
+                        datetime.datetime.strptime(
+                            attractions_condition["operatings"][0]["endAt"],
+                            "%Y-%m-%dT%H:%M:%S.%fZ",
+                        )
+                        + datetime.timedelta(hours=9)
+                    ).strftime("%H:%M")
                 if "fastPassStatus" in attractions_condition:
                     if attractions_condition["standbyTimeDisplayType"] == "TICKETING":
                         facility_fastpass_start = str(
