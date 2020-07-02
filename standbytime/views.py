@@ -18,13 +18,16 @@ from django.utils.timezone import localtime  # 追加
 
 class standbytime(View):
     def get(self, request, now_open_info, attraction_name, park_type, facility_code):
-        attractions = api.get_facilities()["attractions"]
-        attractions_conditions = api.get_facilities_conditions()["attractions"]
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
         if park_type == "TDL":
-            parksCalendars = api.get_parks_calendars()[0]
             parksCondition = api.get_parks_conditions()["schedules"][0]
         else:
-            parksCalendars = api.get_parks_calendars()[1]
             parksCondition = api.get_parks_conditions()["schedules"][1]
         for attraction, attraction_conditions in zip(
             attractions, attractions_conditions
