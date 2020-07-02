@@ -1,6 +1,4 @@
-from django.shortcuts import redirect
 import requests as rq
-import time
 
 headers = {
     "Host": "api-portal.tokyodisneyresort.jp",

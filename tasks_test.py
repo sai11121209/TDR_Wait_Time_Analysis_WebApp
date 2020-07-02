@@ -143,3 +143,4 @@ if __name__ == "__main__":
         parks_calendars = pickle.load(web)
     parksCalendars = {"TDL": parks_calendars[2], "TDS": parks_calendars[3]}
     insertdata("TDL", parksCalendars)
+    insertdata("TDS", parksCalendars)

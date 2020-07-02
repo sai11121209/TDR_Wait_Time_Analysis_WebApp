@@ -2,6 +2,22 @@
     display: flex;
     flex-direction: column;
 }
+.area h1 {
+    z-index: 2;
+    background-color: #FFFFFF;
+    position: -webkit-sticky;
+    position: sticky;
+}
+@media screen and (min-width:0px){
+    .area h1 {
+        top: 60px;
+    }
+}
+@media screen and (min-width:600px){
+    .area h1 {
+        top: 100px;
+    }
+}
 .attractions {
     display: flex;
     flex-direction: column;

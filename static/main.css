@@ -43,7 +43,7 @@ body {
     margin: 0;
     font-size: 1.6em;
     scroll-padding-top: 100px;
-    color: #00284D;
+    color: #11114D;
 }
 ul {
     padding: 0;
@@ -92,13 +92,12 @@ h2 {
 h3 {
     font-size: 1.7rem;
 }
-header a {
-    color: #FFF;
+.header a{
+    color: #11114D;
 }
 #top {
     display: flex;
     flex-direction: column;
-    color: #000;
 }
 @media screen and (min-width:0px){
     header {
@@ -117,11 +116,17 @@ header a {
     color: #FFF;
     filter: drop-shadow(0px 2px 3px #AFEEEE);
     }
+    .header ul{
+        margin: 10px 0px 10px 0px;
+    }
     .headerNav {
         top: 0;
         height: 100%;
         width: 100%;
         text-align: center;
+    }
+    .header a img {
+        height: 25px;
     }
 }
 @media screen and (min-width:600px){
@@ -137,7 +142,6 @@ header a {
     position: fixed;
     flex-direction: row;
     background-color: rgba(175, 238, 238, 0.55);
-    color: #FFF;
     filter: drop-shadow(0px 2px 3px #AFEEEE);
     }
     .headerNav {
@@ -145,13 +149,15 @@ header a {
         height: 100%;
         text-align: center;
     }
+    .header a img {
+        height: 50px;
+    }
 }
 .headerNav li {
     padding: 10%;
     display: inline;
 }
 .header a {
-    color: #FFF;
     position: relative;
     display: inline-block;
     text-decoration: none;
@@ -163,13 +169,19 @@ header a {
     content: '';
     width: 100%;
     height: 2px;
-    background: #FFF;
     transform: scale(0, 1);
     transform-origin: left top;
     transition: transform .3s;
 }
 .header a:hover::after {
     transform: scale(1, 1);
+}
+.header a img {
+    object-fit: cover;
+}
+.header a > p {
+    font-size: 0.1rem;
+    margin: 0;
 }
 .headerUser {
     padding-right: 50px;

@@ -1,27 +1,76 @@
-from django.shortcuts import render, redirect
-import requests as rq
-from django.contrib.auth.models import User
-from django.views import View
-from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
 import sys
-from django.utils.timezone import localtime  # 追加
-from datetime import datetime as dt
+import itertools
+import api
+from django.shortcuts import render
+from django.views import View
+from django.shortcuts import render
+from django.utils import timezone
+from django.db.models import Avg
+
 
 sys.path.append("../")
-from standbytime.models import *
-import api
-import urllib.parse
+from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
 # Create your views here.
 
 
-class Home(View):
+class OverView(View):
+    def get(self, request, park_type):
+        if park_type == "TDL":
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            attractions_overview = {
+                standby_time.facility_code: standby_time.standby_time_avg
+                if standby_time.standby_time_avg
+                else -1
+                for standby_time in standbyTimeDataTDL.objects.filter(
+                    time__startswith=timezone.now().date()
+                ).annotate(standby_time_avg=Avg("standby_time"))
+            }
+        else:
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            attractions_overview = {
+                standby_time.facility_code: standby_time.standby_time_avg
+                if standby_time.standby_time_avg
+                else -1
+                for standby_time in standbyTimeDataTDS.objects.filter(
+                    time__startswith=timezone.now().date()
+                ).annotate(standby_time_avg=Avg("standby_time"))
+            }
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"]
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
+
+        f_attractions = []
+        for i, attraction in enumerate(attractions):
+            if attraction["parkType"] == park_type:
+                attractions[i].update(attractions_conditions[i])
+                attractions[i].update(
+                    {"avg": attractions_overview[int(attraction["facilityCode"])]}
+                )
+                f_attractions.append(attraction)
+
+        f_attractions.sort(reverse=True, key=lambda x: (x["avg"], x["name"]))
+        return render(
+            request,
+            "information/overview.html",
+            {
+                "attractions": f_attractions,
+                "park_type": park_type,
+                "parks_condition": parks_condition,
+            },
+        )
+
+
+class List(View):
     def get(self, request, park_type):
         if park_type == "TDL":
             parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
         else:
-            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
         attractions = sorted(
             api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
         )
@@ -29,22 +78,27 @@ class Home(View):
             api.get_facilities_conditions()["attractions"],
             key=lambda x: x["facilityCode"],
         )
-        f_attractions_info = []
-        for attraction, attraction_conditions in zip(
-            attractions, attractions_conditions
-        ):
+        f_attractions = []
+        for i, attraction in enumerate(attractions):
             if attraction["parkType"] == park_type:
-                f_attractions_info.append(
-                    {
-                        "attraction": attraction,
-                        "attraction_conditions": attraction_conditions,
-                    }
-                )
+                attractions[i].update(attractions_conditions[i])
+                f_attractions.append(attraction)
+
+        f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
+        attraction_groups = {
+            area: list(data)
+            for area, data in itertools.groupby(
+                f_attractions, lambda x: x["area"]["id"]
+            )
+        }
+        for i, attraction_group in attraction_groups.items():
+            for attraction in attraction_group:
+                print(attraction["name"])
         return render(
             request,
-            "information/home.html",
+            "information/list.html",
             {
-                "attractions": f_attractions_info,
+                "attraction_groups": attraction_groups,
                 "park_type": park_type,
                 "parks_condition": parks_condition,
             },

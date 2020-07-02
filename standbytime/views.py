@@ -1,30 +1,32 @@
-from sys import implementation
-from django.shortcuts import render, redirect
-import requests as rq
+import sys
+import api
+from django.shortcuts import render
 from .models import *
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.utils import timezone
 import datetime as dt
-import sys
+
 
 sys.path.append("../")
-import api
 from django.utils import timezone
-from django.utils.timezone import localtime  # 追加
+
 
 # Create your views here.
 
 
 class standbytime(View):
     def get(self, request, now_open_info, attraction_name, park_type, facility_code):
-        attractions = api.get_facilities()["attractions"]
-        attractions_conditions = api.get_facilities_conditions()["attractions"]
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
         if park_type == "TDL":
-            parksCalendars = api.get_parks_calendars()[0]
             parksCondition = api.get_parks_conditions()["schedules"][0]
         else:
-            parksCalendars = api.get_parks_calendars()[1]
             parksCondition = api.get_parks_conditions()["schedules"][1]
         for attraction, attraction_conditions in zip(
             attractions, attractions_conditions
@@ -37,20 +39,13 @@ class standbytime(View):
         fp = []
         fps = []
         fpe = []
-        print(timezone.now().date())
         if park_type == "TDL":
             maindata = standbyTimeDataTDL.objects.filter(
-                # ローカルタイム問題修正予定
-                # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=timezone.now().date(),
-                facility_code=facility_code,
+                time__startswith=timezone.now().date(), facility_code=facility_code,
             ).order_by("time")
         else:
             maindata = standbyTimeDataTDS.objects.filter(
-                # ローカルタイム問題修正予定
-                # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=timezone.now().date(),
-                facility_code=facility_code,
+                time__startswith=timezone.now().date(), facility_code=facility_code,
             ).order_by("time")
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
@@ -75,8 +70,6 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDL.objects.filter(
-                        # ローカルタイム問題修正予定
-                        # time__startswith=localtime(timezone.now()).date(),
                         time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
@@ -87,8 +80,6 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDS.objects.filter(
-                        # ローカルタイム問題修正予定
-                        # time__startswith=localtime(timezone.now()).date(),
                         time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )

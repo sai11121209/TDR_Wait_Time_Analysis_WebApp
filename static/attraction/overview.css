@@ -1,0 +1,7 @@
+#overview {
+    text-align: center;
+}
+.attractions img {
+    width: 98%;
+    object-fit: cover;
+}
