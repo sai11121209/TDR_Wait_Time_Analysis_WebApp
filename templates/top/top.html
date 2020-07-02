@@ -16,13 +16,13 @@ Top
         <a href="{% url 'information:home' park_type=parksCondition.schedule.parkType %}">
             <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
                 {% if parksCondition.schedule.parkType == 'TDL' %}
-                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                    {% if parksCondition.schedule.open %}
                         <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
                     {% else %}
                         <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
                     {% endif %}
                 {% else %}
-                    {% if parksCondition.parkInfo.closedDay == False and parksCondition.nowOpenInfo %}
+                    {% if parksCondition.schedule.open %}
                         <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
                     {% else %}
                         <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
