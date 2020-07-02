@@ -12,36 +12,41 @@ Top
 
 {% block contents %}
     <div id="mainTop">
-        {% for parksCondition in parksConditions %}
-        <a href="{% url 'information:overview' park_type=parksCondition.schedule.parkType %}">
-            <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
-                {% if parksCondition.schedule.parkType == 'TDL' %}
-                    {% if parksCondition.schedule.open %}
-                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+    <!-- メンテナンス中 False -->
+        {% if False %}
+            {% for parksCondition in parksConditions %}
+            <a href="{% url 'information:overview' park_type=parksCondition.schedule.parkType %}">
+                <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
+                    {% if parksCondition.schedule.parkType == 'TDL' %}
+                        {% if parksCondition.schedule.open %}
+                            <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                        {% else %}
+                            <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                        {% endif %}
                     {% else %}
-                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                        {% if parksCondition.schedule.open %}
+                            <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                        {% else %}
+                            <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                        {% endif %}
                     {% endif %}
-                {% else %}
-                    {% if parksCondition.schedule.open %}
-                        <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                    {% if parksCondition.parkInfo.closedDay %}
+                        <h1>本日は休園日です。</h1>
+                        <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
+                        <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
+                    {% elif parksCondition.schedule.open %}
+                        <h2>本日{{ parksCondition.parkInfo.date }}は開園日です</h2>
+                        <h3>本日の営業時間:　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
                     {% else %}
-                        <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                        <h1>ただいまの時間、閉園中です。</h1>
+                        <h2>本日{{ parksCondition.parkInfo.date }}は開園日です</h2>
+                        <h3>本日の営業時間:　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
                     {% endif %}
-                {% endif %}
-                {% if parksCondition.parkInfo.closedDay %}
-                    <h1>本日は休園日です。</h1>
-                    <h2>本日{{ parksCondition.parkInfo.date }}は休園日です</h2>
-                    <h3>次回開園日:　{{ parksCondition.nextOpenInfo.date }}　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
-                {% elif parksCondition.schedule.open %}
-                    <h2>本日{{ parksCondition.parkInfo.date }}は開園日です</h2>
-                    <h3>本日の営業時間:　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
-                {% else %}
-                    <h1>ただいまの時間、閉園中です。</h1>
-                    <h2>本日{{ parksCondition.parkInfo.date }}は開園日です</h2>
-                    <h3>本日の営業時間:　({{ parksCondition.nextOpenInfo.openTime }}-{{ parksCondition.nextOpenInfo.closeTime }})</h3>
-                {% endif %}
-            </div>
-        </a>
-        {% endfor %}
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <h1>ただいまメンテナンスを行っています。</h1>
+        {% endif %}
     </div>
 {% endblock contents %}

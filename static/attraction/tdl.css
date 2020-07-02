@@ -1,6 +1,6 @@
 .header, .footerIn {
-    background-color: rgba(255, 20, 147, 0.55);
-    filter: drop-shadow(0px 2px 3px #FF1493);
+    /*background-color: rgba(255, 20, 147, 0.55);
+    filter: drop-shadow(0px 2px 3px #FF1493);*/
 }
 .attractions div img {
     border: 2px solid #FF8C00;

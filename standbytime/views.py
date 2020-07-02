@@ -1,17 +1,16 @@
-from sys import implementation
-from django.shortcuts import render, redirect
-import requests as rq
+import sys
+import api
+from django.shortcuts import render
 from .models import *
 from django.views import View
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.utils import timezone
 import datetime as dt
-import sys
+
 
 sys.path.append("../")
-import api
 from django.utils import timezone
-from django.utils.timezone import localtime  # 追加
+
 
 # Create your views here.
 
@@ -40,20 +39,13 @@ class standbytime(View):
         fp = []
         fps = []
         fpe = []
-        print(timezone.now().date())
         if park_type == "TDL":
             maindata = standbyTimeDataTDL.objects.filter(
-                # ローカルタイム問題修正予定
-                # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=timezone.now().date(),
-                facility_code=facility_code,
+                time__startswith=timezone.now().date(), facility_code=facility_code,
             ).order_by("time")
         else:
             maindata = standbyTimeDataTDS.objects.filter(
-                # ローカルタイム問題修正予定
-                # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=timezone.now().date(),
-                facility_code=facility_code,
+                time__startswith=timezone.now().date(), facility_code=facility_code,
             ).order_by("time")
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
@@ -78,8 +70,6 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDL.objects.filter(
-                        # ローカルタイム問題修正予定
-                        # time__startswith=localtime(timezone.now()).date(),
                         time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
@@ -90,8 +80,6 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDS.objects.filter(
-                        # ローカルタイム問題修正予定
-                        # time__startswith=localtime(timezone.now()).date(),
                         time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
