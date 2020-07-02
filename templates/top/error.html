@@ -1,0 +1,24 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'top/error.css' %}">
+{% endblock stylesheet %}
+
+{% block title %}
+Error
+{% endblock title %}
+
+{% block contents %}
+    <div id="error">
+        <h1>申し訳ございません。</h1>
+        <h1>エラーが発生しました。以下のことが考えられます。</h1>
+        <p>APIリクエスト失敗により情報が取得出来ていない。</p>
+        <p>データベースからのデータ取得に失敗した。</p>
+        <p>営業時間外に無理やり接続を試みた。</p>
+        <h1>このページが出現した場合連絡をいただけると助かります。</h1>
+    </div>
+{% endblock contents %}
+
+{% block menu %}
+{% endblock menu %}
