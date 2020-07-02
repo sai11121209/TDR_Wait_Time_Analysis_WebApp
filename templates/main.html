@@ -53,6 +53,25 @@
                 </footer>
             </div>
         </div>
+        {% block menu %}
+        <div id="menu">
+            <button id="menuButton">
+                <span class="menuLineTop"></span>
+                <span class="menuLineMiddle"></span>
+                <span class="menuLineBottom"></span>
+            </button>
+            <nav id="menuNav">
+                <div class="menuList">
+                    <div>
+                        <a href="{% url 'top' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdr.svg"><p>TOP</p></a>
+                        {% if now_open_info == "True" %}
+                        <a href="{% url 'information:overview' park_type=park_type %}"><img src={% static 'imgs/time.png' %}><p>待ち時間順位</p></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+        {% endblock menu %}
     </body>
     {% endblock %}
 </html>
