@@ -1,20 +1,15 @@
 import sys
 import os
 import django
-import requests as rq
-from django.utils import timezone
-from django.utils.timezone import localtime  # 追加
 import datetime
 import api
 
-##消す
-import pickle
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TDRApp.settings")
 
 
-def insertdata(parkType, parksCalendars):
+def insertdata(parkType):
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
@@ -103,7 +98,6 @@ def insertdata(parkType, parksCalendars):
                 standbyTimeDataTDL.objects.create(
                     facility_code=attractions_condition["facilityCode"],
                     standby_time=standby_time,
-                    time=localtime(timezone.now()),
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
                     operating_status_end=operating_status_end,
@@ -111,11 +105,11 @@ def insertdata(parkType, parksCalendars):
                     facility_fastpass_start=facility_fastpass_start,
                     facility_fastpass_end=facility_fastpass_end,
                 )
+                print("TDL:Task completed")
             else:
                 standbyTimeDataTDS.objects.create(
                     facility_code=attractions_condition["facilityCode"],
                     standby_time=standby_time,
-                    time=localtime(timezone.now()),
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
                     operating_status_end=operating_status_end,
@@ -123,6 +117,7 @@ def insertdata(parkType, parksCalendars):
                     facility_fastpass_start=facility_fastpass_start,
                     facility_fastpass_end=facility_fastpass_end,
                 )
+                print("TDS:Task completed")
 
 
 if __name__ == "__main__":

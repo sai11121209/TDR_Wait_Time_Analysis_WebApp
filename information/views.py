@@ -1,18 +1,15 @@
-from django.shortcuts import render, redirect
-import requests as rq
-from django.contrib.auth.models import User
-from django.views import View
-from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
 import sys
-from django.utils.timezone import localtime  # 追加
-from datetime import datetime as dt
 import itertools
+import api
+from django.shortcuts import render
+from django.views import View
+from django.shortcuts import render
+from django.utils import timezone
+from django.db.models import Avg
+
 
 sys.path.append("../")
 from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
-from django.db.models import Avg
-import api
 
 # Create your views here.
 
@@ -26,8 +23,6 @@ class OverView(View):
                 if standby_time.standby_time_avg
                 else -1
                 for standby_time in standbyTimeDataTDL.objects.filter(
-                    # ローカルタイム問題修正予定
-                    # time__startswith=localtime(timezone.now()).date(),
                     time__startswith=timezone.now().date()
                 ).annotate(standby_time_avg=Avg("standby_time"))
             }
@@ -38,8 +33,6 @@ class OverView(View):
                 if standby_time.standby_time_avg
                 else -1
                 for standby_time in standbyTimeDataTDS.objects.filter(
-                    # ローカルタイム問題修正予定
-                    # time__startswith=localtime(timezone.now()).date(),
                     time__startswith=timezone.now().date()
                 ).annotate(standby_time_avg=Avg("standby_time"))
             }
