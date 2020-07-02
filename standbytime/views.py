@@ -56,8 +56,8 @@ class standbytime(View):
             ).order_by("time")
 
         #
-        print(localtime(timezone.now()))
-        print(localtime(timezone.now()).date())
+        print(timezone.now())
+        print(timezone.now().date())
         for m in maindata:
             print(m)
         #
