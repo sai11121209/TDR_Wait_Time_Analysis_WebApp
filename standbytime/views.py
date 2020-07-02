@@ -54,6 +54,8 @@ class standbytime(View):
                 time__startswith=timezone.now().date(),
                 facility_code=facility_code,
             ).order_by("time")
+        print(timezone.now())
+        print(maindata)
         if "中止" not in maindata.reverse()[0].operating_status:
             for std in maindata:
                 if std.standby_time or std.operating_status == "運営中":
