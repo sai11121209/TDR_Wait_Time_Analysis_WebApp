@@ -20,6 +20,7 @@ from . import views
 
 urlpatterns = [
     path("", views.Top.as_view(), name="top"),
+    path("error", views.Error.as_view(), name="error"),
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),  # [追加]
     path("accounts/", include("django.contrib.auth.urls")),

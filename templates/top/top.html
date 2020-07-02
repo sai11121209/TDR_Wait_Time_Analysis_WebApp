@@ -13,7 +13,7 @@ Top
 {% block contents %}
     <div id="mainTop">
     <!-- メンテナンス中 False -->
-        {% if False %}
+        {% if True %}
             {% for parksCondition in parksConditions %}
             <a href="{% url 'information:overview' park_type=parksCondition.schedule.parkType %}">
                 <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
