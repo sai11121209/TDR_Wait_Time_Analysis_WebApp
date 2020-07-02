@@ -44,7 +44,7 @@ class standbytime(View):
             maindata = standbyTimeDataTDL.objects.filter(
                 # ローカルタイム問題修正予定
                 # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=timezone.now().date(),
+                time__startswith=localtime(timezone.now().date()),
                 facility_code=facility_code,
             ).order_by("time")
         else:
