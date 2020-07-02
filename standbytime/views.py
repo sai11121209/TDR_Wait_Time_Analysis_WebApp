@@ -40,12 +40,16 @@ class standbytime(View):
         print(timezone.now().date())
         if park_type == "TDL":
             maindata = standbyTimeDataTDL.objects.filter(
-                time__startswith=localtime(timezone.now()).date(),
+                # ローカルタイム問題修正予定
+                # time__startswith=localtime(timezone.now()).date(),
+                time__startswith=timezone.now().date(),
                 facility_code=facility_code,
             ).order_by("time")
         else:
             maindata = standbyTimeDataTDS.objects.filter(
-                time__startswith=localtime(timezone.now()).date(),
+                # ローカルタイム問題修正予定
+                # time__startswith=localtime(timezone.now()).date(),
+                time__startswith=timezone.now().date(),
                 facility_code=facility_code,
             ).order_by("time")
         if "中止" not in maindata.reverse()[0].operating_status:
@@ -71,7 +75,9 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDL.objects.filter(
-                        time__startswith=localtime(timezone.now()).date(),
+                        # ローカルタイム問題修正予定
+                        # time__startswith=localtime(timezone.now()).date(),
+                        time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
                 ]
@@ -81,7 +87,9 @@ class standbytime(View):
                         "%H:%M"
                     )
                     for std in standbyTimeDataTDS.objects.filter(
-                        time__startswith=localtime(timezone.now()).date(),
+                        # ローカルタイム問題修正予定
+                        # time__startswith=localtime(timezone.now()).date(),
+                        time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
                 ]
