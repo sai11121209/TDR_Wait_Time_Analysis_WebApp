@@ -44,14 +44,14 @@ class standbytime(View):
             maindata = standbyTimeDataTDL.objects.filter(
                 # ローカルタイム問題修正予定
                 # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=localtime(timezone.now()).date(),
+                time__startswith=timezone.now().date(),
                 facility_code=facility_code,
             ).order_by("time")
         else:
             maindata = standbyTimeDataTDS.objects.filter(
                 # ローカルタイム問題修正予定
                 # time__startswith=localtime(timezone.now()).date(),
-                time__startswith=localtime(timezone.now()).date(),
+                time__startswith=timezone.now().date(),
                 facility_code=facility_code,
             ).order_by("time")
 
@@ -87,7 +87,7 @@ class standbytime(View):
                     for std in standbyTimeDataTDL.objects.filter(
                         # ローカルタイム問題修正予定
                         # time__startswith=localtime(timezone.now()).date(),
-                        time__startswith=localtime(timezone.now()).date(),
+                        time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
                 ]
@@ -99,7 +99,7 @@ class standbytime(View):
                     for std in standbyTimeDataTDS.objects.filter(
                         # ローカルタイム問題修正予定
                         # time__startswith=localtime(timezone.now()).date(),
-                        time__startswith=localtime(timezone.now()).date(),
+                        time__startswith=timezone.now().date(),
                         facility_code=facility_code,
                     )
                 ]
