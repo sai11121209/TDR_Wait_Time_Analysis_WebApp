@@ -10,4 +10,7 @@ $(function () {
         $("#loader").delay(600).fadeOut(300);
         $("#container").css("display", "block");
     });
+    $('#menuButton').on('click', function () {
+        $('#menuButton, #menu, #menuNav').toggleClass('menuOpen');
+    });
 });

@@ -20,7 +20,7 @@
     <div id="standby-time">
         <h2>{{info.name}}</h2>
         <!--製作中は表示できるようにするためTureにしていますはずします 本番 parksCondition.open-->
-        {% if True %}
+        {% if parksCondition.open %}
             {% if data.0|length != 1 %}
                 {% if info.standbyTime %}
                     <h3>現在の待ち時間は{{ info.standbyTime }}分です</h3>

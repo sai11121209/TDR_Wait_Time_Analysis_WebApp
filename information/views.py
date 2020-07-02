@@ -118,7 +118,7 @@ class Detail(View):
             return render(
                 request,
                 "information/detail.html",
-                {"now_open_info": now_open_info, "info": info},
+                {"now_open_info": now_open_info, "park_type": park_type, "info": info},
             )
         except:
             return redirect("error")
@@ -135,7 +135,7 @@ class Map(View):
             return render(
                 request,
                 "information/map.html",
-                {"now_open_info": now_open_info, "info": info},
+                {"now_open_info": now_open_info, "park_type": park_type, "info": info},
             )
         except:
             return redirect("error")

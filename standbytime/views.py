@@ -103,6 +103,7 @@ class standbytime(View):
                     "info": info,
                     "parkType": park_type,
                     "fp": fp,
+                    "now_open_info": str(parksCondition.open),
                     "parksCondition": parksCondition,
                 },
             )
