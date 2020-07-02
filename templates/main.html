@@ -15,6 +15,8 @@
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
+        <!-- メンテナンス中 False -->
+        {% if False %}
         <div id="loader">
             <img src="{% static 'imgs/loading.gif' %}" alt="Now Loading..." width="20px" height="20px" />
         </div>
@@ -26,9 +28,8 @@
                         <nav class="headerNav">
                             <ul>
                             {% if 'login' not in request.path %}
-                                <li><a href="{% url 'top' %}">TOP</a></li>
-                                <li><a href="{% url 'information:list'  park_type='TDL' %}">TDL</a></li>
-                                <li><a href="{% url 'information:list'  park_type='TDS' %}">TDS</a></li>
+                                <li><a href="{% url 'information:list'  park_type='TDL' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdl.svg"><p>東京ディズニーランド</p></a></li>
+                                <li><a  href="{% url 'information:list'  park_type='TDS' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tds.svg"><p>東京ディズニーシー</p></a></li>
                             {% endif %}
                             </ul>
                         </nav>
@@ -54,6 +55,9 @@
                 </footer>
             </div>
         </div>
+        {% else %}
+            <h1>ただいまメンテナンスを行っています。</h1>
+        {% endif %}
     </body>
     {% endblock %}
 </html>

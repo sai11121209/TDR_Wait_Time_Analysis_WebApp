@@ -40,7 +40,6 @@ class standbytime(View):
         fp = []
         fps = []
         fpe = []
-        print(timezone.now().date())
         if park_type == "TDL":
             maindata = standbyTimeDataTDL.objects.filter(
                 # ローカルタイム問題修正予定
