@@ -15,8 +15,6 @@
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
-        <!-- メンテナンス中 False -->
-        {% if False %}
         <div id="loader">
             <img src="{% static 'imgs/loading.gif' %}" alt="Now Loading..." width="20px" height="20px" />
         </div>
@@ -55,9 +53,6 @@
                 </footer>
             </div>
         </div>
-        {% else %}
-            <h1>ただいまメンテナンスを行っています。</h1>
-        {% endif %}
     </body>
     {% endblock %}
 </html>
