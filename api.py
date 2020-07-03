@@ -1,4 +1,6 @@
+from sys import implementation
 import requests as rq
+import subprocess
 
 headers = {
     "Host": "api-portal.tokyodisneyresort.jp",
@@ -16,6 +18,8 @@ headers = {
     "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA==",
 }
 
+cmd = "heroku restart -a tdrapp"
+
 
 def get_facilities():
     url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
@@ -29,6 +33,7 @@ def get_facilities():
             return data.json()
         except:
             print("g_f_except")
+            subprocess.Popen(cmd)
             count += 1
             if count >= 3:
                 return False
@@ -46,6 +51,7 @@ def get_facilities_conditions():
             return data.json()
         except:
             print("g_f_c_except")
+            subprocess.Popen(cmd)
             count += 1
             if count >= 3:
                 return False
@@ -64,6 +70,7 @@ def get_parks_conditions():
             return data.json()
         except:
             print("g_p_co_except")
+            subprocess.Popen(cmd)
             count += 1
             if count >= 3:
                 return False
@@ -82,6 +89,7 @@ def get_parks_calendars():
             return data.json()
         except:
             print("g_p_ca_except")
+            subprocess.Popen(cmd)
             count += 1
             if count >= 3:
                 return False
