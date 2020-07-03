@@ -111,6 +111,10 @@ class Detail(View):
     def get(self, request, now_open_info, attraction_name, park_type, facility_code):
         try:
             attractions = api.get_facilities()["attractions"]
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
             for attraction in attractions:
                 if attraction["name"] == attraction_name:
                     info = attraction
@@ -118,7 +122,11 @@ class Detail(View):
             return render(
                 request,
                 "information/detail.html",
-                {"now_open_info": now_open_info, "park_type": park_type, "info": info},
+                {
+                    "now_open_info": now_open_info,
+                    "park_type": parks_condition,
+                    "info": info,
+                },
             )
         except:
             return redirect("error")
