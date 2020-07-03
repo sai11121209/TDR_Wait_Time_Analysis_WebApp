@@ -116,7 +116,6 @@ def insertdata(parkType, parksCalendars):
                 standbyTimeDataTDL.objects.create(
                     facility_code=attractions_condition["facilityCode"],
                     standby_time=standby_time,
-                    time=localtime(timezone.now()),
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
                     operating_status_end=operating_status_end,
@@ -128,7 +127,6 @@ def insertdata(parkType, parksCalendars):
                 standbyTimeDataTDS.objects.create(
                     facility_code=attractions_condition["facilityCode"],
                     standby_time=standby_time,
-                    time=localtime(timezone.now()),
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
                     operating_status_end=operating_status_end,
