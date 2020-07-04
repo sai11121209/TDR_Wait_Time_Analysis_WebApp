@@ -16,12 +16,12 @@ def timed_job_TDL():
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
     if parks_conditions[0]["open"]:
-        tasks.insertdata("TDL", parkInfo)
+        tasks.insertdata("TDL")
         print("TDL:Task start")
     else:
         print("TDL is now closed")
     if parks_conditions[1]["open"]:
-        tasks.insertdata("TDS", parkInfo)
+        tasks.insertdata("TDS")
         print("TDS: Task start")
     else:
         print("TDS is now closed")

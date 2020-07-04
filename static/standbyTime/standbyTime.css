@@ -1,6 +1,12 @@
 #standby-time {
     display: flex;
     flex-direction: column;
+    text-align: center;
+}
+#standby-time small {
+    text-align: right;
+    font-size: 1rem;
+    color: #A9A9A9;
 }
 #detail div {
     border-bottom: solid 1px #D3D3D3;

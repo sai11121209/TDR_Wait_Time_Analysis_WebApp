@@ -100,7 +100,7 @@ class List(View):
                 {
                     "attraction_groups": attraction_groups,
                     "park_type": park_type,
-                    "parks_condition": parks_condition,
+                    "now_open_info": parks_condition,
                 },
             )
         except:
@@ -108,9 +108,13 @@ class List(View):
 
 
 class Detail(View):
-    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
+    def get(self, request, attraction_name, park_type, facility_code):
         try:
             attractions = api.get_facilities()["attractions"]
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
             for attraction in attractions:
                 if attraction["name"] == attraction_name:
                     info = attraction
@@ -118,15 +122,23 @@ class Detail(View):
             return render(
                 request,
                 "information/detail.html",
-                {"now_open_info": now_open_info, "park_type": park_type, "info": info},
+                {
+                    "now_open_info": parks_condition,
+                    "park_type": parks_condition,
+                    "info": info,
+                },
             )
         except:
             return redirect("error")
 
 
 class Map(View):
-    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
+    def get(self, request, attraction_name, park_type, facility_code):
         try:
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
             attractions = api.get_facilities()["attractions"]
             for attraction in attractions:
                 if attraction["facilityCode"] == str(facility_code):
@@ -135,7 +147,11 @@ class Map(View):
             return render(
                 request,
                 "information/map.html",
-                {"now_open_info": now_open_info, "park_type": park_type, "info": info},
+                {
+                    "now_open_info": parks_condition,
+                    "park_type": park_type,
+                    "info": info,
+                },
             )
         except:
             return redirect("error")
