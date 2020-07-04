@@ -4,6 +4,7 @@ from .models import standbyTimeDataTDL, standbyTimeDataTDS
 from django.views import View
 from django.utils import timezone
 import datetime as dt
+import pandas as pd
 
 
 sys.path.append("../")
@@ -14,8 +15,39 @@ import api
 
 
 class standbytime(View):
-    def get(self, request, now_open_info, attraction_name, park_type, facility_code):
+    def get_standbytime_group(self, date, park_type, facility_code):
+        if park_type == "TDL":
+            return standbyTimeDataTDL.objects.filter(
+                time__startswith=date, facility_code=facility_code,
+            ).order_by("time")
+        else:
+            return standbyTimeDataTDS.objects.filter(
+                time__startswith=date, facility_code=facility_code,
+            ).order_by("time")
+
+    def get_standbytime_time(self, maindata, info, opentime):
+        dateDF = pd.DataFrame(
+            {
+                "time": pd.date_range(
+                    opentime["openTime"], opentime["closeTime"], freq="T",
+                )
+            }
+        )
+        dateDF["time"] = dateDF["time"].dt.strftime("%H:%M")
+        dateDF = dateDF.set_index("time")
+        mainDF = pd.DataFrame(maindata)
+        mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
+        mainDF = mainDF.set_index("time")
+        pd.set_option("display.max_rows", None)
+        mainDF = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
+        mean = int(mainDF.mean()["standby_time"])
+        return mainDF.fillna(-0.5), mean
+
+    def get(self, request, attraction_name, park_type, facility_code):
         try:
+            data_today = []
+            data_yesterday = []
+            fp = []
             attractions = sorted(
                 api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
             )
@@ -24,9 +56,11 @@ class standbytime(View):
                 key=lambda x: x["facilityCode"],
             )
             if park_type == "TDL":
-                parksCondition = api.get_parks_conditions()["schedules"][0]
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+                opentime = api.get_parks_calendars()[0]
             else:
-                parksCondition = api.get_parks_conditions()["schedules"][1]
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                opentime = api.get_parks_calendars()[1]
             for attraction, attraction_conditions in zip(
                 attractions, attractions_conditions
             ):
@@ -34,79 +68,52 @@ class standbytime(View):
                     info = attraction_conditions
                     attraction_info = attraction
                     break
-            st = []
-            fp = []
-            fps = []
-            fpe = []
-            if park_type == "TDL":
-                maindata = standbyTimeDataTDL.objects.filter(
-                    time__startswith=timezone.now().date(), facility_code=facility_code,
-                ).order_by("time")
-            else:
-                maindata = standbyTimeDataTDS.objects.filter(
-                    time__startswith=timezone.now().date(), facility_code=facility_code,
-                ).order_by("time")
-            if "中止" not in maindata.reverse()[0].operating_status:
-                for std in maindata:
-                    if std.standby_time or std.operating_status == "運営中":
-                        if std.standby_time:
-                            st.append(std.standby_time)
-                        else:
-                            st.append(0)
-                        if "fastpass" in info:
-                            if std.facility_fastpass_start:
-                                fps.append(
-                                    std.facility_fastpass_start.strftime("%H:%M")
-                                )
-                                fpe.append(std.facility_fastpass_end.strftime("%H:%M"))
-                            else:
-                                fps.append(0)
-                                fpe.append(0)
-                    else:
-                        st.append(-1)
-                fp = [fps, fpe]
-                if park_type == "TDL":
-                    t = [
-                        std.time.astimezone(
-                            dt.timezone(dt.timedelta(hours=+9))
-                        ).strftime("%H:%M")
-                        for std in standbyTimeDataTDL.objects.filter(
-                            time__startswith=timezone.now().date(),
-                            facility_code=facility_code,
-                        )
-                    ]
-                else:
-                    t = [
-                        std.time.astimezone(
-                            dt.timezone(dt.timedelta(hours=+9))
-                        ).strftime("%H:%M")
-                        for std in standbyTimeDataTDS.objects.filter(
-                            time__startswith=timezone.now().date(),
-                            facility_code=facility_code,
-                        )
-                    ]
-                stmeans = [i for i in st if i != -1]
-                stmean = int(sum(stmeans) / len(stmeans))
-                if -1 in st:
-                    stin = int((len(stmeans) / len(st)) * 100)
-                else:
-                    stin = 100
-                data = [st, t, stmean, stin]
-            else:
-                data = maindata.reverse()[0].operating_status
-            return render(
-                request,
-                "standbytime/standbytime.html",
-                {
-                    "data": data,
-                    "attractionInfo": attraction_info,
-                    "info": info,
-                    "park_type": park_type,
-                    "fp": fp,
-                    "now_open_info": str(parksCondition["open"]),
-                    "parksCondition": parksCondition,
-                },
+            maindata = self.get_standbytime_group(
+                timezone.now().date(), park_type, facility_code
             )
+            if maindata:
+                if "中止" not in maindata.reverse()[0].operating_status:
+                    maindata, standby_mean = self.get_standbytime_time(
+                        maindata.values(), info, opentime
+                    )
+                    data_today = [maindata, standby_mean]
+                    maindata = self.get_standbytime_group(
+                        timezone.now().date() + dt.timedelta(days=-1),
+                        park_type,
+                        facility_code,
+                    )
+                    maindata, standby_mean = self.get_standbytime_time(
+                        maindata.values(), info, opentime
+                    )
+                    data_yesterday = [maindata, standby_mean]
+                else:
+                    data_today = info["operatings"][0]["operatingStatusMessage"]
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "data_today": data_today,
+                        "data_yesterday": data_yesterday,
+                        "attraction_info": attraction_info,
+                        "info": info,
+                        "park_type": park_type,
+                        "fp": fp,
+                        "now_open_info": parks_condition,
+                    },
+                )
+            else:
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "attraction_info": attraction_info,
+                        "info": info,
+                        "park_type": park_type,
+                        "now_open_info": parks_condition,
+                    },
+                )
         except:
             return redirect("error")
 
