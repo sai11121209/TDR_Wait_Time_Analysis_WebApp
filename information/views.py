@@ -52,8 +52,8 @@ class OverView(View):
                         {"avg": attractions_overview[int(attraction["facilityCode"])]}
                     )
                     f_attractions.append(attraction)
-
             f_attractions.sort(reverse=True, key=lambda x: (x["avg"], x["name"]))
+
             return render(
                 request,
                 "information/overview.html",
