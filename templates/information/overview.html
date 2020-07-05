@@ -17,7 +17,7 @@
 <div id="overview">
     <h2>本日、混雑しているアトラクションです</h2>
     {% for attraction in attractions %}
-    <a href="{% url 'information:detail' now_open_info=parks_condition attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
+    <a href="{% url 'information:detail' attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
         <div id={{ attraction.name }} class="attractions">
             <div>
                 <img src={{ attraction.images.0 }}>
