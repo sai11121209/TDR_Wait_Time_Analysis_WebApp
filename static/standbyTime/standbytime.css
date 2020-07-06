@@ -3,6 +3,10 @@
     flex-direction: column;
     text-align: center;
 }
+#standby-time button {
+    width: 70%;
+    margin: 10px auto;
+}
 #standby-time small {
     text-align: right;
     font-size: 1rem;
@@ -40,4 +44,39 @@
 .figure {
     height:40vh;
     width:100%;
+}
+table{
+    margin: 0 auto;
+    width: 250px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    overflow: hidden;
+}
+thead{
+    width: 100%;
+    display: block;
+}
+tbody{
+    width: 100%;
+    height: 11em;
+    display: block;
+    overflow-y: scroll;
+}
+tbody::-webkit-scrollbar {
+    display:none;
+}
+th{
+    background-color: #ccc;
+}
+th, td {
+    width: 110px;
+    height: 1em;
+    padding: 2px;
+    border: 1px solid #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.standby-time-tabale small {
+    text-align: center;
 }

@@ -8,7 +8,7 @@
 {% else %}
     <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
 {% endif %}
-<!--<script src="{% static 'standbyTime/standbyTime.js' %}"></script>-->
+<script src="{% static 'standbyTime/standbytime.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 {% endblock stylesheet %}
 
@@ -70,6 +70,28 @@
                 });
                 </script>
             </div>
+            <button id="today-table-button">
+                <span>テーブルを表示</span>
+            </button>
+            <div id="today-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>時刻</th>
+                            <th>待ち時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for datas in data_today.2 %}
+                        <tr>
+                            <td>{{ datas.0 }}</td>
+                            <td>{{ datas.1 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <small>※一時運営中止等の場合は-1、欠損値は-0.5で出力しています。</small>
+            </div>
             <h3>昨日の待ち時間遷移グラフ</h3>
             <h3>昨日の平均待ち時間は約{{ data_yesterday.1 }}分でした。</h3>
             <div class="figure">
@@ -98,6 +120,28 @@
                 }
                 });
                 </script>
+            </div>
+            <button id="yesterday-table-button">
+                <span>テーブルを表示</span>
+            </button>
+            <div id="yesterday-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>時刻</th>
+                            <th>待ち時間</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for datas in data_yesterday.2 %}
+                        <tr>
+                            <td>{{ datas.0 }}</td>
+                            <td>{{ datas.1 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <small>※一時運営中止等の場合は-1、欠損値は-0.5で出力しています。</small>
             </div>
             {% if info.fastpass %}
             <div class="figure">
