@@ -76,7 +76,12 @@ class standbytime(View):
                     maindata, standby_mean = self.get_standbytime_time(
                         maindata.values(), info, opentime
                     )
-                    data_today = [maindata, standby_mean]
+                    table_data = []
+                    for datas in list(maindata.index.values):
+                        table_data.append(
+                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
+                        )
+                    data_today = [maindata, standby_mean, table_data]
                     maindata = self.get_standbytime_group(
                         timezone.now().date() + dt.timedelta(days=-1),
                         park_type,
@@ -85,7 +90,12 @@ class standbytime(View):
                     maindata, standby_mean = self.get_standbytime_time(
                         maindata.values(), info, opentime
                     )
-                    data_yesterday = [maindata, standby_mean]
+                    table_data = []
+                    for datas in list(maindata.index.values):
+                        table_data.append(
+                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
+                        )
+                    data_yesterday = [maindata, standby_mean, table_data]
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
@@ -99,7 +109,8 @@ class standbytime(View):
                         "info": info,
                         "park_type": park_type,
                         "fp": fp,
-                        "now_open_info": parks_condition,
+                        # "now_open_info": parks_condition,
+                        "now_open_info": True,
                     },
                 )
             else:
