@@ -3,6 +3,7 @@ import tasks
 from django.utils import timezone
 import api
 
+
 sched = BlockingScheduler()
 
 
