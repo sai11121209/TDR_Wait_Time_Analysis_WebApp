@@ -4,6 +4,8 @@ import tasks
 from django.utils import timezone
 import api
 
+# gitPush時コメンとアウト外す
+import syslog
 
 sched = BlockingScheduler()
 
@@ -20,13 +22,17 @@ def timed_job_TDL():
     if parks_conditions[0]["open"]:
         tasks.insertdata("TDL")
         print("TDL:Task start")
+        syslog.syslog("TDL:Task start")
     else:
         print("TDL is now closed")
+        syslog.syslog("TDL is now closed")
     if parks_conditions[1]["open"]:
         tasks.insertdata("TDS")
         print("TDS: Task start")
+        syslog.syslog("TDS: Task start")
     else:
         print("TDS is now closed")
+        syslog.syslog("TDS is now closed")
 
 
 sched.start()
