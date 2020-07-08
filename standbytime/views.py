@@ -96,6 +96,20 @@ class standbytime(View):
                             [maindata.loc[datas].name, maindata.loc[datas].standby_time]
                         )
                     data_yesterday = [maindata, standby_mean, table_data]
+                    maindata = self.get_standbytime_group(
+                        timezone.now().date() + dt.timedelta(days=-7),
+                        park_type,
+                        facility_code,
+                    )
+                    maindata, standby_mean = self.get_standbytime_time(
+                        maindata.values(), info, opentime
+                    )
+                    table_data = []
+                    for datas in list(maindata.index.values):
+                        table_data.append(
+                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
+                        )
+                    data_lastweek = [maindata, standby_mean, table_data]
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
@@ -105,6 +119,7 @@ class standbytime(View):
                         "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "data_today": data_today,
                         "data_yesterday": data_yesterday,
+                        "data_lastweek": data_lastweek,
                         "attraction_info": attraction_info,
                         "info": info,
                         "park_type": park_type,
