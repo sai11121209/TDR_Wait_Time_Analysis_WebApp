@@ -1,7 +1,9 @@
+#!/usr/bin/python3
 from apscheduler.schedulers.blocking import BlockingScheduler
 import tasks
 from django.utils import timezone
 import api
+
 
 sched = BlockingScheduler()
 
