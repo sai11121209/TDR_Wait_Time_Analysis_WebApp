@@ -76,7 +76,7 @@ WSGI_APPLICATION = "TDRApp.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
+"""
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -89,6 +89,17 @@ DATABASES = {
             "charset": "utf8mb4",
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
         },
+    }
+}
+"""
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "df721fkr12ic60",
+        "USER": "svvmghhjjysbcx",
+        "PASSWORD": "90553f1f55f78fe4134bfb45ca9433f056f341aac96b12042cfb79d6cec36b3b",
+        "HOST": "ec2-52-22-216-69.compute-1.amazonaws.com",
+        "PORT": "5432",
     }
 }
 
@@ -140,11 +151,3 @@ except ImportError:
 
 if not DEBUG:
     SECRET_KEY = os.environ["SECRET_KEY"]
-    import django_heroku  # 追加
-
-    django_heroku.settings(locals())  # 追加
-
-
-db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES["default"].update(db_from_env)
-
