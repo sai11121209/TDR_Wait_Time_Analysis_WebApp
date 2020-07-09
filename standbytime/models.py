@@ -16,7 +16,7 @@ class standbyTimeDataTDL(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
 
 
 class standbyTimeDataTDS(models.Model):
@@ -31,4 +31,4 @@ class standbyTimeDataTDS(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
