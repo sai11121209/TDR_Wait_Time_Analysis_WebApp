@@ -5,6 +5,10 @@ from django.utils import timezone
 
 
 class standbyTimeDataTDL(models.Model):
+    class Meta:
+        verbose_name = "東京ディズニーランド待ち時間データ"
+        verbose_name_plural = "東京ディズニーランド待ち時間データリスト"
+
     facility_code = models.IntegerField()
     standby_time = models.IntegerField(null=True)
     time = models.DateTimeField(default=timezone.now)
@@ -16,10 +20,14 @@ class standbyTimeDataTDL(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
 
 
 class standbyTimeDataTDS(models.Model):
+    class Meta:
+        verbose_name = "東京ディズニーシー待ち時間データ"
+        verbose_name_plural = "東京ディズニーシー待ち時間データリスト"
+
     facility_code = models.IntegerField()
     standby_time = models.IntegerField(null=True)
     time = models.DateTimeField(default=timezone.now)
@@ -31,4 +39,4 @@ class standbyTimeDataTDS(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return str(self.pk)
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
