@@ -106,6 +106,7 @@ class standbytime(View):
                     )
                     table_data = []
                     for datas in list(maindata.index.values):
+                        print(maindata.loc[datas])
                         table_data.append(
                             [maindata.loc[datas].name, maindata.loc[datas].standby_time]
                         )
