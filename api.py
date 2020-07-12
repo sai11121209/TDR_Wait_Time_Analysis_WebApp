@@ -60,7 +60,6 @@ def get_parks_conditions():
             data = r.get(url, headers=headers)
             print("g_p_co_try")
             print(data)
-            print(data.history)
             return data.json()
         except:
             print("g_p_co_except")
@@ -78,7 +77,6 @@ def get_parks_calendars():
             data = r.get(url, headers=headers)
             print("g_p_ca_try")
             print(data)
-            print(data.history)
             return data.json()
         except:
             print("g_p_ca_except")
