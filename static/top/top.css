@@ -1,4 +1,4 @@
-#mainTop img {
+.parksCondition > img {
     width: 100%;
     object-fit: cover;
 }
@@ -20,10 +20,40 @@
     font-weight: bold;
     line-height: 50px;
 }
+.parksIcon {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    top: calc(50% - 80px);
+    font-weight: bold;
+    line-height: 50px;
+}
 .parksCondition h2, h3{
     text-align: center;
     color: #00284D;
 }
 .closedDay {
     filter: grayscale(100%);
+}
+.top-menu {
+    display: flex;
+    justify-content: space-between;
+}
+.top-menu p {
+    font-size: 0.08rem;
+    margin: 0;
+    text-align: center;
+}
+.top-menu a img {
+    object-fit: cover;
+}
+@media screen and (min-width:0px) {
+    .top-menu img {
+        width: 70px;
+    }
+}
+@media screen and (min-width:600px) {
+    .top-menu img {
+        width: 100px;
+    }
 }
