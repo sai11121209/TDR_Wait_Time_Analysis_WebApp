@@ -113,8 +113,28 @@ class Detail(View):
             attractions = api.get_facilities()["attractions"]
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+                data_ = len(
+                    [
+                        1
+                        for i in standbyTimeDataTDL.objects.filter(
+                            time__startswith=timezone.now().date(),
+                            facility_code=facility_code,
+                        )
+                        if i.standby_time != None
+                    ]
+                )
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                data_ = len(
+                    [
+                        1
+                        for i in standbyTimeDataTDS.objects.filter(
+                            time__startswith=timezone.now().date(),
+                            facility_code=facility_code,
+                        )
+                        if i.standby_time != None
+                    ]
+                )
             for attraction in attractions:
                 if attraction["name"] == attraction_name:
                     info = attraction
@@ -126,6 +146,7 @@ class Detail(View):
                     "now_open_info": parks_condition,
                     "park_type": parks_condition,
                     "info": info,
+                    "data_": data_,
                 },
             )
         except:
