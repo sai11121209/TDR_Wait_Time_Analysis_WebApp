@@ -29,12 +29,14 @@
             <!--製作中は表示できるようにするためTrueにしています 本番 now_open_info-->
             {% if now_open_info %}
             <section id="inner-contents">
+            {% if data_ %}
                 <div>
                     <a href="{% url 'standbytime:standbytime' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
                         <img src="{% static 'imgs/graph.png' %}">
                         <p>待ち時間解析</p>
                     </a>
                 </div>
+            {% endif %}
                 <div>
                     <a href="{% url 'information:map' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
                         <img src="{% static 'imgs/map.png' %}">
