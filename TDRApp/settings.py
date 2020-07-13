@@ -95,10 +95,10 @@ DATABASES = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "df721fkr12ic60",
-        "USER": "svvmghhjjysbcx",
-        "PASSWORD": "90553f1f55f78fe4134bfb45ca9433f056f341aac96b12042cfb79d6cec36b3b",
-        "HOST": "ec2-52-22-216-69.compute-1.amazonaws.com",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "Yuta1209",
+        "HOST": "tdrapp-database.cadjpkudsb1q.us-east-2.rds.amazonaws.com",
         "PORT": "5432",
     }
 }
