@@ -5,6 +5,7 @@ from django.views import View
 from django.utils import timezone
 import datetime as dt
 import pandas as pd
+import numpy as np
 
 
 sys.path.append("../")
@@ -25,7 +26,7 @@ class standbytime(View):
                 time__startswith=date, facility_code=facility_code,
             ).order_by("time")
 
-    def get_standbytime_time(self, maindata, info, opentime):
+    def get_standbytime_time(self, maindata, opentime):
         dateDF = pd.DataFrame(
             {
                 "time": pd.date_range(
@@ -43,10 +44,26 @@ class standbytime(View):
         mean = int(mainDF.mean()["standby_time"])
         return mainDF.fillna(-0.5), mean
 
+    def make_standbytime_time_table(self, day, opentime, park_type, facility_code):
+        maindata = self.get_standbytime_group(
+            timezone.now().date() + dt.timedelta(days=-day), park_type, facility_code,
+        )
+        maindata, standby_mean = self.get_standbytime_time(maindata.values(), opentime)
+        table_data = []
+        for datas in list(maindata.index.values):
+            table_data.append(
+                [maindata.loc[datas].name, maindata.loc[datas].standby_time]
+            )
+        return [
+            maindata,
+            standby_mean,
+            table_data,
+            (timezone.now().date() + dt.timedelta(days=-day)).strftime("%Y-%m-%d"),
+        ]
+
     def get(self, request, attraction_name, park_type, facility_code):
         try:
             data_today = []
-            data_yesterday = []
             fp = []
             attractions = sorted(
                 api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
@@ -72,9 +89,9 @@ class standbytime(View):
                 timezone.now().date(), park_type, facility_code
             )
             if maindata:
-                if "中止" not in maindata.reverse()[0].operating_status:
+                if "公演中止" not in maindata.reverse()[0].operating_status:
                     maindata, standby_mean = self.get_standbytime_time(
-                        maindata.values(), info, opentime
+                        maindata.values(), opentime
                     )
                     table_data = []
                     for datas in list(maindata.index.values):
@@ -82,34 +99,20 @@ class standbytime(View):
                             [maindata.loc[datas].name, maindata.loc[datas].standby_time]
                         )
                     data_today = [maindata, standby_mean, table_data]
-                    maindata = self.get_standbytime_group(
-                        timezone.now().date() + dt.timedelta(days=-1),
-                        park_type,
-                        facility_code,
-                    )
-                    maindata, standby_mean = self.get_standbytime_time(
-                        maindata.values(), info, opentime
-                    )
-                    table_data = []
-                    for datas in list(maindata.index.values):
-                        table_data.append(
-                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
+                    st_datas = [
+                        self.make_standbytime_time_table(
+                            day, opentime, park_type, facility_code
                         )
-                    data_yesterday = [maindata, standby_mean, table_data]
-                    maindata = self.get_standbytime_group(
-                        timezone.now().date() + dt.timedelta(days=-7),
-                        park_type,
-                        facility_code,
-                    )
-                    maindata, standby_mean = self.get_standbytime_time(
-                        maindata.values(), info, opentime
-                    )
-                    table_data = []
-                    for datas in list(maindata.index.values):
-                        table_data.append(
-                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
-                        )
-                    data_lastweek = [maindata, standby_mean, table_data]
+                        for day in range(1, 15)
+                    ]
+
+                    # 平均値算出部分
+                    avgDF = st_datas[0][0]
+                    for i in range(1, 14):
+                        avgDF = pd.concat([avgDF, st_datas[i][0]])
+                    avgDF = avgDF.replace([-0.5, -1], np.nan)
+                    avgDF = avgDF.groupby("time").mean()
+                    avgDF = avgDF.replace(np.nan, -1)
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
@@ -118,13 +121,14 @@ class standbytime(View):
                     {
                         "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "data_today": data_today,
-                        "data_yesterday": data_yesterday,
-                        "data_lastweek": data_lastweek,
+                        "st_datas": st_datas,
+                        "avg_datas": avgDF,
                         "attraction_info": attraction_info,
                         "info": info,
                         "park_type": park_type,
                         "fp": fp,
                         "now_open_info": parks_condition,
+                        # 閉園時用
                         # "now_open_info": True,
                     },
                 )
