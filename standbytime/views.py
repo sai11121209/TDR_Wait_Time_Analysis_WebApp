@@ -5,6 +5,7 @@ from django.views import View
 from django.utils import timezone
 import datetime as dt
 import pandas as pd
+import numpy as np
 
 
 sys.path.append("../")
@@ -88,7 +89,7 @@ class standbytime(View):
                 timezone.now().date(), park_type, facility_code
             )
             if maindata:
-                if "中止" not in maindata.reverse()[0].operating_status:
+                if "公演中止" not in maindata.reverse()[0].operating_status:
                     maindata, standby_mean = self.get_standbytime_time(
                         maindata.values(), opentime
                     )
@@ -104,6 +105,14 @@ class standbytime(View):
                         )
                         for day in range(1, 15)
                     ]
+
+                    # 平均値算出部分
+                    avgDF = st_datas[0][0]
+                    for i in range(1, 14):
+                        avgDF = pd.concat([avgDF, st_datas[i][0]])
+                    avgDF = avgDF.replace([-0.5, -1], np.nan)
+                    avgDF = avgDF.groupby("time").mean()
+                    avgDF = avgDF.replace(np.nan, -1)
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
@@ -113,12 +122,14 @@ class standbytime(View):
                         "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "data_today": data_today,
                         "st_datas": st_datas,
+                        "avg_datas": avgDF,
                         "attraction_info": attraction_info,
                         "info": info,
                         "park_type": park_type,
                         "fp": fp,
-                        # "now_open_info": parks_condition,
-                        "now_open_info": True,
+                        "now_open_info": parks_condition,
+                        # 閉園時用
+                        # "now_open_info": True,
                     },
                 )
             else:

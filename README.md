@@ -2,8 +2,7 @@
 ![](https://img.shields.io/github/v/release/sai11121209/TDR_Wait_Time_Analysis_WebApp)
 ![](https://img.shields.io/github/v/release/sai11121209/TDR_Wait_Time_Analysis_WebApp?include_prereleases)
 ## 最新情報
-2020/07/13: HerokuデータベースをAWS(RDS)へ移行
-
+2020/07/13: HerokuデータベースをAWS(RDS)へ移行  
 2020/07/08: HerokuからAWS(EC2)へwebサーバ移行
 ## 内容
 東京ディズニーリゾートのアトラクション待ち時間を出来る限り少なくすることを目的としたWEBアプリです。  
