@@ -119,17 +119,17 @@ except ImportError:
     pass
 
 if not DEBUG:
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = os.environ["SECRET_KEY"]
 
     # Database
     # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
     DATABASES = {
         "default": {
-            "ENGINE": os.environ.get("DATABASE_ENGINE"),
-            "NAME": os.environ.get("DATABASE_NAME"),
-            "USER": os.environ.get("DATABASE_USER"),
-            "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
-            "HOST": os.environ.get("DATABASE_HOST"),
-            "PORT": os.environ.get("DATABASE_PORT"),
+            "ENGINE": os.environ["DATABASE_ENGINE"],
+            "NAME": os.environ["DATABASE_NAME"],
+            "USER": os.environ["DATABASE_USER"],
+            "PASSWORD": os.environ["DATABASE_PASSWORD"],
+            "HOST": os.environ["DATABASE_HOST"],
+            "PORT": os.environ["DATABASE_PORT"],
         }
     }

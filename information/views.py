@@ -170,7 +170,7 @@ class Map(View):
                     info = attraction
                     break
             try:
-                map_key = os.environ.get("GOOGLEMAPAPI_KEY")
+                map_key = os.environ["GOOGLEMAPAPI_KEY"]
             except KeyError:
                 import local_api
 
