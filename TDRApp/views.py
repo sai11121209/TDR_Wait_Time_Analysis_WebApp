@@ -48,5 +48,5 @@ class Top(View):
 
 class Error(View):
     def get(self, request):
-        return render(request, "top/error.html")
+        return render(request, "top/error.html", {"weatherData": api.getWeather()})
 
