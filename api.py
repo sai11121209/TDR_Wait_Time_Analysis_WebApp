@@ -83,3 +83,10 @@ def get_parks_calendars():
             count += 1
             if count >= 3:
                 return False
+
+
+def getWeather(option="weather"):
+    url = f"http://api.openweathermap.org/data/2.5/{option}?lat=35.6340084392334&lon=139.879596507559&units=metric&appid=0869838a492c3c73db4c246b908feafd"
+    r = rq.session()
+    data = r.get(url)
+    return data.json()
