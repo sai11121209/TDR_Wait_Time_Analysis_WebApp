@@ -69,7 +69,7 @@ class OverView(View):
             return redirect("error")
 
 
-class List(View):
+class AttractionList(View):
     def get(self, request, park_type):
         try:
             if park_type == "TDL":
@@ -98,7 +98,7 @@ class List(View):
             }
             return render(
                 request,
-                "information/list.html",
+                "information/attractionlist.html",
                 {
                     "attraction_groups": attraction_groups,
                     "park_type": park_type,
@@ -108,6 +108,47 @@ class List(View):
             )
         except:
             return redirect("error")
+
+
+class RestaurantList(View):
+    def get(self, request, park_type):
+        # try:
+        if park_type == "TDL":
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+        else:
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+        restaurants = sorted(
+            api.get_facilities()["restaurants"], key=lambda x: x["facilityCode"],
+        )
+        restaurants_conditions = sorted(
+            api.get_facilities_conditions()["restaurants"],
+            key=lambda x: x["facilityCode"],
+        )
+        f_restaurants = []
+        for i, restaurant in enumerate(restaurants):
+            if restaurant["parkType"] == park_type:
+                restaurants[i].update(restaurants_conditions[i])
+                f_restaurants.append(restaurant)
+
+        f_restaurants.sort(key=lambda x: (x["area"]["id"], x["name"]))
+        restaurant_groups = {
+            area: list(data)
+            for area, data in itertools.groupby(
+                f_restaurants, lambda x: x["area"]["id"]
+            )
+        }
+        return render(
+            request,
+            "information/restaurantlist.html",
+            {
+                "restaurant_groups": restaurant_groups,
+                "park_type": park_type,
+                "now_open_info": parks_condition,
+                "weatherData": api.getWeather(),
+            },
+        )
+        # except:
+        #    return redirect("error")
 
 
 class Detail(View):

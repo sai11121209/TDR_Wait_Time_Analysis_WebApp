@@ -18,7 +18,7 @@ Top
                 {% if parksCondition.schedule.open %}
                 <a href="{% url 'information:overview' park_type=parksCondition.schedule.parkType %}">
                 {% else %}
-                <a href="{% url 'information:list' park_type=parksCondition.schedule.parkType %}">
+                <a href="{% url 'information:attractionlist' park_type=parksCondition.schedule.parkType %}">
                 {% endif %}
                     <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
                         {% if parksCondition.schedule.parkType == 'TDL' %}

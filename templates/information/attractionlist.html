@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block stylesheet %}
-<link rel="stylesheet" type="text/css" href="{% static 'attraction/list.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/attractionlist.css' %}">
 {% if park_type == 'TDL' %}
     <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
 {% else %}
@@ -14,27 +14,28 @@
 {% block title %}{{parkType}}アトラクション一覧{% endblock %}
 
 {% block contents %}
-<div id="list">
+<div id="attractionlist">
     {% for area_id, attraction_group in attraction_groups.items %}
     <div id={{ area_id }} class="area">
         <h1>{{ attraction_group.0.area.name }}</h1>
+        <p>アトラクション</p>
         {% for attraction in attraction_group %}
         <a href="{% url 'information:detail' attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
             <div id={{ attraction.name }} class="attractions">
+                <img src={{ attraction.images.0 }}>
                 <div>
-                    <img src={{ attraction.images.0 }}>
                     <h3>{{ attraction.name }}</h3>
+                    {% if attraction.standbyTime %}
+                        <h4>{{ attraction.standbyTime }}分待ち</h4>
+                    {% elif attraction.facilityStatusMessage %}
+                        <h4>{{ attraction.facilityStatusMessage }}</h4>
+                    {% else %}
+                        <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
+                    {% endif %}
+                    {% if attraction.attraction.fastpass %}
+                        <h5>FP対象</h5>
+                    {% endif %}
                 </div>
-                {% if attraction.standbyTime %}
-                    <h4>{{ attraction.standbyTime }}分待ち</h4>
-                {% elif attraction.facilityStatusMessage %}
-                    <h4>{{ attraction.facilityStatusMessage }}</h4>
-                {% else %}
-                    <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
-                {% endif %}
-                {% if attraction.attraction.fastpass %}
-                    <h5>FP対象</h5>
-                {% endif %}
             </div>
         </a>
         {% endfor %}

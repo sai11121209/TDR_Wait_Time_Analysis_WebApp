@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/restaurantlist.css' %}">
+{% if park_type == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+{% endblock stylesheet %}
+
+
+{% block title %}{{parkType}}レストラン一覧{% endblock %}
+
+{% block contents %}
+<div id="restaurantlist">
+    {% for area_id, restaurant_group in restaurant_groups.items %}
+    <div id={{ area_id }} class="area">
+        <h1>{{ restaurant_group.0.area.name }}</h1>
+        <p>レストラン</p>
+        {% for restaurant in restaurant_group %}
+            <div id={{ restaurant.name }} class="restaurants">
+                <img src={{ restaurant.images.0 }}>
+                <div>
+                    <h3>{{ restaurant.name }}</h3>
+                    <p>{{ restaurant.products.0.name }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock contents %}
