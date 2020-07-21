@@ -23,7 +23,7 @@
             <div id="top">
                 <header>
                     <div class="header">
-                        <p class="development-comment">DevelopmentVersion1.4.0α82020072122</p>
+                        <p class="development-comment">DevelopmentVersion1.4.0α102020072202</p>
                         <div id="menu">
                             {% if 'login' not in request.path %}
                             <button id="sideMenuButton">
@@ -57,7 +57,7 @@
                             <li><a href="{% url 'top' %}">トップ</a></li>
                             {% if now_open_info %}
                             {% endif %}
-                            <li><a href="　">東京ディズニーランド</a>
+                            <li><a href="#">東京ディズニーランド</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDL' %}">アトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDL' %}">レストラン</a></li>
@@ -66,7 +66,7 @@
                                     {% endif %}
                                 </ul>
                             </li>
-                            <li><a href="　">東京ディズニーシー</a>
+                            <li><a href="#">東京ディズニーシー</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDS' %}">アトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDS' %}">レストラン</a></li>
@@ -80,7 +80,7 @@
                             <li><a href="https://reserve.tokyodisneyresort.jp/showrestaurant/search/" target="_blank">ショーレストラン予約※</a></li>
                             <li><a href="https://github.com/sai11121209/TDR_Wait_Time_Analysis_WebApp" target="_blank">GitHub※</a></li>
                         </ul>
-                        <p class="development-comment">Version: 1.4.0α82020072122</p>
+                        <p class="development-comment">Version: 1.4.0α102020072202</p>
                     </nav>
                     <div class="contentsWall">
                         {% block contentsWall %}
