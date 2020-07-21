@@ -128,6 +128,7 @@ class standbytime(View):
                         "park_type": park_type,
                         "fp": fp,
                         "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
                         # 閉園時用
                         # "now_open_info": True,
                     },
@@ -142,6 +143,7 @@ class standbytime(View):
                         "info": info,
                         "park_type": park_type,
                         "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
                     },
                 )
         except:

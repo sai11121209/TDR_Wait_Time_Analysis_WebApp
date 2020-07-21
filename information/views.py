@@ -1,3 +1,4 @@
+import os
 import sys
 import itertools
 import api
@@ -61,6 +62,7 @@ class OverView(View):
                     "attractions": f_attractions,
                     "park_type": park_type,
                     "parks_condition": parks_condition,
+                    "weatherData": api.getWeather(),
                 },
             )
         except:
@@ -101,6 +103,7 @@ class List(View):
                     "attraction_groups": attraction_groups,
                     "park_type": park_type,
                     "now_open_info": parks_condition,
+                    "weatherData": api.getWeather(),
                 },
             )
         except:
@@ -147,6 +150,7 @@ class Detail(View):
                     "park_type": parks_condition,
                     "info": info,
                     "data_": data_,
+                    "weatherData": api.getWeather(),
                 },
             )
         except:
@@ -165,13 +169,21 @@ class Map(View):
                 if attraction["facilityCode"] == str(facility_code):
                     info = attraction
                     break
+            try:
+                map_key = os.environ["GOOGLEMAPAPI_KEY"]
+            except KeyError:
+                import local_api
+
+                map_key = local_api.google_map_api_key()
             return render(
                 request,
                 "information/map.html",
                 {
+                    "map_key": map_key,
                     "now_open_info": parks_condition,
                     "park_type": park_type,
                     "info": info,
+                    "weatherData": api.getWeather(),
                 },
             )
         except:
