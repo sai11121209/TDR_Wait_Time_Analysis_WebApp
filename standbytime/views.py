@@ -39,7 +39,6 @@ class standbytime(View):
         mainDF = pd.DataFrame(maindata)
         mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
         mainDF = mainDF.set_index("time")
-        pd.set_option("display.max_rows", None)
         mainDF = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
         mean = int(mainDF.mean()["standby_time"])
         return mainDF.fillna(-0.5), mean
@@ -48,16 +47,21 @@ class standbytime(View):
         maindata = self.get_standbytime_group(
             timezone.now().date() + dt.timedelta(days=-day), park_type, facility_code,
         )
-        maindata, standby_mean = self.get_standbytime_time(maindata.values(), opentime)
-        table_data = []
-        for datas in list(maindata.index.values):
-            table_data.append(
-                [maindata.loc[datas].name, maindata.loc[datas].standby_time]
-            )
+        dateDF = pd.DataFrame(
+            {
+                "time": pd.date_range(
+                    opentime["openTime"], opentime["closeTime"], freq="T",
+                )
+            }
+        )
+        dateDF["time"] = dateDF["time"].dt.strftime("%H:%M")
+        dateDF = dateDF.set_index("time")
+        mainDF = pd.DataFrame(maindata)
+        mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
+        mainDF = mainDF.set_index("time")
+        maindata = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
         return [
             maindata,
-            standby_mean,
-            table_data,
             (timezone.now().date() + dt.timedelta(days=-day)).strftime("%Y-%m-%d"),
         ]
 
@@ -107,9 +111,9 @@ class standbytime(View):
                     ]
 
                     # 平均値算出部分
-                    avgDF = st_datas[0][0]
+                    avgDF = st_datas[0][0]["standby_time"]
                     for i in range(1, 14):
-                        avgDF = pd.concat([avgDF, st_datas[i][0]])
+                        avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
                     avgDF = avgDF.replace([-0.5, -1], np.nan)
                     avgDF = avgDF.groupby("time").mean()
                     avgDF = avgDF.replace(np.nan, -1)

@@ -36,8 +36,8 @@
                         <nav class="headerNav">
                             <ul>
                             {% if 'login' not in request.path %}
-                                <li><a href="{% url 'information:list'  park_type='TDL' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdl.svg"><p>東京ディズニーランド</p></a></li>
-                                <li><a  href="{% url 'information:list'  park_type='TDS' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tds.svg"><p>東京ディズニーシー</p></a></li>
+                                <li><a href="{% url 'information:attractionlist'  park_type='TDL' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdl.svg"><p>東京ディズニーランド</p></a></li>
+                                <li><a  href="{% url 'information:attractionlist'  park_type='TDS' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tds.svg"><p>東京ディズニーシー</p></a></li>
                             {% endif %}
                             </ul>
                         </nav>
@@ -53,21 +53,23 @@
                             <p>体感温度: {{ weatherData.main.feels_like }}</p>
                             <small>最高気温: {{ weatherData.main.temp_max }}° 最低気温: {{ weatherData.main.temp_min }}°</small>
                         </div>
-                        <ul>
+                        <ul id="dropmenu">
                             <li><a href="{% url 'top' %}">トップ</a></li>
                             {% if now_open_info %}
                             {% endif %}
-                            <li><a href="#">東京ディズニーランド</a>
+                            <li><a href="　">東京ディズニーランド</a>
                                 <ul>
-                                    <li><a href="{% url 'information:list' park_type='TDL' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:attractionlist' park_type='TDL' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:restaurantlist' park_type='TDL' %}">レストラン</a></li>
                                     {% if now_open_info %}
                                     <li><a href="{% url 'information:overview' park_type='TDL' %}">待ち時間順位</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
-                            <li><a href="#">東京ディズニーシー</a>
+                            <li><a href="　">東京ディズニーシー</a>
                                 <ul>
-                                    <li><a href="{% url 'information:list' park_type='TDS' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:attractionlist' park_type='TDS' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:restaurantlist' park_type='TDS' %}">レストラン</a></li>
                                     {% if now_open_info %}
                                     <li><a href="{% url 'information:overview' park_type='TDS' %}">待ち時間順位</a></li>
                                     {% endif %}
