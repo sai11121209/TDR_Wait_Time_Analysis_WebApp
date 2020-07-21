@@ -23,6 +23,16 @@
             <div id="top">
                 <header>
                     <div class="header">
+                        <p class="development-comment">DevelopmentVersion1.4.0α320200721</p>
+                        <div id="menu">
+                            {% if 'login' not in request.path %}
+                            <button id="sideMenuButton">
+                                <div class="line menuLineTop"></div>
+                                <div class="line menuLineMiddle"></div>
+                                <div class="line menuLineBottom"></div>
+                            </button>
+                            {% endif %}
+                        </div>
                         <nav class="headerNav">
                             <ul>
                             {% if 'login' not in request.path %}
@@ -34,6 +44,34 @@
                     </div>
                 </header>
                 <div id="contents">
+                    <nav id="menuNav">
+                        <ul>
+                            <li><a href="{% url 'top' %}">TOP</a></li>
+                            {% if now_open_info %}
+                            {% endif %}
+                            <li><a href="#">東京ディズニーランド</a>
+                                <ul>
+                                    <li><a href="{% url 'information:list' park_type='TDL' %}">アトラクション</a></li>
+                                    {% if now_open_info %}
+                                    <li><a href="{% url 'information:overview' park_type='TDL' %}">待ち時間順位</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li><a href="#">東京ディズニーシー</a>
+                                <ul>
+                                    <li><a href="{% url 'information:list' park_type='TDS' %}">アトラクション</a></li>
+                                    {% if now_open_info %}
+                                    <li><a href="{% url 'information:overview' park_type='TDS' %}">待ち時間順位</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            <li><a href="https://reserve.tokyodisneyresort.jp/ticket/search/" target="_blank">パークチケット購入(外部サイト)</a></li>
+                            <li><a href="https://reserve.tokyodisneyresort.jp/restaurant/search/" target="_blank">レストラン予約(外部サイト)</a></li>
+                            <li><a href="https://reserve.tokyodisneyresort.jp/showrestaurant/search/" target="_blank">ショーレストラン予約(外部サイト)</a></li>
+                            <li><a href="https://github.com/sai11121209/TDR_Wait_Time_Analysis_WebApp" target="_blank">GitHub(外部サイト)</a></li>
+                        </ul>
+                        <p class="development-comment">Version: 1.4.0α320200721</p>
+                    </nav>
                     <div class="contentsWall">
                         {% block contentsWall %}
                         <div class="contentsIn">
@@ -53,25 +91,6 @@
                 </footer>
             </div>
         </div>
-        {% block menu %}
-        <div id="menu">
-            <button id="menuButton">
-                <span class="menuLineTop"></span>
-                <span class="menuLineMiddle"></span>
-                <span class="menuLineBottom"></span>
-            </button>
-            <nav id="menuNav">
-                <div class="menuList">
-                    <div>
-                        <a href="{% url 'top' %}"><img src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdr.svg"><p>TOP</p></a>
-                        {% if now_open_info %}
-                        <a href="{% url 'information:overview' park_type=park_type %}"><img src={% static 'imgs/time.png' %}><p>待ち時間順位</p></a>
-                        {% endif %}
-                    </div>
-                </div>
-            </nav>
-        </div>
-        {% endblock menu %}
     </body>
     {% endblock %}
 </html>
