@@ -32,6 +32,9 @@
                 {% else %}
                     <h3>現在の待ち時間はありません</h3>
             {% endif %}
+            {% if vacant %}
+                <h3>現在空いています。</h3>
+            {% endif %}
             <h3>本日の待ち時間遷移グラフ</h3>
             <h3>本日の平均待ち時間は約{{ data_today.1 }}分です。</h3>
             <div class="figure">
@@ -49,7 +52,7 @@
                             borderColor: "rgba(75,192,192,1)",
                         },
                         {
-                            label: "スタンバイ待ち時間平均(過去2週間)",
+                            label: "スタンバイ待ち時間平均(過去3週間)",
                             data: {{ avg_datas.values.tolist|safe }},
                             backgroundColor: "rgba(255,20,147,0.4)",
                             borderColor: "rgba(255,20,147,1)",

@@ -51,6 +51,9 @@
     border-bottom: solid 1px #D3D3D3;
     align-items: center;
 }
+.vacant {
+    color: #FF0000;
+}
 .attractions p {
     margin-top: 3px;
 }
