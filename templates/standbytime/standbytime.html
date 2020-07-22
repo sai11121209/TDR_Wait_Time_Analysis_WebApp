@@ -91,23 +91,23 @@
                 <small>※一時運営中止等の場合は-1、欠損値は-0.5で出力しています。</small>
             </div>
             {% for data in st_datas %}
-            <button id="{{ data.3 }}-show">
-                <span>{{ data.3 }}の待ち時間データ表示</span>
+            <button id="{{ data.1 }}-show">
+                <span>{{ data.1 }}の待ち時間データ表示</span>
             </button>
-            <div id={{ data.3 }}>
-                <h3>{{ data.3 }}の待ち時間遷移グラフ</h3>
-                <h3>{{ data.3 }}の平均待ち時間は約{{ data.1 }}分でした。</h3>
+            <div id={{ data.1 }}>
+                <h3>{{ data.1 }}の待ち時間遷移グラフ</h3>
+                <h3>{{ data.1 }}の平均待ち時間は約{{ data.2 }}分でした。</h3>
                 <div class="figure">
-                    <canvas id="{{ data.3 }}-figure"></canvas>
+                    <canvas id="{{ data.1 }}-figure"></canvas>
                     <script type="text/javascript">
-                    var ctx = document.getElementById("{{ data.3 }}-figure");
+                    var ctx = document.getElementById("{{ data.1 }}-figure");
                     var myRadarChart = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: {{ data.0.index.values.tolist|safe }},
                             datasets: [{
                                 label: "スタンバイ待ち時間",
-                                data: {{ data.0.standby_time.values.tolist|safe }},
+                                data: {{ data.0.values.tolist|safe }},
                                 backgroundColor: "rgba(75,192,192,0.4)",
                                 borderColor: "rgba(75,192,192,1)",
                             }]},
@@ -124,39 +124,11 @@
                     });
                     </script>
                 </div>
-                <button id="{{ data.3 }}-button">
-                    <span>テーブルを表示</span>
-                </button>
-                <div id="{{ data.3 }}-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>時刻</th>
-                                <th>待ち時間</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for datas in data.2 %}
-                            <tr>
-                                <td>{{ datas.0 }}</td>
-                                <td>{{ datas.1 }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <small>※一時運営中止等の場合は-1、欠損値は-0.5で出力しています。</small>
-                    <script type="text/javascript">
-                        $("#{{ data.3 }}-table").hide();
-                        $("#{{ data.3 }}-button").on('click', () => {
-                            $("#{{ data.3 }}-table").slideToggle();
-                        });
-                    </script>
-                </div>
             </div>
             <script type="text/javascript">
-                $("#{{ data.3 }}").hide();
-                $("#{{ data.3 }}-show").on('click', () => {
-                    $("#{{ data.3 }}").slideToggle();
+                $("#{{ data.1 }}").hide();
+                $("#{{ data.1 }}-show").on('click', () => {
+                    $("#{{ data.1 }}").slideToggle();
                 });
             </script>
             {% endfor %}
