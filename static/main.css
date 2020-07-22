@@ -223,6 +223,9 @@ h3 {
 #dropmenu > li:hover > ul > li:nth-child(2) {
     transition-delay: .1s;
 }
+#dropmenu > li:hover > ul > li:nth-child(3) {
+    transition-delay: .2s;
+}
 .menuList {
     margin-top: 2px;
     margin-bottom: 2px;
