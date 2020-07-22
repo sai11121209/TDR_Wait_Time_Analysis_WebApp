@@ -25,6 +25,9 @@
                 <img src={{ attraction.images.0 }}>
                 <div>
                     <h3>{{ attraction.name }}</h3>
+                    {% if attraction.vacant %}
+                        <h4 class="vacant">ただいま空いています</h4>
+                    {% endif %}
                     {% if attraction.standbyTime %}
                         <h4>{{ attraction.standbyTime }}分待ち</h4>
                     {% elif attraction.facilityStatusMessage %}
