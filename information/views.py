@@ -33,8 +33,8 @@ class OverView(View):
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
                 attractions_overview = {
-                    standby_time.facility_code: standby_time.standby_time_avg
-                    if standby_time.standby_time_avg
+                    standby_time["facility_code"]: standby_time["standby_time_avg"]
+                    if standby_time["standby_time_avg"]
                     else -1
                     for standby_time in standbyTimeDataTDS.objects.filter(
                         time__startswith=timezone.now().date()
@@ -80,30 +80,36 @@ class AttractionList(View):
         try:
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-                avgs = (
-                    standbyTimeDataTDL.objects.filter(
-                        time__icontains=timezone.now().strftime("%H:%M"),
+                try:
+                    avgs = (
+                        standbyTimeDataTDL.objects.filter(
+                            time__icontains=timezone.now().strftime("%H:%M"),
+                        )
+                        .values("facility_code")
+                        .order_by("facility_code")
+                        .annotate(average=Avg("standby_time"))
                     )
-                    .values("facility_code")
-                    .order_by("facility_code")
-                    .annotate(average=Avg("standby_time"))
-                )
-                avgDatas = {}
-                for avg in avgs:
-                    avgDatas[avg["facility_code"]] = avg["average"]
+                    avgDatas = {}
+                    for avg in avgs:
+                        avgDatas[avg["facility_code"]] = avg["average"]
+                except:
+                    pass
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-                avgs = (
-                    standbyTimeDataTDS.objects.filter(
-                        time__icontains=timezone.now().strftime("%H:%M"),
+                try:
+                    avgs = (
+                        standbyTimeDataTDS.objects.filter(
+                            time__icontains=timezone.now().strftime("%H:%M"),
+                        )
+                        .values("facility_code")
+                        .order_by("facility_code")
+                        .annotate(average=Avg("standby_time"))
                     )
-                    .values("facility_code")
-                    .order_by("facility_code")
-                    .annotate(average=Avg("standby_time"))
-                )
-                avgDatas = {}
-                for avg in avgs:
-                    avgDatas[avg["facility_code"]] = avg["average"]
+                    avgDatas = {}
+                    for avg in avgs:
+                        avgDatas[avg["facility_code"]] = avg["average"]
+                except:
+                    pass
             attractions = sorted(
                 api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
             )
@@ -111,18 +117,22 @@ class AttractionList(View):
                 api.get_facilities_conditions()["attractions"],
                 key=lambda x: x["facilityCode"],
             )
-            vacant = []
-            for i, avgData in enumerate(avgDatas.values()):
-                try:
-                    vacant.append(avgData >= attractions_conditions[i]["standbyTime"])
-                except:
-                    vacant.append(False)
+            if avgDatas:
+                vacant = []
+                for i, avgData in enumerate(avgDatas.values()):
+                    try:
+                        vacant.append(
+                            avgData >= attractions_conditions[i]["standbyTime"]
+                        )
+                    except:
+                        vacant.append(False)
             f_attractions = []
             j = 0
             for i, attraction in enumerate(attractions):
                 if attraction["parkType"] == park_type:
                     attractions[i].update(attractions_conditions[i])
-                    attractions[i].update({"vacant": vacant[j]})
+                    if vacant:
+                        attractions[i].update({"vacant": vacant[j]})
                     f_attractions.append(attraction)
                     j += 1
             f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
