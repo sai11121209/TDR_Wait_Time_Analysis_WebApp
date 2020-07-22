@@ -20,8 +20,8 @@ class OverView(View):
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 attractions_overview = {
-                    standby_time.facility_code: standby_time.standby_time_avg
-                    if standby_time.standby_time_avg
+                    standby_time["facility_code"]: standby_time["standby_time_avg"]
+                    if standby_time["standby_time_avg"]
                     else -1
                     for standby_time in standbyTimeDataTDL.objects.filter(
                         time__startswith=timezone.now().date()
