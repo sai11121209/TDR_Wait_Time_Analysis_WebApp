@@ -92,6 +92,7 @@ class AttractionList(View):
                     avgDatas = {}
                     for avg in avgs:
                         avgDatas[avg["facility_code"]] = avg["average"]
+                    pass
                 except:
                     pass
             else:
@@ -117,24 +118,22 @@ class AttractionList(View):
                 api.get_facilities_conditions()["attractions"],
                 key=lambda x: x["facilityCode"],
             )
-            if avgDatas:
-                vacant = []
-                for i, avgData in enumerate(avgDatas.values()):
-                    try:
-                        vacant.append(
-                            avgData >= attractions_conditions[i]["standbyTime"]
-                        )
-                    except:
-                        vacant.append(False)
             f_attractions = []
-            j = 0
             for i, attraction in enumerate(attractions):
                 if attraction["parkType"] == park_type:
                     attractions[i].update(attractions_conditions[i])
-                    if vacant:
-                        attractions[i].update({"vacant": vacant[j]})
+                    try:
+                        attractions[i].update(
+                            {
+                                "vacant": avgDatas[int(attraction["facilityCode"])]
+                                >= attraction["standbyTime"]
+                            }
+                        )
+                    except KeyError:
+                        attractions[i].update({"vacant": False})
+                    except UnboundLocalError:
+                        pass
                     f_attractions.append(attraction)
-                    j += 1
             f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
             attraction_groups = {
                 area: list(data)
