@@ -37,6 +37,9 @@
     margin: auto;
     object-fit: cover;
 }
+.vacant {
+    color: #FF0000;
+}
 #detail-heade > small {
     font-size: 0.5rem;
     color: #A9A9A9;
