@@ -22,19 +22,23 @@ Top
                 {% endif %}
                     <div id={{ parksCondition.schedule.parkType }} class="parksCondition">
                         {% if parksCondition.schedule.parkType == 'TDL' %}
+                        <div>
                             {% if parksCondition.schedule.open %}
-                                <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
-                                <div><img class="parksIcon" src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdl.svg"></div>
+                            <img class="parksImg opendDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                            <img class="parksIcon" src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tdl.svg">
                             {% else %}
-                                <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
+                            <img class="parksImg closedDay" src="https://media2.tokyodisneyresort.jp/home/tdl/top/mainL_20200501_01.jpg">
                             {% endif %}
+                        </div>
                         {% else %}
+                        <div>
                             {% if parksCondition.schedule.open %}
-                                <img class="opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
-                                <div><img class="parksIcon" src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tds.svg"></div>
+                                <img class="parksImg opendDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                                <img class="parksIcon" src="https://media2.tokyodisneyresort.jp/asset/images/common/icon_tds.svg">
                             {% else %}
-                                <img class="closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
+                                <img class="parksImg closedDay" src="https://media2.tokyodisneyresort.jp/home/tds/top/mainS_20200401_1.jpg">
                             {% endif %}
+                        </div>
                         {% endif %}
                         {% if parksCondition.parkInfo.closedDay %}
                             <h1>本日は休園日です。</h1>
