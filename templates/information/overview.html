@@ -11,7 +11,7 @@
 {% endblock stylesheet %}
 
 
-{% block title %}{{parkType}}混雑順アトラクション一覧{% endblock %}
+{% block title %}{{parkType}}混雑アトラクション順一覧{% endblock %}
 
 {% block contents %}
 <div id="overview">
@@ -24,7 +24,7 @@
                 <h3>{{ attraction.name }}</h3>
             </div>
             {% if attraction.standbyTime %}
-                <h4>平均{{ attraction.standbyTime }}分待ち</h4>
+                <h4>{{ attraction.standbyTime }}分待ち</h4>
             {% elif attraction.facilityStatusMessage %}
                 <h4>{{ attraction.facilityStatusMessage }}</h4>
             {% else %}

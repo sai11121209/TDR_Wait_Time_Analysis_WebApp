@@ -196,6 +196,82 @@ class RestaurantList(View):
             return redirect("error")
 
 
+class ShopList(View):
+    def get(self, request, park_type):
+        try:
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            shops = sorted(
+                api.get_facilities()["shops"], key=lambda x: x["facilityCode"],
+            )
+            shops_conditions = sorted(
+                api.get_facilities_conditions()["shops"],
+                key=lambda x: x["facilityCode"],
+            )
+            f_shops = []
+            for i, shop in enumerate(shops):
+                if shop["parkType"] == park_type:
+                    shops[i].update(shops_conditions[i])
+                    f_shops.append(shop)
+
+            f_shops.sort(key=lambda x: (x["area"]["id"], x["name"]))
+            shop_groups = {
+                area: list(data)
+                for area, data in itertools.groupby(f_shops, lambda x: x["area"]["id"])
+            }
+            return render(
+                request,
+                "information/shoplist.html",
+                {
+                    "shop_groups": shop_groups,
+                    "park_type": park_type,
+                    "now_open_info": parks_condition,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
+class ServiceSpotList(View):
+    def get(self, request, park_type):
+        # try:
+        if park_type == "TDL":
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+        else:
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+        servicespots = sorted(
+            api.get_facilities()["serviceSpots"], key=lambda x: x["facilityCode"],
+        )
+        dellists = []
+        for i, servicespot in enumerate(servicespots):
+            if "OUTSIDE_PARK" in servicespot["filters"]:
+                dellists.append(i)
+        i = 0
+        for dellist in dellists:
+            del servicespots[dellist - i]
+            i += 1
+        servicespots.sort(key=lambda x: (x["area"]["id"], x["name"]))
+        servicespot_groups = {
+            area: list(data)
+            for area, data in itertools.groupby(servicespots, lambda x: x["area"]["id"])
+        }
+        return render(
+            request,
+            "information/servicespotlist.html",
+            {
+                "servicespot_groups": servicespot_groups,
+                "park_type": park_type,
+                "now_open_info": parks_condition,
+                "weatherData": api.getWeather(),
+            },
+        )
+        # except:
+        #    return redirect("error")
+
+
 class Detail(View):
     def get(self, request, attraction_name, park_type, facility_code):
         try:

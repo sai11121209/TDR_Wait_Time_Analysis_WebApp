@@ -23,7 +23,7 @@
             <div id="top">
                 <header>
                     <div class="header">
-                        <p class="development-comment">DevelopmentVersion1.4.0α152020072315</p>
+                        <p class="development-comment">DevelopmentVersion1.4.0α162020072417</p>
                         <div id="menu">
                             {% if 'login' not in request.path %}
                             <button id="sideMenuButton">
@@ -61,8 +61,9 @@
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDL' %}">アトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDL' %}">レストラン</a></li>
+                                    <li><a href="{% url 'information:shoplist' park_type='TDL' %}">ショップ</a></li>
                                     {% if now_open_info %}
-                                    <li><a href="{% url 'information:overview' park_type='TDL' %}">平均待ち時間順</a></li>
+                                    <li><a href="{% url 'information:overview' park_type='TDL' %}">混雑アトラクション順</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
@@ -70,8 +71,9 @@
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDS' %}">アトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDS' %}">レストラン</a></li>
+                                    <li><a href="{% url 'information:shoplist' park_type='TDS' %}">ショップ</a></li>
                                     {% if now_open_info %}
-                                    <li><a href="{% url 'information:overview' park_type='TDS' %}">平均待ち時間順</a></li>
+                                    <li><a href="{% url 'information:overview' park_type='TDS' %}">混雑アトラクション順</a></li>
                                     {% endif %}
                                 </ul>
                             </li>
@@ -80,7 +82,7 @@
                             <li><a href="https://reserve.tokyodisneyresort.jp/showrestaurant/search/" target="_blank">ショーレストラン予約※</a></li>
                             <li><a href="https://github.com/sai11121209/TDR_Wait_Time_Analysis_WebApp" target="_blank">GitHub※</a></li>
                         </ul>
-                        <p class="development-comment">Version: 1.4.0α152020072315</p>
+                        <p class="development-comment">Version: 1.4.0α162020072417</p>
                     </nav>
                     <div class="contentsWall">
                         {% block contentsWall %}

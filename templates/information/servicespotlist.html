@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/servicespotlist.css' %}">
+{% if park_type == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+{% endblock stylesheet %}
+
+
+{% block title %}{{parkType}}サービススポット一覧{% endblock %}
+
+{% block contents %}
+<div id="servicespotlist">
+    {% for area_id, servicespot_group in servicespot_groups.items %}
+    <div id={{ area_id }} class="area">
+        <h1>{{ servicespot_group.0.area.name }}</h1>
+        <p>サービススポット</p>
+        {% for servicespot in servicespot_group %}
+            <div id={{ servicespot.name }} class="servicespots">
+                <img src={{ servicespot.images.0 }}>
+                <div>
+                    <h3>{{ servicespot.name }}</h3>
+                    <p>{{ servicespot.products.0.name }}</p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock contents %}

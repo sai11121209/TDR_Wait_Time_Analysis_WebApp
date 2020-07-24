@@ -16,6 +16,7 @@ urlpatterns = [
         views.RestaurantList.as_view(),
         name="restaurantlist",
     ),
+    path("<str:park_type>/shoplist", views.ShopList.as_view(), name="shoplist"),
     path(
         "<str:park_type>/<str:attraction_name>/<int:facility_code>/detail",
         views.Detail.as_view(),
