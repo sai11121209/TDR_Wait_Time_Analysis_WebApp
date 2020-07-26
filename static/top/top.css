@@ -3,9 +3,6 @@
     height: 100%;
     object-fit: cover;
 }
-.parksCondition {
-    position: relative;
-}
 .parksCondition > div {
     position: relative;
 }
@@ -18,11 +15,13 @@
 .parksCondition h1{
     position: absolute;
     width: 100%;
-    left: 0;
-    top: calc(50% - 100px);
+    left: 50%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    -webkit-transform: translateY(-50%) translateX(-50%);
     text-align: center;
     font-weight: bold;
-    line-height: 50px;
+    margin: 0;
 }
 .parksIcon {
     position: absolute;
