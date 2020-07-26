@@ -1,24 +1,35 @@
+from os import truncate
 import requests as rq
+import os
 
-headers = {
-    "Host": "api-portal.tokyodisneyresort.jp",
-    "X-PORTAL-DEVICE-ID": "OWNlNjIwT/EFcUXy8B9esqO2oh0JN7Rl0xIBYOvLCxgTPc8VuQi8Zosvw3OTfZKdGLZ/4mRAs3mgz8yuTuZdTvBtu2X/Rg==",
-    "x-api-key": "818982cd6a62e7927700a4fbabcd4534a4657a422711a83c725433839b172371",
-    "Accept-Language": "ja-JP;q=1.0, en-JP;q=0.9, en-US;q=0.8",
-    "X-PORTAL-OS-VERSION": "iOS 13.5",
-    "X-PORTAL-APP-VERSION": "1.4.0",
-    "Accept-Encoding": "gzip;q=1.0, compress;q=0.5",
-    "Connection": "keep-alive",
-    "Content-Type": "application/json",
-    "X-PORTAL-LANGUAGE": "ja-JP",
-    "Accept": "application/json",
-    "Cookie": "bm_sv=1E5E7EEE8A665F7D00B6072198D01C32~or1cFA6oWCRaLGF5U+PiyzlUQZFHqGbYY2xjFzcgPHb7CbXTl88Vof33l8RBLvXyNKiUO4ecHEC9ujMRZ+9/N6mO1SVLgVtTmrZjgI8zR9CR7aX8cOvTHxr29VKRgWDxRBQqrORbDu5SlLilLpM+fIhwMcqwIpZpsCFD33644GU=; ak_bmsc=EE57BE32368D813C4176BCC3349245F2687003D5524B0000931E465EDE0A567A~plrr9M3sfCeOJ/dxvhjmeWwNyPJf+iewS9MazRIhyUova0m1+dzLb49bzrA3zekYVUEHA7V3qztwyIk5fiGzmc52rDKVyLJ/5bdVSNVjl+Bs7h0WOLix6N3S6BV3MdmBb2TLp1hJHS6Jt8Ljmx5V+wxJIp3qnnC9QB0jVy2V+SYHRcDSWUEoSiAndTf4F1CM2s5nPU9QSLsNTpp9fDdzvscXB9AqmlNzRVf432azFSY/behmxOQ0f+sw9SjyP+NjpQ; bm_sz=7819C1854A0F48DBE8DFD28F3869D6F3~YAAQzgNwaMdrNydwAQAANsVhQQZs3LCWESk6MgqDl/RHgoPXIOZJYIh19MmdWOmF8V1EjWhdCh64FVfRs1bkzjCjSanMIn6XE+fex/yzWv6w6XBJnvOZMXb467Pt2rQrr4WKjrOzR93loalJOTJ8214fu/AkkGZJqqc/Y93kLLFA4aBmbzEEo5Xsw3eBFj7pgrnf8f/6PpoYAg==; __pp_uid=BN3cUW5cISDBZlAvGQYsw1wRfMdZ8im7; _ga=GA1.2.564559699.1568211623; _abck=04B8A88ACEB0AE4C77FB77FEA817C5BA~0~YAAQ1QNwaAdanH1uAQAAZbaKTAODhqobXnCP2Lq7CC+rwJjSyKE6ZWEAIWF8tRZnY6WymJdhFQMbWg8pyE8q2p8NBVWsu5RL5/t58TKBOLQDRvbfLnDEcDgfmqI/jm029CQCwoGPme0eTA+ioFb10xDNa3NkIiKLSba8f+C+ezuRptfVBWCYPD4kScy6Vci+Nrvoz/jDh5/PggGNreA1gL4Pj6y/cCYVhX8u6Sc4iqe7R4yffQwbRqPwpu/rSFjLkBdWyQlUxKkIj6QELk0Ro/R2W5c10c1XuB386WIRsRQYGHlJOGMbzSQ87053jnZMR5Poi/FLwtt8uJ9Hxao7YTY=~-1~-1~-1; _gcl_au=1.1.367463172.1577536503; _a1_f=cf032510-7155-4ef3-87f8-902543306e6e; __td_signed=true",
-    "X-PORTAL-AUTH": "MDVhMjVm8IMOOueTBWpIYxpIipWh4A259zH4SGgTyCyvn5XTFO6I+Xkpjhvj438uWYscUFxTPSYAwVSvfwX5FNT3ZC/YdA==",
-}
+try:
+    import local_api
+
+    headers = local_api.headers()
+except ImportError:
+    headers = {
+        "Host": os.environ["TDRAPI_HOST"],
+        "X-PORTAL-DEVICE-ID": os.environ["TDRAPI_PORTAL_DEVICE_ID"],
+        "x-api-key": os.environ["TDRAPI_API_KEY"],
+        "Accept-Language": os.environ["TDRAPI_API_ACCEPT_LANGUAGE"],
+        "X-PORTAL-OS-VERSION": os.environ["TDRAPI_API_PORTAL_OS_VERSION"],
+        "X-PORTAL-APP-VERSION": os.environ["TDRAPI_API_PORTAL_APP_VERSION"],
+        "Accept-Encoding": os.environ["TDRAPI_API_ACCEPT_ENCODING"],
+        "Connection": os.environ["TDRAPI_API_CONNECTION"],
+        "Content-Type": os.environ["TDRAPI_API_CONTENT_TYPE"],
+        "User-Agent": os.environ["TDRAPI_API_USER_AGENT"],
+        "X-PORTAL-LANGUAGE": os.environ["TDRAPI_API_PORTAL_LANGUAGE"],
+        "Accept": os.environ["TDRAPI_API_ACCEPT"],
+        "Cookie": os.environ["TDRAPI_API_COOKIE"],
+        "X-PORTAL-AUTH": os.environ["TDRAPI_API_PORTAL_AUTH"],
+    }
 
 
 def get_facilities():
-    url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities"
+    try:
+        url = os.environ["TDRAPI_FACILITIES_URL"]
+    except KeyError:
+        url = local_api.facilities_url()
     count = 0
     r = rq.session()
     while True:
@@ -35,7 +46,10 @@ def get_facilities():
 
 
 def get_facilities_conditions():
-    url = "https://api-portal.tokyodisneyresort.jp/rest/v2/facilities/conditions"
+    try:
+        url = os.environ["TDRAPI_FACILITIES_CONDITIONS_URL"]
+    except KeyError:
+        url = local_api.facilities_conditions_url()
     count = 0
     r = rq.session()
     while True:
@@ -52,7 +66,10 @@ def get_facilities_conditions():
 
 
 def get_parks_conditions():
-    url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/conditions"
+    try:
+        url = os.environ["TDRAPI_PARKS_CONDITIONS_URL"]
+    except KeyError:
+        url = local_api.parks_conditions_url()
     count = 0
     r = rq.session()
     while True:
@@ -69,7 +86,10 @@ def get_parks_conditions():
 
 
 def get_parks_calendars():
-    url = "https://api-portal.tokyodisneyresort.jp/rest/v1/parks/calendars"
+    try:
+        url = os.environ["TDRAPI_PARKS_CALENDARS_URL"]
+    except KeyError:
+        url = local_api.parks_calendars_url()
     count = 0
     r = rq.session()
     while True:
@@ -83,3 +103,13 @@ def get_parks_calendars():
             count += 1
             if count >= 3:
                 return False
+
+
+def getWeather():
+    try:
+        url = f'http://api.openweathermap.org/data/2.5/weather?lat=35.6340084392334&lon=139.879596507559&units=metric&appid={os.environ["OPENWEATHERMAPAPI_KEY"]}'
+    except KeyError:
+        url = f"http://api.openweathermap.org/data/2.5/weather?lat=35.6340084392334&lon=139.879596507559&units=metric&appid={local_api.openweathermap_api_key()}"
+    r = rq.session()
+    data = r.get(url)
+    return data.json()

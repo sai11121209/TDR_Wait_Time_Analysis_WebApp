@@ -39,26 +39,32 @@ class standbytime(View):
         mainDF = pd.DataFrame(maindata)
         mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
         mainDF = mainDF.set_index("time")
-        pd.set_option("display.max_rows", None)
         mainDF = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
         mean = int(mainDF.mean()["standby_time"])
         return mainDF.fillna(-0.5), mean
 
     def make_standbytime_time_table(self, day, opentime, park_type, facility_code):
         maindata = self.get_standbytime_group(
-            timezone.now().date() + dt.timedelta(days=-day), park_type, facility_code,
+            timezone.now().date() + dt.timedelta(days=-day), park_type, facility_code
+        ).values()
+        dateDF = pd.DataFrame(
+            {
+                "time": pd.date_range(
+                    opentime["openTime"], opentime["closeTime"], freq="T",
+                )
+            }
         )
-        maindata, standby_mean = self.get_standbytime_time(maindata.values(), opentime)
-        table_data = []
-        for datas in list(maindata.index.values):
-            table_data.append(
-                [maindata.loc[datas].name, maindata.loc[datas].standby_time]
-            )
+        dateDF["time"] = dateDF["time"].dt.strftime("%H:%M")
+        dateDF = dateDF.set_index("time")
+        mainDF = pd.DataFrame(maindata)
+        mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
+        mainDF = mainDF.set_index("time")
+        maindata = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
+        mean = int(mainDF.mean()["standby_time"])
         return [
-            maindata,
-            standby_mean,
-            table_data,
+            maindata.fillna(-0.5)[["standby_time"]],
             (timezone.now().date() + dt.timedelta(days=-day)).strftime("%Y-%m-%d"),
+            mean,
         ]
 
     def get(self, request, attraction_name, park_type, facility_code):
@@ -103,16 +109,24 @@ class standbytime(View):
                         self.make_standbytime_time_table(
                             day, opentime, park_type, facility_code
                         )
-                        for day in range(1, 15)
+                        for day in range(1, 22)
                     ]
 
                     # 平均値算出部分
-                    avgDF = st_datas[0][0]
-                    for i in range(1, 14):
-                        avgDF = pd.concat([avgDF, st_datas[i][0]])
-                    avgDF = avgDF.replace([-0.5, -1], np.nan)
-                    avgDF = avgDF.groupby("time").mean()
-                    avgDF = avgDF.replace(np.nan, -1)
+                    vacant = []
+                    try:
+                        avgDF = st_datas[0][0]["standby_time"]
+                        for i in range(1, 14):
+                            avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                        avgDF = avgDF.replace([-0.5, -1], np.nan)
+                        avgDF = avgDF.groupby("time").mean()
+                        avgDF = avgDF.replace(np.nan, -1)
+                        vacant = (
+                            avgDF[timezone.now().strftime("%H:%M")]
+                            >= info["standbyTime"]
+                        )
+                    except:
+                        pass
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
@@ -128,6 +142,8 @@ class standbytime(View):
                         "park_type": park_type,
                         "fp": fp,
                         "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                        "vacant": vacant,
                         # 閉園時用
                         # "now_open_info": True,
                     },
@@ -142,6 +158,7 @@ class standbytime(View):
                         "info": info,
                         "park_type": park_type,
                         "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
                     },
                 )
         except:

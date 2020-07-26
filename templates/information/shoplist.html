@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/shoplist.css' %}">
+{% if park_type == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+{% endblock stylesheet %}
+
+
+{% block title %}{{parkType}}ショップ一覧{% endblock %}
+
+{% block contents %}
+<div id="shoplist">
+    {% for area_id, shop_group in shop_groups.items %}
+    <div id={{ area_id }} class="area">
+        <h1>{{ shop_group.0.area.name }}</h1>
+        <p>ショップ</p>
+        {% for shop in shop_group %}
+        <a href="{% url 'information:shopdetail' shop_name=shop.name park_type=park_type facility_code=shop.facilityCode %}">
+            <div id={{ shop.name }} class="shops">
+                <img src={{ shop.images.0 }}>
+                <div>
+                    <h3>{{ shop.name }}</h3>
+                    <p>
+                    {% for categorie in shop.categories %}
+                    {{ categorie.name }}　
+                    {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock contents %}

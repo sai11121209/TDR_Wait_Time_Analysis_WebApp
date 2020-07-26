@@ -2,5 +2,6 @@
 __pycache__
 staticfiles
 local_settings.py
-db.sqlite3
+local_api.py
+password.txt
 *.py[co]

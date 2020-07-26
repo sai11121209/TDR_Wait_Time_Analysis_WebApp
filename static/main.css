@@ -94,6 +94,196 @@ h2 {
 h3 {
     font-size: 1.7rem;
 }
+.development-comment {
+    position: fixed;
+    color: #A9A9A9;
+    font-size: 1rem;
+    margin: 0;
+}
+#weather {
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+}
+#weather p {
+    margin: 0;
+}
+#weather img {
+    object-fit: cover;
+    width: 80px;
+}
+#weather h1 {
+    font-size: 1rem;
+    margin: 0;
+}
+#weather small {
+    font-size: 0.1rem;
+}
+#menu span {
+    display: block;
+    width: 80%;
+    margin: auto;
+    height: 4px;
+    background-color: #000;
+    border-radius: 3px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc((100% - 4px)/2);
+    transition: .2s;
+}
+#sideMenuButton {
+    position: absolute;
+    left: 1%;
+    z-index: 10;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+@media screen and (min-width:0px){
+    #sideMenuButton {
+        margin: 10px 0px 10px 5px;
+        width: 40px;
+        height: 40px;
+    }
+    #menuNav {
+        width: 87%;
+        height: 56.7px;
+    }
+}
+@media screen and (min-width:600px){
+    #sideMenuButton {
+        margin: 15px 0px 15px 15px;
+        width: 70px;
+        height: 70px;
+    }
+    #menuNav {
+        width: 95%;
+        height: 65.1px;
+    }
+}
+#menuNav {
+    visibility: hidden;
+    transition: transform 250ms ease-in-out;
+    position: fixed;
+    left: 0;
+    height: 100vh;
+    width: 40vw;
+    transform: translateX(-250px);
+    background-color: rgba(175, 238, 238, 0.9);
+    z-index: 5;
+}
+#menuNav a {
+    display: block;
+    color: #11114D;
+    font-size: 1.3rem;
+    font-weight: bold;
+    width: 98%;
+    height: 100%;
+    padding-left: 2%;
+    display: flex;
+    align-items: center;
+}
+#dropmenu {
+    right: 60px;
+    margin: 0;
+}
+#dropmenu li {
+    position: relative;
+    width: 100%;
+    height: 6vh;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+}
+#dropmenu li ul {
+    list-style: none;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 100%;
+    width: 100%;
+}
+#dropmenu li ul li {
+    opacity: 0;
+    visibility: hidden;
+    width: 100%;
+    height: 0;
+    transform: translateX(100%);
+    color: #fff;
+    transition: .4s;
+    background-color: rgba(175, 238, 238, 0.8);
+}
+#dropmenu > li:hover > ul > li {
+    opacity: 1;
+    height: 6vh;
+    visibility: visible;
+    transform: translateX(0);
+}
+#dropmenu > li:hover > ul > li:nth-child(1) {
+    transition-delay: .0s;
+}
+#dropmenu > li:hover > ul > li:nth-child(2) {
+    transition-delay: .1s;
+}
+#dropmenu > li:hover > ul > li:nth-child(3) {
+    transition-delay: .2s;
+}
+#dropmenu > li:hover > ul > li:nth-child(4) {
+    transition-delay: .3s;
+}
+#dropmenu > li:hover > ul > li:nth-child(5) {
+    transition-delay: .4s;
+}
+.menuList {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.menuList div {
+    margin-right: 22.5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    text-align: center;
+}
+.menuList div a img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+.menuList div a p {
+    font-size: 0.1rem;
+    margin: 0;
+}
+.menuOpen {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateX(0) !important;
+    background-color: rgba(175, 238, 238, 0.55);
+}
+.line {
+    transition: all 0.3s;
+    box-sizing: border-box;
+    position: absolute;
+    height: 3px;
+    width: 80%;
+    background-color: #fff;
+}
+.menuLineTop {
+    transform: translateY(-10px);
+}
+.menuLineBottom {
+    transform: translateY(10px);
+}
+.menuOpen {
+    width: 40vw;
+}
+.menuOpen .menuLineTop {
+    transform: rotate(45deg);
+}
+.menuOpen .menuLineMiddle {
+    opacity: 0;
+}
+.menuOpen .menuLineBottom {
+    transform: rotate(-45deg);
+}
 .header a{
     color: #11114D;
 }
@@ -160,7 +350,6 @@ h3 {
     display: inline;
 }
 .header a {
-    position: relative;
     display: inline-block;
     text-decoration: none;
 }
@@ -223,110 +412,6 @@ h3 {
 .contentsIn a {
     color: #222222;
     text-decoration: none;
-}
-#menuButton {
-    z-index: 4;
-    transform: translate3d(0, 0, 0);
-    position:fixed;
-    right:5px;
-    bottom:5px;
-    border: none;
-    transition:1s;
-    background-color: rgba(102, 102, 204, 0.55);
-}
-#menu span {
-    display: block;
-    width: 80%;
-    margin: auto;
-    height: 4px;
-    background-color: #000;
-    border-radius: 3px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc((100% - 4px)/2);
-    transition: .2s;
-}
-@media screen and (min-width:0px){
-    #menuButton {
-        width: 55px;
-        height: 55px;
-        border-radius: 27.5px;
-    }
-    #menuNav {
-        width: 87%;
-        height: 56.7px;
-        border-radius: 28.35px;
-    }
-}
-@media screen and (min-width:600px){
-    #menuButton {
-        width: 70px;
-        height: 70px;
-        border-radius: 35px;
-    }
-    #menuNav {
-        width: 95%;
-        height: 65.1px;
-        border-radius: 32.55px;
-    }
-}
-#menuNav {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity .5s, visibility .5s;
-    position: fixed;
-    bottom: 0px;
-    left: calc(50% - 5px);
-    transform: translate(-50%, -50%);
-    background-color: rgba(102, 102, 204, 0.55);
-}
-#menuNav ul {
-    right: 60px;
-    margin: 0;
-}
-.menuList {
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
-.menuList div {
-    margin-right: 22.5px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    text-align: center;
-}
-.menuList div a img {
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-}
-.menuList div a p {
-    font-size: 0.1rem;
-    margin: 0;
-}
-.menuOpen {
-    opacity: 1 !important;
-    visibility: visible !important;
-    background-color: rgba(102, 102, 204, 0.55);
-}
-.menuLineTop {
-    transform: translateY(-10px);
-}
-.menuLineBottom {
-    transform: translateY(10px);
-}
-.menuOpen {
-    width: 40vw;
-}
-.menuOpen .menuLineTop {
-    transform: rotate(45deg);
-}
-.menuOpen .menuLineMiddle {
-    opacity: 0;
-}
-.menuOpen .menuLineBottom {
-    transform: rotate(-45deg);
 }
 footer {
     text-align: center;

@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.utils import timezone
 
+
 sys.path.append("../")
 import api
 
@@ -36,12 +37,16 @@ class Top(View):
                         "nextOpenInfo": nextOpenInfo,
                     }
                 )
-            return render(request, "top/top.html", {"parksConditions": info})
+            return render(
+                request,
+                "top/top.html",
+                {"parksConditions": info, "weatherData": api.getWeather()},
+            )
         except:
             return redirect("error")
 
 
 class Error(View):
     def get(self, request):
-        return render(request, "top/error.html")
+        return render(request, "top/error.html", {"weatherData": api.getWeather()})
 

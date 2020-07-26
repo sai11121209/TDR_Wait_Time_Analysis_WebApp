@@ -1,0 +1,88 @@
+.area h1 {
+    z-index: 2;
+    background-color: #FFFFFF;
+    position: -webkit-sticky;
+    position: sticky;
+    padding: 10px 0 10px 0;
+    margin: 0;
+}
+.area > p {
+    z-index: 2;
+    background-color: #FFFFFF;
+    position: -webkit-sticky;
+    position: sticky;
+    padding: 10px 0 10px 0;
+    margin: 0;
+    border-bottom: solid 1px #D3D3D3;
+}
+@media screen and (min-width:0px){
+    .area h1 {
+        top: 60px;
+    }
+    .area p {
+        top: 109px;
+    }
+    .shops {
+        height: 100px;
+    }
+    .shops img{
+        width: 55px;
+        height: 55px;
+    }
+}
+@media screen and (min-width:600px){
+    .area h1 {
+        top: 100px;
+    }
+    .area p {
+        top: 167px;
+    }
+    .shops {
+        height: 150px;
+    }
+    .shops img{
+        width: 80px !important;
+        height: 80px !important;
+    }
+}
+.shops {
+    display: flex;
+    flex-direction: row;
+    border-bottom: solid 1px #D3D3D3;
+    align-items: center;
+}
+.shops p {
+    margin-top: 3px;
+}
+.shops > div {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+}
+.shops img {
+    position: relative;
+    object-fit: cover;
+    border-radius: 55px;
+    padding: 2px;
+    border: 2px solid #FF8C00;
+}
+.shops h3 {
+    margin: 0;
+}
+.shops h4 {
+    margin: 0;
+    padding-top: 70px;
+    position: absolute;
+    font-size: 1.3rem;
+}
+.shops h5 {
+    margin: 0;
+    padding-top: 95px;
+    padding-left: 9px;
+    position: absolute;
+    font-size: 1.3rem;
+    color: #FFD500;
+}
+.shops:hover {
+    background-color: #D3D3D3;
+}
