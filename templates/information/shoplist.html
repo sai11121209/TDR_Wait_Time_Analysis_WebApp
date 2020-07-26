@@ -20,6 +20,7 @@
         <h1>{{ shop_group.0.area.name }}</h1>
         <p>ショップ</p>
         {% for shop in shop_group %}
+        <a href="{% url 'information:shopdetail' shop_name=shop.name park_type=park_type facility_code=shop.facilityCode %}">
             <div id={{ shop.name }} class="shops">
                 <img src={{ shop.images.0 }}>
                 <div>

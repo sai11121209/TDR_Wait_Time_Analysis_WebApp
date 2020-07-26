@@ -155,6 +155,93 @@ class AttractionList(View):
             return redirect("error")
 
 
+class AttractionDetail(View):
+    def get(self, request, attraction_name, park_type, facility_code):
+        try:
+            attractions = sorted(
+                api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+            )
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+                data_ = len(
+                    [
+                        1
+                        for i in standbyTimeDataTDL.objects.filter(
+                            time__startswith=timezone.now().date(),
+                            facility_code=facility_code,
+                        )
+                        if i.standby_time != None
+                    ]
+                )
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                data_ = len(
+                    [
+                        1
+                        for i in standbyTimeDataTDS.objects.filter(
+                            time__startswith=timezone.now().date(),
+                            facility_code=facility_code,
+                        )
+                        if i.standby_time != None
+                    ]
+                )
+            attractions_conditions = sorted(
+                api.get_facilities_conditions()["attractions"],
+                key=lambda x: x["facilityCode"],
+            )
+            for i, attraction in enumerate(attractions):
+                if attraction["name"] == attraction_name:
+                    attractions[i].update(attractions_conditions[i])
+                    info = attractions[i]
+                    break
+            return render(
+                request,
+                "information/attractiondetail.html",
+                {
+                    "now_open_info": parks_condition,
+                    "park_type": parks_condition,
+                    "info": info,
+                    "data_": data_,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
+class AttractionMap(View):
+    def get(self, request, facility_name, park_type, facility_code):
+        try:
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            attractions = api.get_facilities()["attractions"]
+            for attraction in attractions:
+                if attraction["facilityCode"] == str(facility_code):
+                    info = attraction
+                    break
+            try:
+                map_key = os.environ["GOOGLEMAPAPI_KEY"]
+            except KeyError:
+                import local_api
+
+                map_key = local_api.google_map_api_key()
+            return render(
+                request,
+                "information/map.html",
+                {
+                    "map_key": map_key,
+                    "now_open_info": parks_condition,
+                    "park_type": park_type,
+                    "info": info,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
 class RestaurantList(View):
     def get(self, request, park_type):
         try:
@@ -174,7 +261,6 @@ class RestaurantList(View):
                 if restaurant["parkType"] == park_type:
                     restaurants[i].update(restaurants_conditions[i])
                     f_restaurants.append(restaurant)
-
             f_restaurants.sort(key=lambda x: (x["area"]["id"], x["name"]))
             restaurant_groups = {
                 area: list(data)
@@ -189,6 +275,65 @@ class RestaurantList(View):
                     "restaurant_groups": restaurant_groups,
                     "park_type": park_type,
                     "now_open_info": parks_condition,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
+class RestaurantDetail(View):
+    def get(self, request, restaurant_name, park_type, facility_code):
+        try:
+            restaurants = api.get_facilities()["restaurants"]
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            for restaurant in restaurants:
+                if restaurant["name"] == restaurant_name:
+                    info = restaurant
+                    break
+            return render(
+                request,
+                "information/restaurantdetail.html",
+                {
+                    "now_open_info": parks_condition,
+                    "park_type": parks_condition,
+                    "info": info,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
+class RestaurantMap(View):
+    def get(self, request, facility_name, park_type, facility_code):
+        try:
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            restaurants = api.get_facilities()["restaurants"]
+            for restaurant in restaurants:
+                if restaurant["facilityCode"] == str(facility_code):
+                    info = restaurant
+                    break
+            try:
+                map_key = os.environ["GOOGLEMAPAPI_KEY"]
+            except KeyError:
+                import local_api
+
+                map_key = local_api.google_map_api_key()
+            return render(
+                request,
+                "information/map.html",
+                {
+                    "map_key": map_key,
+                    "now_open_info": parks_condition,
+                    "park_type": park_type,
+                    "info": info,
                     "weatherData": api.getWeather(),
                 },
             )
@@ -215,7 +360,6 @@ class ShopList(View):
                 if shop["parkType"] == park_type:
                     shops[i].update(shops_conditions[i])
                     f_shops.append(shop)
-
             f_shops.sort(key=lambda x: (x["area"]["id"], x["name"]))
             shop_groups = {
                 area: list(data)
@@ -235,83 +379,25 @@ class ShopList(View):
             return redirect("error")
 
 
-class ServiceSpotList(View):
-    def get(self, request, park_type):
-        # try:
-        if park_type == "TDL":
-            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-        else:
-            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-        servicespots = sorted(
-            api.get_facilities()["serviceSpots"], key=lambda x: x["facilityCode"],
-        )
-        dellists = []
-        for i, servicespot in enumerate(servicespots):
-            if "OUTSIDE_PARK" in servicespot["filters"]:
-                dellists.append(i)
-        i = 0
-        for dellist in dellists:
-            del servicespots[dellist - i]
-            i += 1
-        servicespots.sort(key=lambda x: (x["area"]["id"], x["name"]))
-        servicespot_groups = {
-            area: list(data)
-            for area, data in itertools.groupby(servicespots, lambda x: x["area"]["id"])
-        }
-        return render(
-            request,
-            "information/servicespotlist.html",
-            {
-                "servicespot_groups": servicespot_groups,
-                "park_type": park_type,
-                "now_open_info": parks_condition,
-                "weatherData": api.getWeather(),
-            },
-        )
-        # except:
-        #    return redirect("error")
-
-
-class Detail(View):
-    def get(self, request, attraction_name, park_type, facility_code):
+class ShopDetail(View):
+    def get(self, request, shop_name, park_type, facility_code):
         try:
-            attractions = api.get_facilities()["attractions"]
+            shops = api.get_facilities()["shops"]
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-                data_ = len(
-                    [
-                        1
-                        for i in standbyTimeDataTDL.objects.filter(
-                            time__startswith=timezone.now().date(),
-                            facility_code=facility_code,
-                        )
-                        if i.standby_time != None
-                    ]
-                )
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-                data_ = len(
-                    [
-                        1
-                        for i in standbyTimeDataTDS.objects.filter(
-                            time__startswith=timezone.now().date(),
-                            facility_code=facility_code,
-                        )
-                        if i.standby_time != None
-                    ]
-                )
-            for attraction in attractions:
-                if attraction["name"] == attraction_name:
-                    info = attraction
+            for shop in shops:
+                if shop["name"] == shop_name:
+                    info = shop
                     break
             return render(
                 request,
-                "information/detail.html",
+                "information/shopdetail.html",
                 {
                     "now_open_info": parks_condition,
                     "park_type": parks_condition,
                     "info": info,
-                    "data_": data_,
                     "weatherData": api.getWeather(),
                 },
             )
@@ -319,17 +405,17 @@ class Detail(View):
             return redirect("error")
 
 
-class Map(View):
-    def get(self, request, attraction_name, park_type, facility_code):
+class ShopMap(View):
+    def get(self, request, facility_name, park_type, facility_code):
         try:
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            attractions = api.get_facilities()["attractions"]
-            for attraction in attractions:
-                if attraction["facilityCode"] == str(facility_code):
-                    info = attraction
+            shops = api.get_facilities()["shops"]
+            for shop in shops:
+                if shop["facilityCode"] == str(facility_code):
+                    info = shop
                     break
             try:
                 map_key = os.environ["GOOGLEMAPAPI_KEY"]
@@ -345,6 +431,45 @@ class Map(View):
                     "now_open_info": parks_condition,
                     "park_type": park_type,
                     "info": info,
+                    "weatherData": api.getWeather(),
+                },
+            )
+        except:
+            return redirect("error")
+
+
+class ServiceSpotList(View):
+    def get(self, request, park_type):
+        try:
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            else:
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            servicespots = sorted(
+                api.get_facilities()["serviceSpots"], key=lambda x: x["facilityCode"],
+            )
+            dellists = []
+            for i, servicespot in enumerate(servicespots):
+                if "OUTSIDE_PARK" in servicespot["filters"]:
+                    dellists.append(i)
+            i = 0
+            for dellist in dellists:
+                del servicespots[dellist - i]
+                i += 1
+            servicespots.sort(key=lambda x: (x["area"]["id"], x["name"]))
+            servicespot_groups = {
+                area: list(data)
+                for area, data in itertools.groupby(
+                    servicespots, lambda x: x["area"]["id"]
+                )
+            }
+            return render(
+                request,
+                "information/servicespotlist.html",
+                {
+                    "servicespot_groups": servicespot_groups,
+                    "park_type": park_type,
+                    "now_open_info": parks_condition,
                     "weatherData": api.getWeather(),
                 },
             )
