@@ -11,7 +11,7 @@
 {% endblock stylesheet %}
 
 
-{% block title %}{{parkType}}サービススポット一覧{% endblock %}
+{% block title %}{{ parkType }}サービススポット一覧{% endblock %}
 
 {% block contents %}
 <div id="servicespotlist">
@@ -20,14 +20,13 @@
         <h1>{{ servicespot_group.0.area.name }}</h1>
         <p>サービススポット</p>
         {% for servicespot in servicespot_group %}
-            <div id={{ servicespot.name }} class="servicespots">
-                <img src={{ servicespot.images.0 }}>
-                <div>
-                    <h3>{{ servicespot.name }}</h3>
-                    <p>{{ servicespot.products.0.name }}</p>
-                </div>
+        <div id={{ servicespot.name }} class="servicespots">
+            <img src={{ servicespot.images.0 }}>
+            <div>
+                <h3>{{ servicespot.name }}</h3>
+                <p>{{ servicespot.products.0.name }}</p>
             </div>
-        </a>
+        </div>
         {% endfor %}
     </div>
     {% endfor %}

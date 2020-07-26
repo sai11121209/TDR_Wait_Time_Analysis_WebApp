@@ -27,26 +27,33 @@
             {% endif %}
             <h2>{{ info.name }}</h2>
             <!--製作中は表示できるようにするためTrueにしています 本番 now_open_info-->
-            {% if now_open_info %}
-            <section id="inner-contents">
-            {% if data_ %}
-                <div>
-                    <a href="{% url 'standbytime:standbytime' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
-                        <img src="{% static 'imgs/graph.png' %}">
-                        <p>待ち時間解析</p>
-                    </a>
-                </div>
-            {% endif %}
-                <div>
-                    <a href="{% url 'information:map' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
-                        <img src="{% static 'imgs/map.png' %}">
-                        <p>マップ</p>
-                    </a>
-                </div>
-            </section>
+            <section id="inner-container">
+            <div id="inner-header">
+            {% if info.standbyTime %}
+                <h4>{{ info.standbyTime }}分待ち</h4>
+            {% elif info.facilityStatusMessage %}
+                <h4>{{ info.facilityStatusMessage }}</h4>
             {% else %}
-                <h3>閉園中は拡張機能をご利用いただけません。</h3>
+                <h4>{{ info.operatings.0.operatingStatusMessage }}</h4>
             {% endif %}
+            {% if info.attraction.fastpass %}
+                <h5>FP対象</h5>
+            {% endif %}
+            </div>
+            <div id="inner-contents">
+            <a href="{% url 'information:attractionmap' facility_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+                <img src="{% static 'imgs/map.png' %}">
+                <p>マップ</p>
+            </a>
+            {% if now_open_info %}
+            {% if data_ %}
+            <a href="{% url 'standbytime:standbytime' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+                <img src="{% static 'imgs/graph.png' %}">
+                <p>待ち時間解析</p>
+            </a>
+            {% endif %}
+            {% endif %}
+            </section>
             <p>{{ info.overview | safe }}</p>
         </div>
         {% if info.effects|length != 0 %}

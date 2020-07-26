@@ -20,6 +20,7 @@
         <h1>{{ restaurant_group.0.area.name }}</h1>
         <p>レストラン</p>
         {% for restaurant in restaurant_group %}
+        <a href="{% url 'information:restaurantdetail' restaurant_name=restaurant.name park_type=park_type facility_code=restaurant.facilityCode %}">
             <div id={{ restaurant.name }} class="restaurants">
                 <img src={{ restaurant.images.0 }}>
                 <div>

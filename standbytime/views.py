@@ -113,15 +113,20 @@ class standbytime(View):
                     ]
 
                     # 平均値算出部分
-                    avgDF = st_datas[0][0]["standby_time"]
-                    for i in range(1, 14):
-                        avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
-                    avgDF = avgDF.replace([-0.5, -1], np.nan)
-                    avgDF = avgDF.groupby("time").mean()
-                    avgDF = avgDF.replace(np.nan, -1)
-                    vacant = (
-                        avgDF[timezone.now().strftime("%H:%M")] >= info["standbyTime"]
-                    )
+                    vacant = []
+                    try:
+                        avgDF = st_datas[0][0]["standby_time"]
+                        for i in range(1, 14):
+                            avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                        avgDF = avgDF.replace([-0.5, -1], np.nan)
+                        avgDF = avgDF.groupby("time").mean()
+                        avgDF = avgDF.replace(np.nan, -1)
+                        vacant = (
+                            avgDF[timezone.now().strftime("%H:%M")]
+                            >= info["standbyTime"]
+                        )
+                    except:
+                        pass
                 else:
                     data_today = info["operatings"][0]["operatingStatusMessage"]
                 return render(
