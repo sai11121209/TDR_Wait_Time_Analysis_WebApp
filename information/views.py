@@ -2,6 +2,7 @@ import os
 import sys
 import itertools
 import api
+import datetime
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils import timezone
@@ -16,63 +17,63 @@ from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
 class OverView(View):
     def get(self, request, park_type):
-        try:
-            if park_type == "TDL":
-                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-                attractions_overview = {
-                    standby_time["facility_code"]: standby_time["standby_time_avg"]
-                    if standby_time["standby_time_avg"]
-                    else -1
-                    for standby_time in standbyTimeDataTDL.objects.filter(
-                        time__startswith=timezone.now().date()
-                    )
-                    .values("facility_code")
-                    .order_by("facility_code")
-                    .annotate(standby_time_avg=Avg("standby_time"))
-                }
-            else:
-                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-                attractions_overview = {
-                    standby_time["facility_code"]: standby_time["standby_time_avg"]
-                    if standby_time["standby_time_avg"]
-                    else -1
-                    for standby_time in standbyTimeDataTDS.objects.filter(
-                        time__startswith=timezone.now().date()
-                    )
-                    .values("facility_code")
-                    .order_by("facility_code")
-                    .annotate(standby_time_avg=Avg("standby_time"))
-                }
-            attractions = sorted(
-                api.get_facilities()["attractions"], key=lambda x: x["facilityCode"]
-            )
-            attractions_conditions = sorted(
-                api.get_facilities_conditions()["attractions"],
-                key=lambda x: x["facilityCode"],
-            )
+        # try:
+        if park_type == "TDL":
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            attractions_overview = {
+                standby_time["facility_code"]: standby_time["standby_time_avg"]
+                if standby_time["standby_time_avg"]
+                else -1
+                for standby_time in standbyTimeDataTDL.objects.filter(
+                    time__startswith=timezone.now().date()
+                )
+                .values("facility_code")
+                .order_by("facility_code")
+                .annotate(standby_time_avg=Avg("standby_time"))
+            }
+        else:
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            attractions_overview = {
+                standby_time["facility_code"]: standby_time["standby_time_avg"]
+                if standby_time["standby_time_avg"]
+                else -1
+                for standby_time in standbyTimeDataTDS.objects.filter(
+                    time__startswith=timezone.now().date()
+                )
+                .values("facility_code")
+                .order_by("facility_code")
+                .annotate(standby_time_avg=Avg("standby_time"))
+            }
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"]
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
 
-            f_attractions = []
-            for i, attraction in enumerate(attractions):
-                if attraction["parkType"] == park_type:
-                    attractions[i].update(attractions_conditions[i])
-                    attractions[i].update(
-                        {"avg": attractions_overview[int(attraction["facilityCode"])]}
-                    )
-                    f_attractions.append(attraction)
-            f_attractions.sort(reverse=True, key=lambda x: (x["avg"], x["name"]))
+        f_attractions = []
+        for i, attraction in enumerate(attractions):
+            if attraction["parkType"] == park_type:
+                attractions[i].update(attractions_conditions[i])
+                attractions[i].update(
+                    {"avg": attractions_overview[int(attraction["facilityCode"])]}
+                )
+                f_attractions.append(attraction)
+        f_attractions.sort(reverse=True, key=lambda x: (x["avg"], x["name"]))
 
-            return render(
-                request,
-                "information/overview.html",
-                {
-                    "attractions": f_attractions,
-                    "park_type": park_type,
-                    "parks_condition": parks_condition,
-                    "weatherData": api.getWeather(),
-                },
-            )
-        except:
-            return redirect("error")
+        return render(
+            request,
+            "information/overview.html",
+            {
+                "attractions": f_attractions,
+                "park_type": park_type,
+                "parks_condition": parks_condition,
+                "weatherData": api.getWeather(),
+            },
+        )
+        # except:
+        #    return redirect("error")
 
 
 class AttractionList(View):
@@ -193,6 +194,15 @@ class AttractionDetail(View):
                 if attraction["name"] == attraction_name:
                     attractions[i].update(attractions_conditions[i])
                     info = attractions[i]
+                    try:
+                        info["operatings"][0]["startAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                        info["operatings"][0]["endAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                    except:
+                        pass
                     break
             return render(
                 request,
