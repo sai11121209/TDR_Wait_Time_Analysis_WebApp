@@ -22,10 +22,10 @@
     .area p {
         top: 109px;
     }
-    .restaurants {
+    .facility {
         height: 100px;
     }
-    .restaurants img{
+    .facility img{
         width: 55px;
         height: 55px;
     }
@@ -37,52 +37,55 @@
     .area p {
         top: 167px;
     }
-    .restaurants {
+    .facility {
         height: 150px;
     }
-    .restaurants img{
+    .facility img{
         width: 80px !important;
         height: 80px !important;
     }
 }
-.restaurants {
+.facility {
     display: flex;
     flex-direction: row;
     border-bottom: solid 1px #D3D3D3;
     align-items: center;
 }
-.restaurants p {
+.facility p {
     margin-top: 3px;
+    margin-bottom: 0;
 }
-.restaurants > div {
+.vacant {
+    color: #FF0000;
+}
+.facility > div {
     display: flex;
     flex-direction: column;
     padding-left: 10px;
 }
-.restaurants img {
+.facility img {
     position: relative;
     object-fit: cover;
     border-radius: 55px;
     padding: 2px;
     border: 2px solid #FF8C00;
 }
-.restaurants h3 {
+.facility h3 {
     margin: 0;
+    display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
-.restaurants h4 {
+.facility h4 {
     margin: 0;
-    padding-top: 70px;
-    position: absolute;
     font-size: 1.3rem;
 }
-.restaurants h5 {
+.facility h5 {
     margin: 0;
-    padding-top: 95px;
-    padding-left: 9px;
-    position: absolute;
     font-size: 1.3rem;
     color: #FFD500;
 }
-.restaurants:hover {
+.facility:hover {
     background-color: #D3D3D3;
 }
