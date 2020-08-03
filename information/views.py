@@ -2,6 +2,7 @@ import os
 import sys
 import itertools
 import api
+import datetime
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils import timezone
@@ -193,6 +194,15 @@ class AttractionDetail(View):
                 if attraction["name"] == attraction_name:
                     attractions[i].update(attractions_conditions[i])
                     info = attractions[i]
+                    try:
+                        info["operatings"][0]["startAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                        info["operatings"][0]["endAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                    except:
+                        pass
                     break
             return render(
                 request,

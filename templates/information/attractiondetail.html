@@ -30,11 +30,12 @@
             <section id="inner-container">
             <div id="inner-header">
             {% if info.standbyTime %}
-                <h4>{{ info.standbyTime }}分待ち</h4>
+                <h2>{{ info.standbyTime }}分待ち</h2>
+                <h3>{{ info.operatings.0.startAt | date:"H:i"  }}～{{ info.operatings.0.endAt | date:"H:i" }}</h3>
             {% elif info.facilityStatusMessage %}
-                <h4>{{ info.facilityStatusMessage }}</h4>
+                <h2>{{ info.facilityStatusMessage }}</h2>
             {% else %}
-                <h4>{{ info.operatings.0.operatingStatusMessage }}</h4>
+                <h2>{{ info.operatings.0.operatingStatusMessage }}</h2>
             {% endif %}
             {% if info.attraction.fastpass %}
                 <h5>FP対象</h5>

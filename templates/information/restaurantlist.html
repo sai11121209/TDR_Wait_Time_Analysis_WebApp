@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block stylesheet %}
-<link rel="stylesheet" type="text/css" href="{% static 'attraction/restaurantlist.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/facilitylist.css' %}">
 {% if park_type == 'TDL' %}
     <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
 {% else %}
@@ -14,17 +14,20 @@
 {% block title %}{{parkType}}レストラン一覧{% endblock %}
 
 {% block contents %}
-<div id="restaurantlist">
+<div id="facilitylist">
     {% for area_id, restaurant_group in restaurant_groups.items %}
     <div id={{ area_id }} class="area">
         <h1>{{ restaurant_group.0.area.name }}</h1>
         <p>レストラン</p>
         {% for restaurant in restaurant_group %}
         <a href="{% url 'information:restaurantdetail' restaurant_name=restaurant.name park_type=park_type facility_code=restaurant.facilityCode %}">
-            <div id={{ restaurant.name }} class="restaurants">
+            <div id={{ restaurant.name }} class="facility restaurants">
                 <img src={{ restaurant.images.0 }}>
                 <div>
                     <h3>{{ restaurant.name }}</h3>
+                    {% if restaurant.prioritySeating %}
+                        <h5>PS 対象</h5>
+                    {% endif %}
                     <p>{{ restaurant.products.0.name }}</p>
                 </div>
             </div>
