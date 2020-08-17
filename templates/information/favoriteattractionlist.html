@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'attraction/facilitylist.css' %}">
+{% if park_type == 'TDL' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tdl.css' %}">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{% static 'attraction/tds.css' %}">
+{% endif %}
+{% endblock stylesheet %}
+
+
+{% block title %}{{parkType}}アトラクション一覧{% endblock %}
+
+{% block contents %}
+<div id="facilitylist">
+    {% for area_id, attraction_group in attraction_groups.items %}
+    <div id={{ area_id }} class="area">
+        <h1>{{ attraction_group.0.area.name }}</h1>
+        <p>アトラクション</p>
+        {% for attraction in attraction_group %}
+        <a href="{% url 'information:attractiondetail' attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
+            <div id={{ attraction.name }} class="facility attractions">
+                <img src={{ attraction.images.0 }}>
+                <div>
+                    <h3>{{ attraction.name }}</h3>
+                    {% if attraction.vacant %}
+                        <h4 class="vacant">ただいま空いています</h4>
+                    {% endif %}
+                    {% if attraction.standbyTime %}
+                        <h4>{{ attraction.standbyTime }}分待ち</h4>
+                    {% elif attraction.facilityStatusMessage %}
+                        <h4>{{ attraction.facilityStatusMessage }}</h4>
+                    {% else %}
+                        <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
+                    {% endif %}
+                    {% if attraction.attraction.fastpass %}
+                        <h5>FP 対象</h5>
+                    {% endif %}
+                </div>
+                {% if attraction.favorite %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="submit on" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_on">★</button>
+                </form>
+                {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="submit off" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_off">★</button>
+                </form>
+                {% endif %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock contents %}

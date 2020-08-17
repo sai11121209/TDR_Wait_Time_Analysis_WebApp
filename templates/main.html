@@ -60,6 +60,7 @@
                             <li><a href="#">東京ディズニーランド</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDL' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:favoriteattractionlist' park_type='TDL' %}">お気に入りアトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDL' %}">レストラン</a></li>
                                     <li><a href="{% url 'information:shoplist' park_type='TDL' %}">ショップ</a></li>
                                     {% if now_open_info %}
@@ -70,6 +71,7 @@
                             <li><a href="#">東京ディズニーシー</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDS' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:favoriteattractionlist' park_type='TDS' %}">お気に入りアトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDS' %}">レストラン</a></li>
                                     <li><a href="{% url 'information:shoplist' park_type='TDS' %}">ショップ</a></li>
                                     {% if now_open_info %}
