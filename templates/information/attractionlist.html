@@ -39,6 +39,17 @@
                         <h5>FP 対象</h5>
                     {% endif %}
                 </div>
+                {% if attraction.favorite %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="submit on" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_on">★</button>
+                </form>
+                {% else %}
+                <form method="post">
+                    {% csrf_token %}
+                    <button class="submit off" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_off">★</button>
+                </form>
+                {% endif %}
             </div>
         </a>
         {% endfor %}
