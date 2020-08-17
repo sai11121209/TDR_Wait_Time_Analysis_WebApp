@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path(
         "<str:park_type>/<str:facility_name>/<int:facility_code>/map",
-        views.AttractionMap.as_view(),
+        cache_page(60 * 60 * 15)(views.AttractionMap.as_view()),
         name="attractionmap",
     ),
     path(
@@ -42,7 +42,11 @@ urlpatterns = [
         cache_page(60 * 60 * 15)(views.RestaurantMap.as_view()),
         name="restaurantmap",
     ),
-    path("<str:park_type>/shoplist", views.ShopList.as_view(), name="shoplist"),
+    path(
+        "<str:park_type>/shoplist",
+        cache_page(60 * 60 * 15)(views.ShopList.as_view()),
+        name="shoplist",
+    ),
     path(
         "<str:park_type>/<str:shop_name>/<int:facility_code>/shopdetail",
         cache_page(60 * 60 * 15)(views.ShopDetail.as_view()),

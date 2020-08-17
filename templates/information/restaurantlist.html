@@ -28,7 +28,11 @@
                     {% if restaurant.prioritySeating %}
                         <h5>PS 対象</h5>
                     {% endif %}
-                    <p>{{ restaurant.products.0.name }}</p>
+                    <p>{{ restaurant.products.0.name }}
+                    {% if restaurant.flavor %}
+                    ({{ restaurant.flavor }})
+                    {% endif %}
+                    </p>
                 </div>
             </div>
         </a>
