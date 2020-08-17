@@ -4,6 +4,7 @@ import itertools
 import api
 import datetime
 from .models import Favorite
+import datetime as dt
 from django.shortcuts import render, redirect
 from django.views import View
 from django.utils import timezone
@@ -28,6 +29,7 @@ class OverView(View):
                     for standby_time in standbyTimeDataTDL.objects.filter(
                         time__startswith=timezone.now().date()
                     )
+                    .select_related()
                     .values("facility_code")
                     .order_by("facility_code")
                     .annotate(standby_time_avg=Avg("standby_time"))
@@ -41,6 +43,7 @@ class OverView(View):
                     for standby_time in standbyTimeDataTDS.objects.filter(
                         time__startswith=timezone.now().date()
                     )
+                    .select_related()
                     .values("facility_code")
                     .order_by("facility_code")
                     .annotate(standby_time_avg=Avg("standby_time"))
@@ -85,6 +88,12 @@ class AttractionList(View):
             try:
                 avgs = (
                     standbyTimeDataTDL.objects.filter(
+                        time__range=[
+                            (timezone.now() + dt.timedelta(days=-22)).strftime(
+                                "%Y-%m-%d"
+                            ),
+                            timezone.now().strftime("%Y-%m-%d"),
+                        ],
                         time__icontains=timezone.now().strftime("%H:%M"),
                     )
                     .values("facility_code")
@@ -102,6 +111,12 @@ class AttractionList(View):
             try:
                 avgs = (
                     standbyTimeDataTDS.objects.filter(
+                        time__range=[
+                            (timezone.now() + dt.timedelta(days=-22)).strftime(
+                                "%Y-%m-%d"
+                            ),
+                            timezone.now().strftime("%Y-%m-%d"),
+                        ],
                         time__icontains=timezone.now().strftime("%H:%M"),
                     )
                     .values("facility_code")
