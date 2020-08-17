@@ -60,6 +60,7 @@
                             <li><a href="#">東京ディズニーランド</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDL' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:favoriteattractionlist' park_type='TDL' %}">お気に入りアトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDL' %}">レストラン</a></li>
                                     <li><a href="{% url 'information:shoplist' park_type='TDL' %}">ショップ</a></li>
                                     {% if now_open_info %}
@@ -70,6 +71,7 @@
                             <li><a href="#">東京ディズニーシー</a>
                                 <ul>
                                     <li><a href="{% url 'information:attractionlist' park_type='TDS' %}">アトラクション</a></li>
+                                    <li><a href="{% url 'information:favoriteattractionlist' park_type='TDS' %}">お気に入りアトラクション</a></li>
                                     <li><a href="{% url 'information:restaurantlist' park_type='TDS' %}">レストラン</a></li>
                                     <li><a href="{% url 'information:shoplist' park_type='TDS' %}">ショップ</a></li>
                                     {% if now_open_info %}
@@ -82,7 +84,7 @@
                             <li><a href="https://reserve.tokyodisneyresort.jp/showrestaurant/search/" target="_blank">ショーレストラン予約※</a></li>
                             <li><a href="https://github.com/sai11121209/TDR_Wait_Time_Analysis_WebApp" target="_blank">GitHub※</a></li>
                         </ul>
-                        <p class="development-comment">Version: 1.4.0</p>
+                        <p class="development-comment">Version: 1.4.1.2</p>
                     </nav>
                     <div class="contentsWall">
                         {% block contentsWall %}
