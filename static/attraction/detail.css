@@ -41,21 +41,15 @@
     flex-direction: column;
 }
 #inner-header {
-    margin: 10%;
+    margin: 0%;
 }
 #inner-header p {
     color: #FFA500;
     font-weight: bold;
     margin: 0;
 }
-#inner-header h2 {
-    margin: 0;
-}
-#inner-header h3 {
-    margin-bottom: 0;
-}
 #inner-contents {
-    margin-bottom: 5%;
+    margin: 5%;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;

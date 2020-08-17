@@ -212,6 +212,10 @@ class AttractionDetail(View):
             attractions = sorted(
                 api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
             )
+            attractions_conditions = sorted(
+                api.get_facilities_conditions()["attractions"],
+                key=lambda x: x["facilityCode"],
+            )
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 data_ = len(
@@ -236,10 +240,6 @@ class AttractionDetail(View):
                         if i.standby_time != None
                     ]
                 )
-            attractions_conditions = sorted(
-                api.get_facilities_conditions()["attractions"],
-                key=lambda x: x["facilityCode"],
-            )
             for i, attraction in enumerate(attractions):
                 if attraction["name"] == attraction_name:
                     attractions[i].update(attractions_conditions[i])
@@ -466,14 +466,30 @@ class RestaurantList(View):
 class RestaurantDetail(View):
     def get(self, request, restaurant_name, park_type, facility_code):
         try:
-            restaurants = api.get_facilities()["restaurants"]
+            restaurants = sorted(
+                api.get_facilities()["restaurants"], key=lambda x: x["facilityCode"],
+            )
+            restaurants_conditions = sorted(
+                api.get_facilities_conditions()["restaurants"],
+                key=lambda x: x["facilityCode"],
+            )
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            for restaurant in restaurants:
+            for i, restaurant in enumerate(restaurants):
                 if restaurant["name"] == restaurant_name:
-                    info = restaurant
+                    restaurants[i].update(restaurants_conditions[i])
+                    info = restaurants[i]
+                    try:
+                        info["operatings"][0]["startAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                        info["operatings"][0]["endAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                    except:
+                        pass
                     break
             return render(
                 request,
@@ -563,14 +579,30 @@ class ShopList(View):
 class ShopDetail(View):
     def get(self, request, shop_name, park_type, facility_code):
         try:
-            shops = api.get_facilities()["shops"]
+            shops = sorted(
+                api.get_facilities()["shops"], key=lambda x: x["facilityCode"],
+            )
+            shops_conditions = sorted(
+                api.get_facilities_conditions()["shops"],
+                key=lambda x: x["facilityCode"],
+            )
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            for shop in shops:
+            for i, shop in enumerate(shops):
                 if shop["name"] == shop_name:
-                    info = shop
+                    shops[i].update(shops_conditions[i])
+                    info = shops[i]
+                    try:
+                        info["operatings"][0]["startAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                        info["operatings"][0]["endAt"] = datetime.datetime.strptime(
+                            info["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                        ) + datetime.timedelta(hours=9)
+                    except:
+                        pass
                     break
             return render(
                 request,

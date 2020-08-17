@@ -28,6 +28,9 @@
             <h2>{{ info.name }}</h2>
             <section id="inner-container">
             <div id="inner-header">
+            {% if info.operatings.0.startAt %}
+            <h2>{{ info.operatings.0.startAt | date:"H:i"  }}～{{ info.operatings.0.endAt | date:"H:i" }}</h2>
+            {% endif %}
             </div>
             <div id="inner-contents">
             <a href="{% url 'information:shopmap' facility_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
