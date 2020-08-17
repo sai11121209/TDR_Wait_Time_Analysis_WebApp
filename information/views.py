@@ -84,6 +84,11 @@ class AttractionList(View):
     def get(self, request, park_type):
         try:
             if park_type == "TDL":
+                favorites = (
+                    Favorite.objects.filter(user_id=request.user.id, park_type="TDL")
+                    .order_by("facility_code")
+                    .values()
+                )
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 try:
                     avgs = (
@@ -108,6 +113,11 @@ class AttractionList(View):
                     pass
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                favorites = (
+                    Favorite.objects.filter(user_id=request.user.id, park_type="TDS")
+                    .order_by("facility_code")
+                    .values()
+                )
                 try:
                     avgs = (
                         standbyTimeDataTDS.objects.filter(
@@ -136,11 +146,6 @@ class AttractionList(View):
                 key=lambda x: x["facilityCode"],
             )
             f_attractions = []
-            favorites = (
-                Favorite.objects.filter(user_id=request.user.id)
-                .order_by("facility_code")
-                .values()
-            )
             j = 0
             for i, attraction in enumerate(attractions):
                 if attraction["parkType"] == park_type:
@@ -267,12 +272,12 @@ class AttractionDetail(View):
 class FavoriteAttractionList(View):
     def get(self, request, park_type):
         try:
-            favorites = (
-                Favorite.objects.filter(user_id=request.user.id)
-                .order_by("facility_code")
-                .values()
-            )
             if park_type == "TDL":
+                favorites = (
+                    Favorite.objects.filter(user_id=request.user.id, park_type="TDL")
+                    .order_by("facility_code")
+                    .values()
+                )
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 try:
                     print(favorites[0]["facility_code"])
@@ -300,6 +305,11 @@ class FavoriteAttractionList(View):
                     pass
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                favorites = (
+                    Favorite.objects.filter(user_id=request.user.id, park_type="TDS")
+                    .order_by("facility_code")
+                    .values()
+                )
                 try:
                     avgs = [
                         standbyTimeDataTDS.objects.filter(
