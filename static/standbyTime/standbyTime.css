@@ -80,6 +80,9 @@ th, td {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+h4 {
+    margin: 0.1rem;
+}
 .standby-time-tabale small {
     text-align: center;
 }

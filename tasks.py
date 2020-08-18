@@ -33,10 +33,13 @@ def insertdata(parkType):
                 if "facilityStatusMessage" in attractions_condition:
                     operating_status = attractions_condition["facilityStatusMessage"]
                 else:
-                    standby_time = -1
                     operating_status = attractions_condition["operatings"][0][
                         "operatingStatusMessage"
                     ]
+                    if "案内終了" in operating_status:
+                        standby_time = -0.7
+                    else:
+                        standby_time = -1
                     operating_status_start = (
                         datetime.datetime.strptime(
                             attractions_condition["operatings"][0]["startAt"],
@@ -57,6 +60,7 @@ def insertdata(parkType):
                     operating_status = "運営中"
                 except:
                     operating_status = "準備中"
+                    standby_time = -0.2
                     operating_status_start = (
                         datetime.datetime.strptime(
                             attractions_condition["operatings"][0]["startAt"],

@@ -9,17 +9,17 @@ urlpatterns = [
     path("<str:park_type>/overview", views.OverView.as_view(), name="overview"),
     path(
         "<str:park_type>/attractionlist",
-        views.AttractionList.as_view(),
+        cache_page(60)(views.AttractionList.as_view()),
         name="attractionlist",
     ),
     path(
         "<str:park_type>/<str:attraction_name>/<int:facility_code>/attractiondetail",
-        views.AttractionDetail.as_view(),
+        cache_page(60)(views.AttractionDetail.as_view()),
         name="attractiondetail",
     ),
     path(
         "<str:park_type>/favoriteattractionlist",
-        views.FavoriteAttractionList.as_view(),
+        cache_page(60)(views.FavoriteAttractionList.as_view()),
         name="favoriteattractionlist",
     ),
     path(
