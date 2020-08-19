@@ -97,100 +97,101 @@ class standbytime(View):
         return redatas
 
     def get(self, request, attraction_name, park_type, facility_code):
-        # try:
-        data_today = []
-        fp = []
-        attractions = sorted(
-            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
-        )
-        attractions_conditions = sorted(
-            api.get_facilities_conditions()["attractions"],
-            key=lambda x: x["facilityCode"],
-        )
-        if park_type == "TDL":
-            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-            opentime = api.get_parks_calendars()[0]
-        else:
-            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            opentime = api.get_parks_calendars()[1]
-        for attraction, attraction_conditions in zip(
-            attractions, attractions_conditions
-        ):
-            if attraction["facilityCode"] == str(facility_code):
-                info = attraction_conditions
-                attraction_info = attraction
-                break
-        maindata = self.get_standbytime_group(
-            timezone.now().date(), park_type, facility_code
-        )
-        if maindata:
-            if "公演中止" not in maindata.reverse()[0].operating_status:
-                mainDF, standby_mean = self.get_standbytime_time(
-                    maindata.values(), opentime
-                )
-                table_data = []
-                for datas in list(mainDF.index.values):
-                    table_data.append(
-                        [mainDF.loc[datas].index, mainDF.loc[datas].standby_time]
-                    )
-                data_today = [mainDF, standby_mean, table_data]
-                st_datas = [
-                    self.make_standbytime_time_table(
-                        day, opentime, park_type, facility_code
-                    )
-                    for day in range(1, 14)
-                ]
-                # 平均値算出部分
-                vacant = []
-                redatas = {}
-                try:
-                    avgDF = st_datas[0][0]["standby_time"]
-                    for i in range(1, 13):
-                        avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
-                    if "一時運営中止" in maindata.reverse()[0].operating_status:
-                        redatas = self.return_time(mainDF, avgDF)
-                    avgDF = avgDF.replace([-0.5, -1], np.nan)
-                    avgDF = avgDF.groupby("time").mean()
-                    avgDF = avgDF.replace(np.nan, -1)
-                    vacant = (
-                        avgDF[timezone.now().strftime("%H:%M")] >= info["standbyTime"]
-                    )
-                except:
-                    pass
+        try:
+            data_today = []
+            fp = []
+            attractions = sorted(
+                api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+            )
+            attractions_conditions = sorted(
+                api.get_facilities_conditions()["attractions"],
+                key=lambda x: x["facilityCode"],
+            )
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+                opentime = api.get_parks_calendars()[0]
             else:
-                data_today = info["operatings"][0]["operatingStatusMessage"]
-            return render(
-                request,
-                "standbytime/standbytime.html",
-                {
-                    "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "data_today": data_today,
-                    "st_datas": st_datas,
-                    "avg_datas": avgDF,
-                    "attraction_info": attraction_info,
-                    "info": info,
-                    "park_type": park_type,
-                    "fp": fp,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                    "vacant": vacant,
-                    "return_datas": redatas,
-                    # 閉園時用
-                    # "now_open_info": True,
-                },
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                opentime = api.get_parks_calendars()[1]
+            for attraction, attraction_conditions in zip(
+                attractions, attractions_conditions
+            ):
+                if attraction["facilityCode"] == str(facility_code):
+                    info = attraction_conditions
+                    attraction_info = attraction
+                    break
+            maindata = self.get_standbytime_group(
+                timezone.now().date(), park_type, facility_code
             )
-        else:
-            return render(
-                request,
-                "standbytime/standbytime.html",
-                {
-                    "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "attraction_info": attraction_info,
-                    "info": info,
-                    "park_type": park_type,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                },
-            )
-        # except:
-        #    return redirect("error")
+            if maindata:
+                if "公演中止" not in maindata.reverse()[0].operating_status:
+                    mainDF, standby_mean = self.get_standbytime_time(
+                        maindata.values(), opentime
+                    )
+                    table_data = []
+                    for datas in list(mainDF.index.values):
+                        table_data.append(
+                            [mainDF.loc[datas].index, mainDF.loc[datas].standby_time]
+                        )
+                    data_today = [mainDF, standby_mean, table_data]
+                    st_datas = [
+                        self.make_standbytime_time_table(
+                            day, opentime, park_type, facility_code
+                        )
+                        for day in range(1, 14)
+                    ]
+                    # 平均値算出部分
+                    vacant = []
+                    redatas = {}
+                    try:
+                        avgDF = st_datas[0][0]["standby_time"]
+                        for i in range(1, 13):
+                            avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                        if "一時運営中止" in maindata.reverse()[0].operating_status:
+                            redatas = self.return_time(mainDF, avgDF)
+                        avgDF = avgDF.replace([-0.5, -1], np.nan)
+                        avgDF = avgDF.groupby("time").mean()
+                        avgDF = avgDF.replace(np.nan, -1)
+                        vacant = (
+                            avgDF[timezone.now().strftime("%H:%M")]
+                            >= info["standbyTime"]
+                        )
+                    except:
+                        pass
+                else:
+                    data_today = info["operatings"][0]["operatingStatusMessage"]
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "data_today": data_today,
+                        "st_datas": st_datas,
+                        "avg_datas": avgDF,
+                        "attraction_info": attraction_info,
+                        "info": info,
+                        "park_type": park_type,
+                        "fp": fp,
+                        "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                        "vacant": vacant,
+                        "return_datas": redatas,
+                        # 閉園時用
+                        # "now_open_info": True,
+                    },
+                )
+            else:
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "attraction_info": attraction_info,
+                        "info": info,
+                        "park_type": park_type,
+                        "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                    },
+                )
+        except:
+            return redirect("error")
