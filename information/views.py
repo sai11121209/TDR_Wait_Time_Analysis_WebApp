@@ -280,7 +280,6 @@ class FavoriteAttractionList(View):
                 )
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 try:
-                    print(favorites[0]["facility_code"])
                     avgs = [
                         standbyTimeDataTDL.objects.filter(
                             facility_code=str(favorite["facility_code"]),

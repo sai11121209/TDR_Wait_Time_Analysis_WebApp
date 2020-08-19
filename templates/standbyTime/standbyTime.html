@@ -35,19 +35,12 @@
                         <h4>最短: {{ return_datas.min }}分</h4>
                         <h4>最長: {{ return_datas.max }}分</h4>
                         <h4>平均: {{ return_datas.avg }}分</h4>
-                        <h4>{{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.max_time | date:"H:i" }}</h4>
-                        <h4>{{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.avg_time | date:"H:i" }}</h4>
+                        <h4>復帰時刻: {{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.max_time | date:"H:i" }}</h4>
+                        <h4>復帰予想時刻: {{ return_datas.avg_stime | date:"H:i" }}～{{ return_datas.avg_etime | date:"H:i" }}</h4>
                     {% endif %}
                 {% else %}
                     <h3>現在の待ち時間はありません</h3>
             {% endif %}
-            <h3>過去2週間のメンテナンス情報</h3>
-                        <h4>回数: {{ return_datas.count }}回</h4>
-                        <h4>最短: {{ return_datas.min }}分</h4>
-                        <h4>最長: {{ return_datas.max }}分</h4>
-                        <h4>平均: {{ return_datas.avg }}分</h4>
-                        <h4>{{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.max_time | date:"H:i" }}</h4>
-                        <h4>{{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.avg_time | date:"H:i" }}</h4>
             {% if vacant %}
                 <h3 class="vacant">現在空いています。</h3>
             {% endif %}
@@ -109,91 +102,7 @@
                 </table>
                 <small>※一時運営中止の場合は-1、案内終了の場合は-0.7、準備中の場合は-0.3、その他エラーによる欠損値は-0.5で出力しています。</small>
             </div>
-            {% for data in st_datas %}
-            <button id="{{ data.1 }}-show">
-                <span>{{ data.1 }}の待ち時間データ表示</span>
-            </button>
-            <div id={{ data.1 }}>
-                <h3>{{ data.1 }}の待ち時間遷移グラフ</h3>
-                <h3>{{ data.1 }}の平均待ち時間は約{{ data.2 }}分でした。</h3>
-                <div class="figure">
-                    <canvas id="{{ data.1 }}-figure"></canvas>
-                    <script type="text/javascript">
-                    var ctx = document.getElementById("{{ data.1 }}-figure");
-                    var myRadarChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: {{ data.0.index.values.tolist|safe }},
-                            datasets: [{
-                                label: "スタンバイ待ち時間",
-                                data: {{ data.0.values.tolist|safe }},
-                                backgroundColor: "rgba(75,192,192,0.4)",
-                                borderColor: "rgba(75,192,192,1)",
-                            }]},
-                        options: {
-                            maintainAspectRatio: false,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        }
-                    }
-                    });
-                    </script>
-                </div>
-            </div>
-            <script type="text/javascript">
-                $("#{{ data.1 }}").hide();
-                $("#{{ data.1 }}-show").on('click', () => {
-                    $("#{{ data.1 }}").slideToggle();
-                });
-            </script>
-            {% endfor %}
-            {% if info.fastpass %}
-            <div class="figure">
-                <canvas id="fastpass"></canvas>
-                <script type="text/javascript">
-                var ctx = document.getElementById("fastpass");
-                var myRadarChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: {{ data_today.1|safe }},
-                        datasets: [{
-                            label: "ファストパス開始時間",
-                            data: {{ fp.0|safe }},
-                            borderColor: "rgba(75,192,192,1)",
-                        },
-                        {    label: "ファストパス終了時間",
-                            data: {{ fp.1|safe }},
-                            borderColor: "rgba(75,192,192,1)",
-                        }]},
-                    options: {
-                        maintainAspectRatio: false,
-                    scales: {
-                        yAxes: [{
-                            type : 'time',
-                            distribution: 'series',
-                            time : {
-                                format: "HH:mm",
-                                unit: 'hour',
-                                parser: 'hh:mm',
-                                unit : 'minute',
-                                unitStepSize : 200,
-                                displayFormats : {
-                                    'minute': 'HH:mm',
-                                    'hour': 'HH:mm',
-                                    second: this.timeFormat
-                                }
-                            },
-                    }]
-                    }
-                }
-                });
-                </script>
-            </div>
-            {% endif %}
+
             {% endif %}
             {% if park_type == "TDL" %}
                 <p>この後も東京ディズニーランドで素敵なひと時をお過ごしください</p>
