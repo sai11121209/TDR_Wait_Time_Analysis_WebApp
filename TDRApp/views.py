@@ -46,6 +46,92 @@ class Top(View):
             return redirect("error")
 
 
+class Tdr(View):
+    def get(self, request):
+        try:
+            parksCalendars = api.get_parks_calendars()
+            parksConditions = api.get_parks_conditions()
+            time = timezone.now()
+            parkInfos = [
+                info
+                for info in parksCalendars
+                if info["date"] == time.strftime("%Y-%m-%d")
+            ]
+            nextOpenInfos = [
+                info for info in parksCalendars if info["closedDay"] == False
+            ]
+            info = []
+            for schedule, ticketSale, parkInfo, nextOpenInfo in zip(
+                parksConditions["schedules"],
+                parksConditions["ticketSales"],
+                parkInfos,
+                nextOpenInfos,
+            ):
+                info.append(
+                    {
+                        "schedule": schedule,
+                        "ticketSale": ticketSale,
+                        "parkInfo": parkInfo,
+                        "nextOpenInfo": nextOpenInfo,
+                    }
+                )
+            return render(
+                request,
+                "top/top.html",
+                {"parksConditions": info, "weatherData": api.getWeather()},
+            )
+        except:
+            return redirect("error")
+
+
+class Tds(View):
+    def get(self, request):
+        try:
+            parksCalendars = api.get_parks_calendars()
+            parksConditions = api.get_parks_conditions()
+            time = timezone.now()
+            parkInfos = [
+                info
+                for info in parksCalendars
+                if info["date"] == time.strftime("%Y-%m-%d")
+            ]
+            nextOpenInfos = [
+                info for info in parksCalendars if info["closedDay"] == False
+            ]
+            info = []
+            for schedule, ticketSale, parkInfo, nextOpenInfo in zip(
+                parksConditions["schedules"],
+                parksConditions["ticketSales"],
+                parkInfos,
+                nextOpenInfos,
+            ):
+                info.append(
+                    {
+                        "schedule": schedule,
+                        "ticketSale": ticketSale,
+                        "parkInfo": parkInfo,
+                        "nextOpenInfo": nextOpenInfo,
+                    }
+                )
+            return render(
+                request,
+                "top/top.html",
+                {"parksConditions": info, "weatherData": api.getWeather()},
+            )
+        except:
+            return redirect("error")
+
+
+class Protocol(View):
+    def get(self, request):
+        return render(request, "top/protocol.html", {"weatherData": api.getWeather()})
+
+
+class Privacy(View):
+    def get(self, request):
+        return render(request, "top/privacy.html", {"weatherData": api.getWeather()})
+
+
 class Error(View):
     def get(self, request):
         return render(request, "top/error.html", {"weatherData": api.getWeather()})

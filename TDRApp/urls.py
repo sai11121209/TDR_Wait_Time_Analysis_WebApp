@@ -21,9 +21,13 @@ from . import views
 
 urlpatterns = [
     path("", views.Top.as_view(), name="top"),
+    path("TDR/", views.Tdr.as_view(), name="tdr"),
+    path("TDS/", views.Tds.as_view(), name="tds"),
+    path("protocol/", views.Protocol.as_view(), name="protocol"),
+    path("privacy/", views.Privacy.as_view(), name="privacy"),
     path("error", views.Error.as_view(), name="error"),
     path("admin/", admin.site.urls),
-    path("accounts/", include("accounts.urls")),  # [追加]
+    path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("information.urls")),
     path("", include("standbytime.urls")),
