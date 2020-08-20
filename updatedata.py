@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TDRApp.settings")
 
 
-def insertdata(parkType):
+def updatedata(parkType):
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
@@ -36,9 +36,9 @@ def insertdata(parkType):
                     operating_status = attractions_condition["operatings"][0][
                         "operatingStatusMessage"
                     ]
-                    if "一時運営中止" == operating_status:
+                    if "一時運営中止" in operating_status:
                         standby_time = -1
-                    elif "案内終了" == operating_status:
+                    elif "案内終了" in operating_status:
                         standby_time = -0.7
                     else:
                         standby_time = -0.3
