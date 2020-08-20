@@ -62,7 +62,6 @@ def insertdata(parkType):
                     operating_status = "運営中"
                 except:
                     operating_status = "準備中"
-                    standby_time = -0.2
                     operating_status_start = (
                         datetime.datetime.strptime(
                             attractions_condition["operatings"][0]["startAt"],
