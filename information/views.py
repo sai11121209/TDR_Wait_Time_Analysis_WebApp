@@ -169,7 +169,7 @@ class AttractionList(View):
                         )
                     except KeyError:
                         attractions[i].update({"vacant": False, "favorite": favorite})
-                    except UnboundLocalError:
+                    except:
                         pass
                     f_attractions.append(attraction)
             f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
