@@ -80,7 +80,7 @@ class standbytime(View):
         y = right
         y -= left + 1
         y[x == 0] = 0
-        retime = np.unique(y[y > 20])
+        retime = np.unique(y[y > 1])
         x = np.arange(len(mainDF))
         x[mainDF.standby_time <= -0.5] = 0
         time = dt.datetime.strptime(mainDF.index[max(x)], "%H:%M")
@@ -150,6 +150,7 @@ class standbytime(View):
                         avgDF = st_datas[0][0]["standby_time"]
                         for i in range(1, 13):
                             avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                        redatas = self.return_time(mainDF, avgDF)
                         if "一時運営中止" in maindata.reverse()[0].operating_status:
                             redatas = self.return_time(mainDF, avgDF)
                         avgDF = avgDF.replace([-0.3, -0.5, -0.7, -1], np.nan)

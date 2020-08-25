@@ -29,7 +29,7 @@ class standbyTimeDataTDS(models.Model):
         verbose_name_plural = "東京ディズニーシー待ち時間データリスト"
 
     facility_code = models.IntegerField()
-    standby_time = models.IntegerField(null=True)
+    standby_time = models.FloatField(null=True)
     time = models.DateTimeField(default=timezone.now)
     operating_status = models.CharField(null=True, max_length=60)
     operating_status_start = models.TimeField(null=True)
