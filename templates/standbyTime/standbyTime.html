@@ -29,6 +29,15 @@
                     <h3>現在のステータス:　{{ info.facilityStatusMessage }}</h3>
                 {% elif info.operatings.0.operatingStatusMessage %}
                     <h3>現在のステータス:　{{ info.operatings.0.operatingStatusMessage }}</h3>
+                    {% if return_datas %}
+                        <h3>過去2週間のメンテナンス情報</h3>
+                        <h4>回数: {{ return_datas.count }}回</h4>
+                        <h4>最短: {{ return_datas.min }}分</h4>
+                        <h4>最長: {{ return_datas.max }}分</h4>
+                        <h4>平均: {{ return_datas.avg }}分</h4>
+                        <h4>復帰時刻: {{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.max_time | date:"H:i" }}</h4>
+                        <h4>復帰予想時刻: {{ return_datas.avg_stime | date:"H:i" }}～{{ return_datas.avg_etime | date:"H:i" }}</h4>
+                    {% endif %}
                 {% else %}
                     <h3>現在の待ち時間はありません</h3>
             {% endif %}
@@ -52,7 +61,7 @@
                             borderColor: "rgba(75,192,192,1)",
                         },
                         {
-                            label: "スタンバイ待ち時間平均(過去3週間)",
+                            label: "スタンバイ待ち時間平均(過去2週間)",
                             data: {{ avg_datas.values.tolist|safe }},
                             backgroundColor: "rgba(255,20,147,0.4)",
                             borderColor: "rgba(255,20,147,1)",
@@ -91,7 +100,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <small>※一時運営中止等の場合は-1、欠損値は-0.5で出力しています。</small>
+                <small>※一時運営中止の場合は-1、案内終了の場合は-0.7、準備中の場合は-0.3、その他エラーによる欠損値は-0.5で出力しています。</small>
             </div>
             {% for data in st_datas %}
             <button id="{{ data.1 }}-show">

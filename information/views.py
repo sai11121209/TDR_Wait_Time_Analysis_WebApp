@@ -169,7 +169,7 @@ class AttractionList(View):
                         )
                     except KeyError:
                         attractions[i].update({"vacant": False, "favorite": favorite})
-                    except UnboundLocalError:
+                    except:
                         pass
                     f_attractions.append(attraction)
             f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
@@ -280,7 +280,6 @@ class FavoriteAttractionList(View):
                 )
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
                 try:
-                    print(favorites[0]["facility_code"])
                     avgs = [
                         standbyTimeDataTDL.objects.filter(
                             facility_code=str(favorite["facility_code"]),

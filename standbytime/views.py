@@ -67,6 +67,35 @@ class standbytime(View):
             mean,
         ]
 
+    def return_time(self, mainDF, DF):
+        x = np.arange(len(DF))
+        x[DF == -1] = 0
+        np.maximum.accumulate(x, out=x)
+        left = x
+        DF_re = DF[::-1]
+        x = np.arange(len(DF))
+        x[DF_re == -1] = 0
+        np.maximum.accumulate(x, out=x)
+        right = len(DF) - 1 - x[::-1]
+        y = right
+        y -= left + 1
+        y[x == 0] = 0
+        retime = np.unique(y[y > 1])
+        x = np.arange(len(mainDF))
+        x[mainDF.standby_time <= -0.5] = 0
+        time = dt.datetime.strptime(mainDF.index[max(x)], "%H:%M")
+        redatas = {
+            "count": len(retime),
+            "max": max(retime),
+            "max_time": time + dt.timedelta(minutes=int(max(retime))),
+            "min": min(retime),
+            "min_time": time + dt.timedelta(minutes=int(min(retime))),
+            "avg": int(np.average(retime)),
+            "avg_stime": time + dt.timedelta(minutes=int(np.average(retime) - 5)),
+            "avg_etime": time + dt.timedelta(minutes=int(np.average(retime) + 5)),
+        }
+        return redatas
+
     def get(self, request, attraction_name, park_type, facility_code):
         try:
             data_today = []
@@ -96,29 +125,35 @@ class standbytime(View):
             )
             if maindata:
                 if "公演中止" not in maindata.reverse()[0].operating_status:
-                    maindata, standby_mean = self.get_standbytime_time(
+                    mainDF, standby_mean = self.get_standbytime_time(
                         maindata.values(), opentime
                     )
                     table_data = []
-                    for datas in list(maindata.index.values):
-                        table_data.append(
-                            [maindata.loc[datas].name, maindata.loc[datas].standby_time]
-                        )
-                    data_today = [maindata, standby_mean, table_data]
+                    for datas in list(mainDF.index.values):
+                        try:
+                            table_data.append(
+                                [mainDF.loc[datas].name, mainDF.loc[datas].standby_time]
+                            )
+                        except:
+                            table_data.append([datas, 0.5])
+                    data_today = [mainDF, standby_mean, table_data]
                     st_datas = [
                         self.make_standbytime_time_table(
                             day, opentime, park_type, facility_code
                         )
-                        for day in range(1, 22)
+                        for day in range(1, 14)
                     ]
-
                     # 平均値算出部分
                     vacant = []
+                    redatas = {}
                     try:
                         avgDF = st_datas[0][0]["standby_time"]
-                        for i in range(1, 14):
+                        for i in range(1, 13):
                             avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
-                        avgDF = avgDF.replace([-0.5, -1], np.nan)
+                        redatas = self.return_time(mainDF, avgDF)
+                        if "一時運営中止" in maindata.reverse()[0].operating_status:
+                            redatas = self.return_time(mainDF, avgDF)
+                        avgDF = avgDF.replace([-0.3, -0.5, -0.7, -1], np.nan)
                         avgDF = avgDF.groupby("time").mean()
                         avgDF = avgDF.replace(np.nan, -1)
                         vacant = (
@@ -144,6 +179,7 @@ class standbytime(View):
                         "now_open_info": parks_condition,
                         "weatherData": api.getWeather(),
                         "vacant": vacant,
+                        "return_datas": redatas,
                         # 閉園時用
                         # "now_open_info": True,
                     },
