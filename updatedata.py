@@ -2,130 +2,120 @@ import sys
 import os
 import django
 import datetime
-import api
 
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "TDRApp.settings")
 
 
-def updatedata(parkType):
+def updatedata():
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
-    attractions = None
-    attractions_conditions = None
-    attractions = sorted(
-        api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+    check = (
+        input(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: UPDATE THE DATABASE. HAVE YOU BACK UP DATABASE? (yes, no): "
+        )
+        == "yes"
     )
-    attractions_conditions = sorted(
-        api.get_facilities_conditions()["attractions"], key=lambda x: x["facilityCode"],
-    )
-    for attractions_condition, attraction in zip(attractions_conditions, attractions):
-        if attraction["parkType"] == parkType:
-            standby_time = None
-            operating_status_start = None
-            operating_status_end = None
-            facility_fastpass_status = None
-            facility_fastpass_start = None
-            facility_fastpass_end = None
-            if attractions_condition["standbyTimeDisplayType"] == "HIDE":
-                if "facilityStatusMessage" in attractions_condition:
-                    operating_status = attractions_condition["facilityStatusMessage"]
-                else:
-                    operating_status = attractions_condition["operatings"][0][
-                        "operatingStatusMessage"
-                    ]
-                    if "一時運営中止" in operating_status:
-                        standby_time = -1
-                    elif "案内終了" in operating_status:
-                        standby_time = -0.7
-                    else:
-                        standby_time = -0.3
-                    operating_status_start = (
-                        datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["startAt"],
-                            "%Y-%m-%dT%H:%M:%S.%fZ",
-                        )
-                        + datetime.timedelta(hours=9)
-                    ).strftime("%H:%M")
-                    operating_status_end = (
-                        datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["endAt"],
-                            "%Y-%m-%dT%H:%M:%S.%fZ",
-                        )
-                        + datetime.timedelta(hours=9)
-                    ).strftime("%H:%M")
-            elif attractions_condition["standbyTimeDisplayType"] == "NORMAL":
-                try:
-                    standby_time = attractions_condition["standbyTime"]
-                    operating_status = "運営中"
-                except:
-                    operating_status = "準備中"
-                    operating_status_start = (
-                        datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["startAt"],
-                            "%Y-%m-%dT%H:%M:%S.%fZ",
-                        )
-                        + datetime.timedelta(hours=9)
-                    ).strftime("%H:%M")
-                    operating_status_end = (
-                        datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["endAt"],
-                            "%Y-%m-%dT%H:%M:%S.%fZ",
-                        )
-                        + datetime.timedelta(hours=9)
-                    ).strftime("%H:%M")
-                if "fastPassStatus" in attractions_condition:
-                    if attractions_condition["standbyTimeDisplayType"] == "TICKETING":
-                        facility_fastpass_start = str(
-                            attractions_condition["fastPassStartAt"]
-                        )
-                        facility_fastpass_end = str(
-                            attractions_condition["fastPassEndAt"]
-                        )
-            else:
-                operating_status = "運営中"
-                standby_time = 0
-                operating_status_start = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["startAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
-                operating_status_end = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["endAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
-            if parkType == "TDL":
-                standbyTimeDataTDL.objects.create(
-                    facility_code=attractions_condition["facilityCode"],
-                    standby_time=standby_time,
-                    operating_status=operating_status,
-                    operating_status_start=operating_status_start,
-                    operating_status_end=operating_status_end,
-                    facility_fastpass_status=facility_fastpass_status,
-                    facility_fastpass_start=facility_fastpass_start,
-                    facility_fastpass_end=facility_fastpass_end,
-                )
-                print("TDL:Task completed")
-            else:
-                standbyTimeDataTDS.objects.create(
-                    facility_code=attractions_condition["facilityCode"],
-                    standby_time=standby_time,
-                    operating_status=operating_status,
-                    operating_status_start=operating_status_start,
-                    operating_status_end=operating_status_end,
-                    facility_fastpass_status=facility_fastpass_status,
-                    facility_fastpass_start=facility_fastpass_start,
-                    facility_fastpass_end=facility_fastpass_end,
-                )
-                print("TDS:Task completed")
+    if check:
+        # 一時運営中止の待ち時間を-1に修正
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE TASK START"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDL (TASKCASE:1 CLOSE_NOTICE)"
+        )
+        updateTDL = standbyTimeDataTDL.objects.filter(operating_status="一時運営中止")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDL (TASKCASE:1 CLOSE_NOTICE) RESULT: {len(updateTDL)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDS (TASKCASE:1 CLOSE_NOTICE)"
+        )
+        updateTDS = standbyTimeDataTDS.objects.filter(operating_status="一時運営中止")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDS (TASKCASE:1 CLOSE_NOTICE) RESULT: {len(updateTDS)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDL (TASKCASE:1 CLOSE_NOTICE)"
+        )
+        updateTDL.update(standby_time=-1)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDL (TASKCASE:1 CLOSE_NOTICE)"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDS (TASKCASE:1 CLOSE_NOTICE)"
+        )
+        updateTDS.update(standby_time=-1)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDS (TASKCASE:1 CLOSE_NOTICE)"
+        )
+
+        # 案内中止の待ち時間を-0.7に修正
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDL (TASKCASE:2 CLOSE)"
+        )
+        updateTDL = standbyTimeDataTDL.objects.filter(operating_status="案内終了")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDL (TASKCASE:2 CLOSE) RESULT: {len(updateTDL)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDS (TASKCASE:2 CLOSE)"
+        )
+        updateTDS = standbyTimeDataTDS.objects.filter(operating_status="案内終了")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDS (TASKCASE:2 CLOSE) RESULT: {len(updateTDS)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDL (TASKCASE:2 CLOSE)"
+        )
+        updateTDL.update(standby_time=-0.7)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDL (TASKCASE:2 CLOSE)"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDS (TASKCASE:2 CLOSE)"
+        )
+        updateTDS.update(standby_time=-0.7)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDS (TASKCASE:2 CLOSE)"
+        )
+
+        # 準備中の待ち時間を-0.3に修正
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDL (TASKCASE:3 PREPARATION)"
+        )
+        updateTDL = standbyTimeDataTDL.objects.filter(operating_status="準備中")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDL (TASKCASE:3 PREPARATION) RESULT: {len(updateTDL)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION START: TDS (TASKCASE:3 PREPARATION)"
+        )
+        updateTDS = standbyTimeDataTDS.objects.filter(operating_status="準備中")
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA ACQUISITION CLEAR: TDS (TASKCASE:3 PREPARATION) RESULT: {len(updateTDS)}rows"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDL (TASKCASE:3 PREPARATION)"
+        )
+        updateTDL.update(standby_time=-0.3)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDL (TASKCASE:3 PREPARATION)"
+        )
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE START: TDS (TASKCASE:3 PREPARATION)"
+        )
+        updateTDS.update(standby_time=-0.3)
+        print(
+            f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: DATABASE DATA UPDATE CLEAR: TDS (TASKCASE:3 PREPARATION)"
+        )
+    else:
+        print(f"{datetime.datetime.now():%Y-%m-%d %H:%M:%S}: UPDATE TASK STOP")
 
 
 if __name__ == "__main__":
     pass
+
+updatedata()
