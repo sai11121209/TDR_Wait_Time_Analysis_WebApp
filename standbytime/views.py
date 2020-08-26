@@ -150,7 +150,6 @@ class standbytime(View):
                         avgDF = st_datas[0][0]["standby_time"]
                         for i in range(1, 13):
                             avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
-                        redatas = self.return_time(mainDF, avgDF)
                         if "一時運営中止" in maindata.reverse()[0].operating_status:
                             redatas = self.return_time(mainDF, avgDF)
                         avgDF = avgDF.replace([-0.3, -0.5, -0.7, -1], np.nan)
