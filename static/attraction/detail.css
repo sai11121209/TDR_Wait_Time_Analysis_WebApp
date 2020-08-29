@@ -22,10 +22,20 @@
 .attractions:hover {
     background-color: #D3D3D3;
 }
-.contentsWall img {
+.facility-img {
+    position: relative;
+}
+.facility-img img {
     width: 100%;
     margin: auto;
     object-fit: cover;
+}
+.img-copyright:after {
+    position: absolute;
+    content: "© Disney";
+    bottom: 10px;
+    right: 10px;
+    color: #FFFFFF;
 }
 #detail-heade > small {
     font-size: 0.5rem;
