@@ -1,7 +1,19 @@
 #overview {
     text-align: center;
 }
-.attractions img {
+
+.facility-img {
+    position: relative;
+}
+.facility-img img {
     width: 98%;
     object-fit: cover;
+}
+.img-copyright:after {
+    position: absolute;
+    content: "© Disney";
+    bottom: 10px;
+    right: 10px;
+    font-size: 1rem;
+    color: #FFFFFF;
 }

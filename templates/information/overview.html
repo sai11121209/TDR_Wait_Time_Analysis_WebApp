@@ -20,7 +20,9 @@
     <a href="{% url 'information:attractiondetail' attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
         <div id={{ attraction.name }} class="attractions">
             <div>
-                <img src={{ attraction.images.0 }}>
+                <div class="facility-img img-copyright">
+                    <img src={{ attraction.images.0 }}>
+                </div>
                 <h3>{{ attraction.name }}</h3>
             </div>
             {% if attraction.standbyTime %}
