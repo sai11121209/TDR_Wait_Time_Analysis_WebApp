@@ -39,6 +39,7 @@
                         <h4>平均: {{ return_datas.avg }}分</h4>
                         <h4>復帰時刻: {{ return_datas.min_time | date:"H:i"  }}～{{ return_datas.max_time | date:"H:i" }}</h4>
                         <h4>復帰予想時刻: {{ return_datas.avg_stime | date:"H:i" }}～{{ return_datas.avg_etime | date:"H:i" }}</h4>
+                        <h4>※これらの情報は過去の情報から推測される情報であるため正確な情報ではありません。参考程度にご利用ください。</h4>
                     {% endif %}
                 {% else %}
                     <h3>現在の待ち時間はありません</h3>
