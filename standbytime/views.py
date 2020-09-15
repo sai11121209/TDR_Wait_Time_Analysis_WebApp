@@ -44,28 +44,35 @@ class standbytime(View):
         return mainDF.fillna(-0.5), mean
 
     def make_standbytime_time_table(self, day, opentime, park_type, facility_code):
-        maindata = self.get_standbytime_group(
-            timezone.now().date() + dt.timedelta(days=-day), park_type, facility_code
-        ).values()
-        dateDF = pd.DataFrame(
-            {
-                "time": pd.date_range(
-                    opentime["openTime"], opentime["closeTime"], freq="T",
-                )
-            }
-        )
-        dateDF["time"] = dateDF["time"].dt.strftime("%H:%M")
-        dateDF = dateDF.set_index("time")
-        mainDF = pd.DataFrame(maindata)
-        mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
-        mainDF = mainDF.set_index("time")
-        maindata = mainDF.merge(dateDF, how="outer", left_index=True, right_index=True)
-        mean = int(mainDF.mean()["standby_time"])
-        return [
-            maindata.fillna(-0.5)[["standby_time"]],
-            (timezone.now().date() + dt.timedelta(days=-day)).strftime("%Y-%m-%d"),
-            mean,
-        ]
+        try:
+            maindata = self.get_standbytime_group(
+                timezone.now().date() + dt.timedelta(days=-day),
+                park_type,
+                facility_code,
+            ).values()
+            dateDF = pd.DataFrame(
+                {
+                    "time": pd.date_range(
+                        opentime["openTime"], opentime["closeTime"], freq="T",
+                    )
+                }
+            )
+            dateDF["time"] = dateDF["time"].dt.strftime("%H:%M")
+            dateDF = dateDF.set_index("time")
+            mainDF = pd.DataFrame(maindata)
+            mainDF["time"] = mainDF["time"].dt.strftime("%H:%M")
+            mainDF = mainDF.set_index("time")
+            maindata = mainDF.merge(
+                dateDF, how="outer", left_index=True, right_index=True
+            )
+            mean = int(mainDF.mean()["standby_time"])
+            return [
+                maindata.fillna(-0.5)[["standby_time"]],
+                (timezone.now().date() + dt.timedelta(days=-day)).strftime("%Y-%m-%d"),
+                mean,
+            ]
+        except:
+            pass
 
     def return_time(self, mainDF, DF):
         x = np.arange(len(DF))
@@ -147,8 +154,9 @@ class standbytime(View):
                     vacant = []
                     redatas = {}
                     try:
-                        avgDF = st_datas[0][0]["standby_time"]
-                        for i in range(1, 13):
+                        avgDF = st_datas[1][0]["standby_time"]
+                        for i in range(2, len(st_datas)):
+                            print(i)
                             avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
                         if "一時運営中止" in maindata.reverse()[0].operating_status:
                             redatas = self.return_time(mainDF, avgDF)
