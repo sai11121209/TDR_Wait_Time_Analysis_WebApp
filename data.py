@@ -10,7 +10,7 @@ headers = {
     "x-api-key": "818982cd6a62e7927700a4fbabcd4534a4657a422711a83c725433839b172371",
     "Accept-Language": "ja-JP;q=1.0, en-JP;q=0.9, en-US;q=0.8",
     "X-PORTAL-OS-VERSION": "iOS 13.3",
-    "X-PORTAL-APP-VERSION": "1.4.0",
+    "X-PORTAL-APP-VERSION": "1.4.2",
     "User-Agent": "TokyoDisneyResortApp/1.2.0 iOS/13.3",
     "Accept-Encoding": "gzip;q=1.0, compress;q=0.5",
     "Connection": "keep-alive",

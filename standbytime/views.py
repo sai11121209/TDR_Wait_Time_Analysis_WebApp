@@ -154,10 +154,12 @@ class standbytime(View):
                     vacant = []
                     redatas = {}
                     try:
-                        avgDF = st_datas[1][0]["standby_time"]
-                        for i in range(2, len(st_datas)):
-                            print(i)
-                            avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                        avgDF = st_datas[0][0]["standby_time"]
+                        for i in range(1, len(st_datas)):
+                            try:
+                                avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                            except:
+                                pass
                         if "一時運営中止" in maindata.reverse()[0].operating_status:
                             redatas = self.return_time(mainDF, avgDF)
                         avgDF = avgDF.replace([-0.3, -0.5, -0.7, -1], np.nan)
