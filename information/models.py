@@ -9,8 +9,8 @@ class Favorite(models.Model):
 
     user = models.ForeignKey("auth.user", on_delete=models.CASCADE)
     park_type = models.TextField(max_length=10)
-    facility_code = models.IntegerField()
+    facilityCode = models.TextField(max_length=10)
     submit_time = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"Use:{self.user}　　　　ParkType:{self.park_type}　　　　FacilityCode:{str(self.facility_code)}　　　　SubmitTime:{str(self.submit_time)}"
+        return f"Use:{self.user}　　　　ParkType:{self.park_type}　　　　FacilityCode:{self.facilityCode}　　　　SubmitTime:{str(self.submit_time)}"

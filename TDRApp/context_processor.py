@@ -4,10 +4,19 @@ import os
 def version(request):
     version = os.getenv("RUN_VERSION")
     if version:
-        data = {"version": version}
+        version = {"version": version}
         patch = os.getenv("PATCHTIME")
         if patch:
-            data = {"version": version, "patch": patch}
+            version = {"version": version, "patch": patch}
     else:
-        data = {"version": "UNSET"}
-    return data
+        version = {"version": "UNSET"}
+    return version
+
+
+def maintenance(request):
+    maintenance_time_end = os.getenv("MAINTENANCE_TIME_END")
+    if maintenance_time_end:
+        maintenance_time_end = {"maintenance_time_end": maintenance_time_end}
+    else:
+        maintenance_time_end = {"maintenance_time_end": "未定"}
+    return maintenance_time_end
