@@ -82,115 +82,117 @@ class OverView(View):
 
 class AttractionList(View):
     def get(self, request, park_type):
-        try:
-            if park_type == "TDL":
-                favorites = (
-                    Favorite.objects.filter(user_id=request.user.id, park_type="TDL")
-                    .order_by("facility_code")
-                    .values()
-                )
-                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-                try:
-                    avgs = (
-                        standbyTimeDataTDL.objects.filter(
-                            time__range=[
-                                (timezone.now() + dt.timedelta(days=-22)).strftime(
-                                    "%Y-%m-%d"
-                                ),
-                                timezone.now().strftime("%Y-%m-%d"),
-                            ],
-                            time__icontains=timezone.now().strftime("%H:%M"),
-                        )
-                        .values("facility_code")
-                        .order_by("facility_code")
-                        .annotate(average=Avg("standby_time"))
-                    )
-                    avgDatas = {}
-                    for avg in avgs:
-                        avgDatas[avg["facility_code"]] = avg["average"]
-                    pass
-                except:
-                    pass
-            else:
-                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-                favorites = (
-                    Favorite.objects.filter(user_id=request.user.id, park_type="TDS")
-                    .order_by("facility_code")
-                    .values()
-                )
-                try:
-                    avgs = (
-                        standbyTimeDataTDS.objects.filter(
-                            time__range=[
-                                (timezone.now() + dt.timedelta(days=-22)).strftime(
-                                    "%Y-%m-%d"
-                                ),
-                                timezone.now().strftime("%Y-%m-%d"),
-                            ],
-                            time__icontains=timezone.now().strftime("%H:%M"),
-                        )
-                        .values("facility_code")
-                        .order_by("facility_code")
-                        .annotate(average=Avg("standby_time"))
-                    )
-                    avgDatas = {}
-                    for avg in avgs:
-                        avgDatas[avg["facility_code"]] = avg["average"]
-                except:
-                    pass
-            attractions = sorted(
-                api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+        #try:
+        if park_type == "TDL":
+            favorites = (
+                Favorite.objects.filter(user_id=request.user.id, park_type="TDL")
+                .order_by("facility_code")
+                .values()
             )
-            attractions_conditions = sorted(
-                api.get_facilities_conditions()["attractions"],
-                key=lambda x: x["facilityCode"],
+            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+            try:
+                avgs = (
+                    standbyTimeDataTDL.objects.filter(
+                        time__range=[
+                            (timezone.now() + dt.timedelta(days=-22)).strftime(
+                                "%Y-%m-%d"
+                            ),
+                            timezone.now().strftime("%Y-%m-%d"),
+                        ],
+                        time__icontains=timezone.now().strftime("%H:%M"),
+                    )
+                    .values("facility_code")
+                    .order_by("facility_code")
+                    .annotate(average=Avg("standby_time"))
+                )
+                avgDatas = {}
+                for avg in avgs:
+                    avgDatas[avg["facility_code"]] = avg["average"]
+                pass
+            except:
+                pass
+        else:
+            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+            favorites = (
+                Favorite.objects.filter(user_id=request.user.id, park_type="TDS")
+                .order_by("facility_code")
+                .values()
             )
-            f_attractions = []
-            j = 0
-            for i, attraction in enumerate(attractions):
-                if attraction["parkType"] == park_type:
-                    attractions[i].update(attractions_conditions[i])
+            try:
+                avgs = (
+                    standbyTimeDataTDS.objects.filter(
+                        time__range=[
+                            (timezone.now() + dt.timedelta(days=-22)).strftime(
+                                "%Y-%m-%d"
+                            ),
+                            timezone.now().strftime("%Y-%m-%d"),
+                        ],
+                        time__icontains=timezone.now().strftime("%H:%M"),
+                    )
+                    .values("facility_code")
+                    .order_by("facility_code")
+                    .annotate(average=Avg("standby_time"))
+                )
+                avgDatas = {}
+                for avg in avgs:
+                    avgDatas[avg["facility_code"]] = avg["average"]
+            except:
+                pass
+        attractions = sorted(
+            api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+        )
+        attractions_conditions = sorted(
+            api.get_facilities_conditions()["attractions"],
+            key=lambda x: x["facilityCode"],
+        )
+        print(len(attractions))
+        print(len(attractions_conditions))
+        f_attractions = []
+        j = 0
+        for i, attraction in enumerate(attractions):
+            if attraction["parkType"] == park_type:
+                attractions[i].update(attractions_conditions[i])
+                try:
+                    favorite = False
                     try:
-                        favorite = False
-                        try:
-                            if attraction["facilityCode"] == str(
-                                favorites[j]["facility_code"]
-                            ):
-                                favorite = True
-                                j += 1
-                        except:
-                            pass
-                        attractions[i].update(
-                            {
-                                "vacant": avgDatas[int(attraction["facilityCode"])]
-                                >= attraction["standbyTime"],
-                                "favorite": favorite,
-                            }
-                        )
-                    except KeyError:
-                        attractions[i].update({"vacant": False, "favorite": favorite})
+                        if attraction["facilityCode"] == str(
+                            favorites[j]["facility_code"]
+                        ):
+                            favorite = True
+                            j += 1
                     except:
                         pass
-                    f_attractions.append(attraction)
-            f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
-            attraction_groups = {
-                area: list(data)
-                for area, data in itertools.groupby(
-                    f_attractions, lambda x: x["area"]["id"]
-                )
-            }
-            return render(
-                request,
-                "information/attractionlist.html",
-                {
-                    "attraction_groups": attraction_groups,
-                    "park_type": park_type,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                },
+                    attractions[i].update(
+                        {
+                            "vacant": avgDatas[int(attraction["facilityCode"])]
+                            >= attraction["standbyTime"],
+                            "favorite": favorite,
+                        }
+                    )
+                except KeyError:
+                    attractions[i].update({"vacant": False, "favorite": favorite})
+                except:
+                    pass
+                f_attractions.append(attraction)
+        f_attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
+        attraction_groups = {
+            area: list(data)
+            for area, data in itertools.groupby(
+                f_attractions, lambda x: x["area"]["id"]
             )
-        except:
-            return redirect("error")
+        }
+        return render(
+            request,
+            "information/attractionlist.html",
+            {
+                "attraction_groups": attraction_groups,
+                "park_type": park_type,
+                "now_open_info": parks_condition,
+                "weatherData": api.getWeather(),
+            },
+        )
+        #except:
+        #    return redirect("error")
 
     def post(self, request, park_type):
         if "facility_code_off" in request.POST:
