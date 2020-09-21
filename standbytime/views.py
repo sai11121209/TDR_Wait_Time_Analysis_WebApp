@@ -19,11 +19,11 @@ class standbytime(View):
     def get_standbytime_group(self, date, park_type, facility_code):
         if park_type == "TDL":
             return standbyTimeDataTDL.objects.filter(
-                time__startswith=date, facility_code=facility_code,
+                time__startswith=date, facilityCode=facility_code,
             ).order_by("time")
         else:
             return standbyTimeDataTDS.objects.filter(
-                time__startswith=date, facility_code=facility_code,
+                time__startswith=date, facilityCode=facility_code,
             ).order_by("time")
 
     def get_standbytime_time(self, maindata, opentime):
@@ -123,7 +123,7 @@ class standbytime(View):
             for attraction, attraction_conditions in zip(
                 attractions, attractions_conditions
             ):
-                if attraction["facilityCode"] == str(facility_code):
+                if attraction["facilityCode"] == facility_code:
                     info = attraction_conditions
                     attraction_info = attraction
                     break
@@ -157,7 +157,9 @@ class standbytime(View):
                         avgDF = st_datas[0][0]["standby_time"]
                         for i in range(1, len(st_datas)):
                             try:
-                                avgDF = pd.concat([avgDF, st_datas[i][0]["standby_time"]])
+                                avgDF = pd.concat(
+                                    [avgDF, st_datas[i][0]["standby_time"]]
+                                )
                             except:
                                 pass
                         if "一時運営中止" in maindata.reverse()[0].operating_status:

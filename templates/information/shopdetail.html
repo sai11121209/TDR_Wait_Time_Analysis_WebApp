@@ -35,7 +35,7 @@
             {% endif %}
             </div>
             <div id="inner-contents">
-            <a href="{% url 'information:shopmap' facility_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'information:shopmap' park_type=info.parkType facility_code=info.facilityCode %}">
                 <img src="{% static 'imgs/map.png' %}">
                 <p>マップ</p>
             </a>

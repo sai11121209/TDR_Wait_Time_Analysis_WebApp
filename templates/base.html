@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% extends 'main.html' %}
+{% load static %}
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accounts/accounts.css' %}">
+{% endblock stylesheet %}
+
+{% block contents %}
+    <div class="contentsWall">
+        <div class="contentsIn">
+            {% block contentsIn %}
+
+            {% endblock contentsIn %}
+            </div>
+        </div>
+    </div>
+{% endblock contents %}

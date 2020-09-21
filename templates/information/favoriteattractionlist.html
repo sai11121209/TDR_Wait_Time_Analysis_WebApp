@@ -20,7 +20,7 @@
         <h1>{{ attraction_group.0.area.name }}</h1>
         <p>アトラクション</p>
         {% for attraction in attraction_group %}
-        <a href="{% url 'information:attractiondetail' attraction_name=attraction.name park_type=park_type facility_code=attraction.facilityCode %}">
+        <a href="{% url 'information:attractiondetail' park_type=park_type facility_code=attraction.facilityCode %}">
             <div id={{ attraction.name }} class="facility attractions">
                 <img src={{ attraction.images.0 }}>
                 <div>

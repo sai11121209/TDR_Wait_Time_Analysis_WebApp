@@ -44,13 +44,13 @@
             {% endif %}
             </div>
             <div id="inner-contents">
-            <a href="{% url 'information:attractionmap' facility_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'information:attractionmap' park_type=info.parkType facility_code=info.facilityCode %}">
                 <img src="{% static 'imgs/map.png' %}">
                 <p>マップ</p>
             </a>
             {% if now_open_info %}
             {% if data_ %}
-            <a href="{% url 'standbytime:standbytime' attraction_name=info.name park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'standbytime:standbytime' park_type=info.parkType facility_code=info.facilityCode %}">
                 <img src="{% static 'imgs/graph.png' %}">
                 <p>待ち時間解析</p>
             </a>

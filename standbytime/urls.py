@@ -6,7 +6,7 @@ app_name = "standbytime"
 
 urlpatterns = [
     path(
-        "<str:park_type>/<str:attraction_name>/<int:facility_code>/standbytime",
+        "<str:park_type>/<str:attraction_name>/<str:facility_code>/standbytime",
         views.standbytime.as_view(),
         name="standbytime",
     ),
