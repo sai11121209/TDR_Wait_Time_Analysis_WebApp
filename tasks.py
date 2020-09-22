@@ -36,9 +36,12 @@ def insertdata(parkType):
             if attraction["standbyTimeDisplayType"] == "HIDE":
                 if "standbyTime" in attraction:
                     standby_time = attraction["standbyTime"]
-                    operating_status = attraction["operatings"][0][
-                        "operatingStatusMessage"
-                    ]
+                    try:
+                        operating_status = attraction["operatings"][0][
+                            "operatingStatusMessage"
+                        ]
+                    except:
+                        operating_status = None
                 elif "facilityStatusMessage" in attraction:
                     operating_status = attraction["facilityStatusMessage"]
                 else:
