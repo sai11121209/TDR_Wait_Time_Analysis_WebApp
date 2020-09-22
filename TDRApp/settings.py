@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "information",
     "standbytime",
-    "maintenancemode",
 ]
 
 MIDDLEWARE = [
@@ -59,7 +58,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "global_login_required.GlobalLoginRequiredMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "maintenancemode.middleware.MaintenanceModeMiddleware",
 ]
 
 INTERNAL_IPS = ["192.168.0.3"]
@@ -133,6 +131,7 @@ except ImportError:
 
 if not DEBUG:
     SECRET_KEY = os.environ["SECRET_KEY"]
+
     MAINTENANCE_MODE = os.environ["MAINTENANCE_MODE"]
 
     # Database

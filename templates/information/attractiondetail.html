@@ -14,79 +14,79 @@
 
 {% block contentsWall %}
 <div class="facility-img img-copyright">
-    <img src={{ info.images.0 }}>
+    <img src={{ attraction_groups.images.0 }}>
 </div>
 <div class="contentsIn">
     <div id="detail">
         <div id="detail-heade">
-            {% if info.sponsor != None %}
-                <small>提供:　{{ info.sponsor }}</small>
+            {% if attraction_groups.sponsor != None %}
+                <small>提供:　{{ attraction_groups.sponsor }}</small>
             {% endif %}
-            {% if info.parkType == 'TDL' %}
-                <p>東京ディズニーランド　{{ info.area.name }}</p>
+            {% if attraction_groups.parkType == 'TDL' %}
+                <p>東京ディズニーランド　{{ attraction_groups.area.name }}</p>
             {% else %}
-                <p>東京ディズニーシー　{{ info.area.name }}</p>
+                <p>東京ディズニーシー　{{ attraction_groups.area.name }}</p>
             {% endif %}
-            <h2>{{ info.name }}</h2>
+            <h2>{{ attraction_groups.name }}</h2>
             <!--製作中は表示できるようにするためTrueにしています 本番 now_open_info-->
             <section id="inner-container">
             <div id="inner-header">
-            {% if info.standbyTime %}
-                <h2>{{ info.standbyTime }}分待ち</h2>
-                <h3>{{ info.operatings.0.startAt | date:"H:i"  }}～{{ info.operatings.0.endAt | date:"H:i" }}</h3>
-            {% elif info.facilityStatusMessage %}
-                <h2>{{ info.facilityStatusMessage }}</h2>
+            {% if attraction_groups.standbyTime %}
+                <h2>{{ attraction_groups.standbyTime|floatformat:0 }}分待ち</h2>
+                <h3>{{ attraction_groups.operatings.0.startAt | date:"H:i"  }}～{{ attraction_groups.operatings.0.endAt | date:"H:i" }}</h3>
+            {% elif attraction_groups.facilityStatusMessage %}
+                <h2>{{ attraction_groups.facilityStatusMessage }}</h2>
             {% else %}
-                <h2>{{ info.operatings.0.operatingStatusMessage }}</h2>
+                <h2>{{ attraction_groups.operatings.0.operatingStatusMessage }}</h2>
             {% endif %}
-            {% if info.attraction.fastpass %}
+            {% if attraction_groups.attraction.fastpass %}
                 <h5>FP対象</h5>
             {% endif %}
             </div>
             <div id="inner-contents">
-            <a href="{% url 'information:attractionmap' park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'information:attractionmap' park_type=park_type facility_code=attraction_groups.facilityCode %}">
                 <img src="{% static 'imgs/map.png' %}">
                 <p>マップ</p>
             </a>
             {% if now_open_info %}
             {% if data_ %}
-            <a href="{% url 'standbytime:standbytime' park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'standbytime:standbytime' park_type=park_type facility_code=attraction_groups.facilityCode %}">
                 <img src="{% static 'imgs/graph.png' %}">
                 <p>待ち時間解析</p>
             </a>
             {% endif %}
             {% endif %}
             </section>
-            <p>{{ info.overview | safe }}</p>
+            <p>{{ attraction_groups.overview | safe }}</p>
         </div>
-        {% if info.effects|length != 0 %}
+        {% if attraction_groups.effects|length != 0 %}
             <div id="effect">
                 <h3>タイプ</h3>
-                {% for effect in info.effects %}
+                {% for effect in attraction_groups.effects %}
                     <p>{{ effect.name }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.tags|length != 0 %}
+        {% if attraction_groups.tags|length != 0 %}
             <div id="tags">
                 <h3>特徴</h3>
-                {% for tag in info.tags %}
+                {% for tag in attraction_groups.tags %}
                     <p>{{ tag.name }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.restrictions|length != 0 %}
+        {% if attraction_groups.restrictions|length != 0 %}
             <div id="srestrictions">
                 <h3>利用制限</h3>
-                {% for restriction in info.restrictions %}
+                {% for restriction in attraction_groups.restrictions %}
                     <p>{{ restriction.message }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.accessibilities|length != 0 %}
+        {% if attraction_groups.accessibilities|length != 0 %}
             <div id="accessibilities">
                 <h3>バリアフリー</h3>
-                {% for accessibilitie in info.accessibilities %}
+                {% for accessibilitie in attraction_groups.accessibilities %}
                     <p>{{ accessibilitie.name }}</p>
                 {% endfor %}
             </div>

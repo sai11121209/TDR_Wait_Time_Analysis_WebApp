@@ -13,7 +13,9 @@ except ImportError:
         "x-api-key": os.environ["TDRAPI_API_KEY"],
         "Accept-Language": os.environ["TDRAPI_API_ACCEPT_LANGUAGE"],
         "X-PORTAL-OS-VERSION": os.environ["TDRAPI_API_PORTAL_OS_VERSION"],
-        "X-PORTAL-APP-VERSION": rq.get("https://itunes.apple.com/lookup?id=1313147771&country=JP").json()["results"][0]["version"],
+        "X-PORTAL-APP-VERSION": rq.get(
+            "https://itunes.apple.com/lookup?id=1313147771&country=JP"
+        ).json()["results"][0]["version"],
         "Accept-Encoding": os.environ["TDRAPI_API_ACCEPT_ENCODING"],
         "Connection": os.environ["TDRAPI_API_CONNECTION"],
         "Content-Type": os.environ["TDRAPI_API_CONTENT_TYPE"],
