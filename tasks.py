@@ -34,7 +34,15 @@ def insertdata(parkType):
             facility_fastpass_start = None
             facility_fastpass_end = None
             if attraction["standbyTimeDisplayType"] == "HIDE":
-                if "facilityStatusMessage" in attraction:
+                if "standbyTime" in attraction:
+                    standby_time = attraction["standbyTime"]
+                    try:
+                        operating_status = attraction["operatings"][0][
+                            "operatingStatusMessage"
+                        ]
+                    except:
+                        operating_status = None
+                elif "facilityStatusMessage" in attraction:
                     operating_status = attraction["facilityStatusMessage"]
                 else:
                     operating_status = attraction["operatings"][0][
