@@ -29,7 +29,7 @@
                         <h4 class="vacant">ただいま空いています</h4>
                     {% endif %}
                     {% if attraction.standbyTime %}
-                        <h4>{{ attraction.standbyTime }}分待ち</h4>
+                        <h4>{{ attraction.standbyTime|floatformat:0 }}分待ち</h4>
                     {% elif attraction.operatings.0.operatingStatusMessage %}
                         <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
                     {% else %}
@@ -39,7 +39,7 @@
                         <h5>FP 対象</h5>
                     {% endif %}
                 </div>
-                {% if attraction.favorite %}
+                {% if attraction.submit_time %}
                 <form method="post">
                     {% csrf_token %}
                     <button class="submit on" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_on">★</button>

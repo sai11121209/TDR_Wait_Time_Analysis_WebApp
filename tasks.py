@@ -3,6 +3,7 @@ import os
 import django
 import datetime
 import api
+import pandas as pd
 
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -13,15 +14,18 @@ def insertdata(parkType):
     django.setup()
     from standbytime.models import standbyTimeDataTDL, standbyTimeDataTDS
 
-    attractions = None
-    attractions_conditions = None
-    attractions = sorted(
-        api.get_facilities()["attractions"], key=lambda x: x["facilityCode"],
+    attractions = pd.DataFrame(list(api.get_facilities()["attractions"]))
+    attractions_conditions = pd.DataFrame(
+        list(api.get_facilities_conditions()["attractions"])
     )
-    attractions_conditions = sorted(
-        api.get_facilities_conditions()["attractions"], key=lambda x: x["facilityCode"],
+    attractions_pd = pd.merge(
+        attractions, attractions_conditions, on="facilityCode", how="left",
     )
-    for attractions_condition, attraction in zip(attractions_conditions, attractions):
+    attractions = attractions_pd[attractions_pd["parkType"] == parkType].to_dict(
+        orient="records"
+    )
+    attractions.sort(key=lambda x: x["facilityCode"])
+    for attraction in attractions:
         if attraction["parkType"] == parkType:
             standby_time = None
             operating_status_start = None
@@ -29,11 +33,11 @@ def insertdata(parkType):
             facility_fastpass_status = None
             facility_fastpass_start = None
             facility_fastpass_end = None
-            if attractions_condition["standbyTimeDisplayType"] == "HIDE":
-                if "facilityStatusMessage" in attractions_condition:
-                    operating_status = attractions_condition["facilityStatusMessage"]
+            if attraction["standbyTimeDisplayType"] == "HIDE":
+                if "facilityStatusMessage" in attraction:
+                    operating_status = attraction["facilityStatusMessage"]
                 else:
-                    operating_status = attractions_condition["operatings"][0][
+                    operating_status = attraction["operatings"][0][
                         "operatingStatusMessage"
                     ]
                     if "準備中" == operating_status:
@@ -44,66 +48,65 @@ def insertdata(parkType):
                         standby_time = -1
                     operating_status_start = (
                         datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["startAt"],
+                            attraction["operatings"][0]["startAt"],
                             "%Y-%m-%dT%H:%M:%S.%fZ",
                         )
                         + datetime.timedelta(hours=9)
                     ).strftime("%H:%M")
                     operating_status_end = (
                         datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["endAt"],
+                            attraction["operatings"][0]["endAt"],
                             "%Y-%m-%dT%H:%M:%S.%fZ",
                         )
                         + datetime.timedelta(hours=9)
                     ).strftime("%H:%M")
-            elif attractions_condition["standbyTimeDisplayType"] == "NORMAL":
+            elif attraction["standbyTimeDisplayType"] == "NORMAL":
                 try:
-                    standby_time = attractions_condition["standbyTime"]
+                    standby_time = attraction["standbyTime"]
                     operating_status = "運営中"
                 except:
                     operating_status = "準備中"
                     operating_status_start = (
                         datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["startAt"],
+                            attraction["operatings"][0]["startAt"],
                             "%Y-%m-%dT%H:%M:%S.%fZ",
                         )
                         + datetime.timedelta(hours=9)
                     ).strftime("%H:%M")
                     operating_status_end = (
                         datetime.datetime.strptime(
-                            attractions_condition["operatings"][0]["endAt"],
+                            attraction["operatings"][0]["endAt"],
                             "%Y-%m-%dT%H:%M:%S.%fZ",
                         )
                         + datetime.timedelta(hours=9)
                     ).strftime("%H:%M")
-                if "fastPassStatus" in attractions_condition:
-                    if attractions_condition["standbyTimeDisplayType"] == "TICKETING":
-                        facility_fastpass_start = str(
-                            attractions_condition["fastPassStartAt"]
-                        )
-                        facility_fastpass_end = str(
-                            attractions_condition["fastPassEndAt"]
-                        )
+                if "fastPassStatus" in attraction:
+                    if attraction["standbyTimeDisplayType"] == "TICKETING":
+                        facility_fastpass_start = str(attraction["fastPassStartAt"])
+                        facility_fastpass_end = str(attraction["fastPassEndAt"])
             else:
                 operating_status = "運営中"
                 standby_time = 0
-                operating_status_start = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["startAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
-                operating_status_end = (
-                    datetime.datetime.strptime(
-                        attractions_condition["operatings"][0]["endAt"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
-                    + datetime.timedelta(hours=9)
-                ).strftime("%H:%M")
+                try:
+                    operating_status_start = (
+                        datetime.datetime.strptime(
+                            attraction["operatings"][0]["startAt"],
+                            "%Y-%m-%dT%H:%M:%S.%fZ",
+                        )
+                        + datetime.timedelta(hours=9)
+                    ).strftime("%H:%M")
+                    operating_status_end = (
+                        datetime.datetime.strptime(
+                            attraction["operatings"][0]["endAt"],
+                            "%Y-%m-%dT%H:%M:%S.%fZ",
+                        )
+                        + datetime.timedelta(hours=9)
+                    ).strftime("%H:%M")
+                except:
+                    pass
             if parkType == "TDL":
                 standbyTimeDataTDL.objects.create(
-                    facility_code=attractions_condition["facilityCode"],
+                    facilityCode=attraction["facilityCode"],
                     standby_time=standby_time,
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
@@ -115,7 +118,7 @@ def insertdata(parkType):
                 print("TDL:Task completed")
             else:
                 standbyTimeDataTDS.objects.create(
-                    facility_code=attractions_condition["facilityCode"],
+                    facilityCode=attraction["facilityCode"],
                     standby_time=standby_time,
                     operating_status=operating_status,
                     operating_status_start=operating_status_start,
