@@ -9,11 +9,11 @@ urlpatterns = [
     path("<str:park_type>/overview", views.OverView.as_view(), name="overview"),
     path(
         "<str:park_type>/attractionlist",
-        cache_page(60)(views.AttractionList.as_view()),
+        views.AttractionList.as_view(),
         name="attractionlist",
     ),
     path(
-        "<str:park_type>/<str:attraction_name>/<int:facility_code>/attractiondetail",
+        "<str:park_type>/<str:facility_code>/attractiondetail",
         cache_page(60)(views.AttractionDetail.as_view()),
         name="attractiondetail",
     ),
@@ -23,7 +23,7 @@ urlpatterns = [
         name="favoriteattractionlist",
     ),
     path(
-        "<str:park_type>/<str:facility_name>/<int:facility_code>/map",
+        "<str:park_type>/<str:facility_code>/map",
         cache_page(60 * 60 * 15)(views.AttractionMap.as_view()),
         name="attractionmap",
     ),
@@ -33,12 +33,12 @@ urlpatterns = [
         name="restaurantlist",
     ),
     path(
-        "<str:park_type>/<str:restaurant_name>/<int:facility_code>/restaurantdetail",
+        "<str:park_type>/<int:facility_code>/restaurantdetail",
         cache_page(60 * 60 * 15)(views.RestaurantDetail.as_view()),
         name="restaurantdetail",
     ),
     path(
-        "<str:park_type>/<str:facility_name>/<int:facility_code>/restaurantmap",
+        "<str:park_type>/<int:facility_code>/restaurantmap",
         cache_page(60 * 60 * 15)(views.RestaurantMap.as_view()),
         name="restaurantmap",
     ),
@@ -48,12 +48,12 @@ urlpatterns = [
         name="shoplist",
     ),
     path(
-        "<str:park_type>/<str:shop_name>/<int:facility_code>/shopdetail",
+        "<str:park_type>/<int:facility_code>/shopdetail",
         cache_page(60 * 60 * 15)(views.ShopDetail.as_view()),
         name="shopdetail",
     ),
     path(
-        "<str:park_type>/<str:facility_name>/<int:facility_code>/shopmap",
+        "<str:park_type>/<int:facility_code>/shopmap",
         cache_page(60 * 60 * 15)(views.ShopMap.as_view()),
         name="shopmap",
     ),

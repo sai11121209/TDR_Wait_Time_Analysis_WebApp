@@ -132,6 +132,8 @@ except ImportError:
 if not DEBUG:
     SECRET_KEY = os.environ["SECRET_KEY"]
 
+    MAINTENANCE_MODE = os.environ["MAINTENANCE_MODE"]
+
     # Database
     # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
     DATABASES = {

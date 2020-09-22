@@ -9,7 +9,7 @@ class standbyTimeDataTDL(models.Model):
         verbose_name = "東京ディズニーランド待ち時間データ"
         verbose_name_plural = "東京ディズニーランド待ち時間データリスト"
 
-    facility_code = models.IntegerField()
+    facilityCode = models.TextField(max_length=10)
     standby_time = models.FloatField(null=True)
     time = models.DateTimeField(default=timezone.now)
     operating_status = models.CharField(null=True, max_length=60)
@@ -20,7 +20,7 @@ class standbyTimeDataTDL(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
 
 
 class standbyTimeDataTDS(models.Model):
@@ -28,7 +28,7 @@ class standbyTimeDataTDS(models.Model):
         verbose_name = "東京ディズニーシー待ち時間データ"
         verbose_name_plural = "東京ディズニーシー待ち時間データリスト"
 
-    facility_code = models.IntegerField()
+    facilityCode = models.TextField(max_length=10)
     standby_time = models.FloatField(null=True)
     time = models.DateTimeField(default=timezone.now)
     operating_status = models.CharField(null=True, max_length=60)
@@ -39,4 +39,4 @@ class standbyTimeDataTDS(models.Model):
     facility_fastpass_end = models.TimeField(null=True)
 
     def __str__(self):
-        return f"ID:{str(self.pk)}　　　　FacilityCode:{str(self.facility_code)}　　　　Time:{str(self.time)}"
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
