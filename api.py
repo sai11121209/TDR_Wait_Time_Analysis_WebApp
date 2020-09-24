@@ -36,7 +36,7 @@ def get_version():
 def get_facilities():
     try:
         url = os.environ["TDRAPI_FACILITIES_URL"]
-        headers["X-PORTAL-APP-VERSION"] = get_version
+        headers["X-PORTAL-APP-VERSION"] = get_version()
     except KeyError:
         url = local_api.facilities_url()
     count = 0
@@ -57,7 +57,7 @@ def get_facilities():
 def get_facilities_conditions():
     try:
         url = os.environ["TDRAPI_FACILITIES_CONDITIONS_URL"]
-        headers["X-PORTAL-APP-VERSION"] = get_version
+        headers["X-PORTAL-APP-VERSION"] = get_version()
     except KeyError:
         url = local_api.facilities_conditions_url()
     count = 0
@@ -78,7 +78,7 @@ def get_facilities_conditions():
 def get_parks_conditions():
     try:
         url = os.environ["TDRAPI_PARKS_CONDITIONS_URL"]
-        headers["X-PORTAL-APP-VERSION"] = get_version
+        headers["X-PORTAL-APP-VERSION"] = get_version()
     except KeyError:
         url = local_api.parks_conditions_url()
     count = 0
@@ -99,7 +99,7 @@ def get_parks_conditions():
 def get_parks_calendars():
     try:
         url = os.environ["TDRAPI_PARKS_CALENDARS_URL"]
-        headers["X-PORTAL-APP-VERSION"] = get_version
+        headers["X-PORTAL-APP-VERSION"] = get_version()
     except KeyError:
         url = local_api.parks_calendars_url()
     count = 0
