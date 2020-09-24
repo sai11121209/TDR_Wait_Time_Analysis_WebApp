@@ -29,7 +29,7 @@ urlpatterns = [
     ),
     path(
         "<str:park_type>/restaurantlist",
-        views.RestaurantList.as_view(),
+        cache_page(60)(views.RestaurantList.as_view()),
         name="restaurantlist",
     ),
     path(
