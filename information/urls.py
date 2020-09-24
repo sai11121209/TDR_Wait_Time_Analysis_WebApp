@@ -29,16 +29,16 @@ urlpatterns = [
     ),
     path(
         "<str:park_type>/restaurantlist",
-        cache_page(60 * 60 * 15)(views.RestaurantList.as_view()),
+        views.RestaurantList.as_view(),
         name="restaurantlist",
     ),
     path(
-        "<str:park_type>/<int:facility_code>/restaurantdetail",
+        "<str:park_type>/<str:facility_code>/restaurantdetail",
         cache_page(60 * 60 * 15)(views.RestaurantDetail.as_view()),
         name="restaurantdetail",
     ),
     path(
-        "<str:park_type>/<int:facility_code>/restaurantmap",
+        "<str:park_type>/<str:facility_code>/restaurantmap",
         cache_page(60 * 60 * 15)(views.RestaurantMap.as_view()),
         name="restaurantmap",
     ),
@@ -48,12 +48,12 @@ urlpatterns = [
         name="shoplist",
     ),
     path(
-        "<str:park_type>/<int:facility_code>/shopdetail",
+        "<str:park_type>/<str:facility_code>/shopdetail",
         cache_page(60 * 60 * 15)(views.ShopDetail.as_view()),
         name="shopdetail",
     ),
     path(
-        "<str:park_type>/<int:facility_code>/shopmap",
+        "<str:park_type>/<str:facility_code>/shopmap",
         cache_page(60 * 60 * 15)(views.ShopMap.as_view()),
         name="shopmap",
     ),

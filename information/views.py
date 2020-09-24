@@ -291,7 +291,7 @@ class AttractionMap(View):
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
             attractions = api.get_facilities()["attractions"]
             for attraction in attractions:
-                if attraction["facilityCode"] == str(facilityCode):
+                if attraction["facilityCode"] == facility_code:
                     info = attraction
                     break
             try:
@@ -322,23 +322,24 @@ class RestaurantList(View):
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            restaurants = sorted(
-                api.get_facilities()["restaurants"], key=lambda x: x["facilityCode"],
+            restaurants = pd.DataFrame(list(api.get_facilities()["restaurants"]))
+            restaurants_conditions = pd.DataFrame(
+                list(api.get_facilities_conditions()["restaurants"])
             )
-            restaurants_conditions = sorted(
-                api.get_facilities_conditions()["restaurants"],
-                key=lambda x: x["facilityCode"],
+            restaurants_pd = pd.merge(
+                restaurants, restaurants_conditions, on="facilityCode", how="left",
             )
-            f_restaurants = []
-            for i, restaurant in enumerate(restaurants):
-                if restaurant["parkType"] == park_type:
-                    restaurants[i].update(restaurants_conditions[i])
-                    f_restaurants.append(restaurant)
-            f_restaurants.sort(key=lambda x: (x["area"]["id"], x["name"]))
+            restaurants_pd = restaurants_pd.astype(object).where(
+                (pd.notnull(restaurants_pd)), None
+            )
+            restaurants = restaurants_pd[
+                restaurants_pd["parkType"] == park_type
+            ].to_dict(orient="records")
+            restaurants.sort(key=lambda x: (x["area"]["id"], x["name"]))
             restaurant_groups = {
                 area: list(data)
                 for area, data in itertools.groupby(
-                    f_restaurants, lambda x: x["area"]["id"]
+                    restaurants, lambda x: x["area"]["id"]
                 )
             }
             return render(
@@ -358,38 +359,42 @@ class RestaurantList(View):
 class RestaurantDetail(View):
     def get(self, request, park_type, facility_code):
         try:
-            restaurants = sorted(
-                api.get_facilities()["restaurants"], key=lambda x: x["facilityCode"],
-            )
-            restaurants_conditions = sorted(
-                api.get_facilities_conditions()["restaurants"],
-                key=lambda x: x["facilityCode"],
-            )
             if park_type == "TDL":
                 parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            for i, restaurant in enumerate(restaurants):
-                if restaurant["facilityCode"] == facility_code:
-                    restaurants[i].update(restaurants_conditions[i])
-                    info = restaurants[i]
-                    try:
-                        info["operatings"][0]["startAt"] = datetime.datetime.strptime(
-                            info["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                        ) + datetime.timedelta(hours=9)
-                        info["operatings"][0]["endAt"] = datetime.datetime.strptime(
-                            info["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                        ) + datetime.timedelta(hours=9)
-                    except:
-                        pass
-                    break
+            restaurants = pd.DataFrame(list(api.get_facilities()["restaurants"]))
+            restaurants_conditions = pd.DataFrame(
+                list(api.get_facilities_conditions()["restaurants"])
+            )
+            restaurants_pd = pd.merge(
+                restaurants, restaurants_conditions, on="facilityCode", how="left",
+            )
+            restaurants_pd = restaurants_pd.astype(object).where(
+                (pd.notnull(restaurants_pd)), None
+            )
+            restaurants_pd = restaurants_pd[restaurants_pd["parkType"] == park_type]
+            restaurant_pd = restaurants_pd[
+                restaurants_pd["facilityCode"] == facility_code
+            ]
+            restaurant = restaurant_pd.to_dict(orient="records")[0]
+            try:
+                restaurant["operatings"][0]["startAt"] = datetime.datetime.strptime(
+                    restaurant["operatings"][0]["startAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                ) + datetime.timedelta(hours=9)
+                restaurant["operatings"][0]["endAt"] = datetime.datetime.strptime(
+                    restaurant["operatings"][0]["endAt"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                ) + datetime.timedelta(hours=9)
+                pass
+            except:
+                pass
             return render(
                 request,
                 "information/restaurantdetail.html",
                 {
                     "now_open_info": parks_condition,
                     "park_type": parks_condition,
-                    "info": info,
+                    "restaurant": restaurant,
                     "weatherData": api.getWeather(),
                 },
             )
