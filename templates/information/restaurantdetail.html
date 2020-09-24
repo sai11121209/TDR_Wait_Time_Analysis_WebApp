@@ -10,88 +10,88 @@
 {% endif %}
 {% endblock stylesheet %}
 
-{% block title %}{{ info.area.name }}{% endblock %}
+{% block title %}{{ restaurant.area.name }}{% endblock %}
 
 {% block contentsWall %}
 <div class="facility-img img-copyright">
-    <img src={{ info.images.0 }}>
+    <img src={{ restaurant.images.0 }}>
 </div>
 <div class="contentsIn">
     <div id="detail">
         <div id="detail-heade">
-            {% if info.sponsor != None %}
-                <small>提供:　{{ info.sponsor }}</small>
+            {% if restaurant.sponsor != None %}
+                <small>提供:　{{ restaurant.sponsor }}</small>
             {% endif %}
-            {% if info.parkType == 'TDL' %}
-                <p>東京ディズニーランド　{{ info.area.name }}</p>
+            {% if restaurant.parkType == 'TDL' %}
+                <p>東京ディズニーランド　{{ restaurant.area.name }}</p>
             {% else %}
-                <p>東京ディズニーシー　{{ info.area.name }}</p>
+                <p>東京ディズニーシー　{{ restaurant.area.name }}</p>
             {% endif %}
-            <h2>{{ info.name }}</h2>
+            <h2>{{ restaurant.name }}</h2>
             <section id="inner-container">
             <div id="inner-header">
-            {% if info.operatings.0.startAt %}
-            <h2>{{ info.operatings.0.startAt | date:"H:i"  }}～{{ info.operatings.0.endAt | date:"H:i" }}</h2>
+            {% if restaurant.operatings.0.startAt %}
+            <h2>{{ restaurant.operatings.0.startAt | date:"H:i"  }}～{{ restaurant.operatings.0.endAt | date:"H:i" }}</h2>
             {% endif %}
-            {% if info.flavor %}
-            <h3>{{ info.flavor }}</h3>
+            {% if restaurant.flavor %}
+            <h3>{{ restaurant.flavor }}</h3>
             {% endif %}
-            {% if info.facilityStatusMessage %}
-            <h3>{{ info.facilityStatusMessage }}</h3>
+            {% if restaurant.facilityStatusMessage %}
+            <h3>{{ restaurant.facilityStatusMessage }}</h3>
             {% endif %}
-            {% if info.prioritySeating %}
+            {% if restaurant.prioritySeating %}
             <p>ご利用には事前受付がおすすめです</p>
             {% endif %}
             </div>
             <div id="inner-contents">
-            <a href="{% url 'information:restaurantmap' park_type=info.parkType facility_code=info.facilityCode %}">
+            <a href="{% url 'information:restaurantmap' park_type=restaurant.parkType facility_code=restaurant.facilityCode %}">
                 <img src="{% static 'imgs/map.png' %}">
                 <p>マップ</p>
             </a>
-            {% if info.prioritySeating %}
+            {% if restaurant.prioritySeating %}
             <a href="https://reserve.tokyodisneyresort.jp/restaurant/search/" target="_blank">
                 <img src="{% static 'imgs/reservation.png' %}">
                 <p>予約</p>
             </a>
             {% endif %}
-            {% if info.menuUrl %}
-            <a href="{{ info.menuUrl }}">
+            {% if restaurant.menuUrl %}
+            <a href="{{ restaurant.menuUrl }}">
                 <img src="{% static 'imgs/r_menu.png' %}">
                 <p>メニュー</p>
             </a>
             {% endif %}
             </div>
             </section>
-            <p>{{ info.overview | safe }}</p>
+            <p>{{ restaurant.overview | safe }}</p>
         </div>
-        {% if info.effects|length != 0 %}
+        {% if restaurant.effects|length != 0 %}
             <div id="effect">
                 <h3>タイプ</h3>
-                {% for effect in info.effects %}
+                {% for effect in restaurant.effects %}
                     <p>{{ effect.name }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.tags|length != 0 %}
+        {% if restaurant.tags|length != 0 %}
             <div id="tags">
                 <h3>特徴</h3>
-                {% for tag in info.tags %}
+                {% for tag in restaurant.tags %}
                     <p>{{ tag.name }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.restrictions|length != 0 %}
+        {% if restaurant.restrictions|length != 0 %}
             <div id="srestrictions">
                 <h3>利用制限</h3>
-                {% for restriction in info.restrictions %}
+                {% for restriction in restaurant.restrictions %}
                     <p>{{ restriction.message }}</p>
                 {% endfor %}
             </div>
         {% endif %}
-        {% if info.accessibilities|length != 0 %}
+        {% if restaurant.accessibilities|length != 0 %}
             <div id="accessibilities">
                 <h3>バリアフリー</h3>
-                {% for accessibilitie in info.accessibilities %}
+                {% for accessibilitie in restaurant.accessibilities %}
                     <p>{{ accessibilitie.name }}</p>
                 {% endfor %}
             </div>
