@@ -21,16 +21,16 @@
 <div class="contentsIn">
     <div id="standby-time">
         <small>データ取得時刻:{{ now_time }}</small>
-        <h2>{{ attraction_info.name }}</h2>
+        <h2>{{ attraction.name }}</h2>
         <!--製作中は表示できるようにするためTureにしていますはずします 本番 parksCondition.open-->
         {% if now_open_info %}
             {% if data_today.0|length != 1 %}
-                {% if info.standbyTime %}
-                    <h3>現在の待ち時間は{{ info.standbyTime }}分です</h3>
-                {% elif info.facilityStatusMessage %}
-                    <h3>現在のステータス:　{{ info.facilityStatusMessage }}</h3>
-                {% elif info.operatings.0.operatingStatusMessage %}
-                    <h3>現在のステータス:　{{ info.operatings.0.operatingStatusMessage }}</h3>
+                {% if attraction.standbyTime %}
+                    <h3>現在の待ち時間は{{ attraction.standbyTime|floatformat:0 }}分です</h3>
+                {% elif attraction.facilityStatusMessage %}
+                    <h3>現在のステータス:　{{ attraction.facilityStatusMessage }}</h3>
+                {% elif attraction.operatings.0.operatingStatusMessage %}
+                    <h3>現在のステータス:　{{ attraction.operatings.0.operatingStatusMessage }}</h3>
                     {% if return_datas %}
                         <h3>過去2週間のメンテナンス情報</h3>
                         <h4>回数: {{ return_datas.count }}回</h4>
