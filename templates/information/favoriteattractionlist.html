@@ -15,45 +15,49 @@
 
 {% block contents %}
 <div id="facilitylist">
-    {% for area_id, attraction_group in attraction_groups.items %}
-    <div id={{ area_id }} class="area">
-        <h1>{{ attraction_group.0.area.name }}</h1>
-        <p>アトラクション</p>
-        {% for attraction in attraction_group %}
-        <a href="{% url 'information:attractiondetail' park_type=park_type facility_code=attraction.facilityCode %}">
-            <div id={{ attraction.name }} class="facility attractions">
-                <img src={{ attraction.images.0 }}>
-                <div>
-                    <h3>{{ attraction.name }}</h3>
-                    {% if attraction.vacant %}
-                        <h4 class="vacant">ただいま空いています</h4>
-                    {% endif %}
-                    {% if attraction.standbyTime %}
-                        <h4>{{ attraction.standbyTime|floatformat:0 }}分待ち</h4>
-                    {% elif attraction.facilityStatusMessage %}
-                        <h4>{{ attraction.facilityStatusMessage }}</h4>
+    {% if attraction_groups %}
+        {% for area_id, attraction_group in attraction_groups.items %}
+        <div id={{ area_id }} class="area">
+            <h1>{{ attraction_group.0.area.name }}</h1>
+            <p>アトラクション</p>
+            {% for attraction in attraction_group %}
+            <a href="{% url 'information:attractiondetail' park_type=park_type facility_code=attraction.facilityCode %}">
+                <div id={{ attraction.name }} class="facility attractions">
+                    <img src={{ attraction.images.0 }}>
+                    <div>
+                        <h3>{{ attraction.name }}</h3>
+                        {% if attraction.vacant %}
+                            <h4 class="vacant">ただいま空いています</h4>
+                        {% endif %}
+                        {% if attraction.standbyTime %}
+                            <h4>{{ attraction.standbyTime|floatformat:0 }}分待ち</h4>
+                        {% elif attraction.facilityStatusMessage %}
+                            <h4>{{ attraction.facilityStatusMessage }}</h4>
+                        {% else %}
+                            <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
+                        {% endif %}
+                        {% if attraction.attraction.fastpass %}
+                            <h5>FP 対象</h5>
+                        {% endif %}
+                    </div>
+                    {% if attraction.submit_time %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <button class="submit on" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_on">★</button>
+                    </form>
                     {% else %}
-                        <h4>{{ attraction.operatings.0.operatingStatusMessage }}</h4>
-                    {% endif %}
-                    {% if attraction.attraction.fastpass %}
-                        <h5>FP 対象</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button class="submit off" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_off">★</button>
+                    </form>
                     {% endif %}
                 </div>
-                {% if attraction.submit_time %}
-                <form method="post">
-                    {% csrf_token %}
-                    <button class="submit on" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_on">★</button>
-                </form>
-                {% else %}
-                <form method="post">
-                    {% csrf_token %}
-                    <button class="submit off" value="{{ attraction.facilityCode }}" type="submit" name="facility_code_off">★</button>
-                </form>
-                {% endif %}
-            </div>
-        </a>
+            </a>
+            {% endfor %}
+        </div>
         {% endfor %}
-    </div>
-    {% endfor %}
+    {% else %}
+        <h1 class="submiterror">お気に入りアトラクションがまだ登録されていません。<br>アトラクションリストの星マークを押して登録しよう!</h1>
+    {% endif %}
 </div>
 {% endblock contents %}
