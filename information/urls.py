@@ -19,7 +19,7 @@ urlpatterns = [
     ),
     path(
         "<str:park_type>/favoriteattractionlist",
-        cache_page(60)(views.FavoriteAttractionList.as_view()),
+        views.FavoriteAttractionList.as_view(),
         name="favoriteattractionlist",
     ),
     path(

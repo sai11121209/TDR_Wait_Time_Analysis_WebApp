@@ -63,30 +63,29 @@ def dataMerge(request, park_type):
             )
         except:
             pass
-    attractions = pd.DataFrame(list(api.get_facilities()["attractions"]))
-    attractions_conditions = pd.DataFrame(
+    facilitys = pd.DataFrame(list(api.get_facilities()["attractions"]))
+    facilitys_conditions = pd.DataFrame(
         list(api.get_facilities_conditions()["attractions"])
     )
-    attractions_pd = pd.merge(
-        attractions, attractions_conditions, on="facilityCode", how="left",
+    facilitys_pd = pd.merge(
+        facilitys, facilitys_conditions, on="facilityCode", how="left",
     )
-    attractions_pd = attractions_pd.merge(favorites, on="facilityCode", how="left")
     try:
-        attractions_pd = attractions_pd.merge(avgDatas, on="facilityCode", how="left")
+        facilitys_pd = facilitys_pd.merge(favorites, on="facilityCode", how="left")
     except:
         pass
     try:
-        attractions_pd["vacant"] = (
-            attractions_pd["average"] > attractions_pd["standbyTime"]
-        )
+        facilitys_pd = facilitys_pd.merge(avgDatas, on="facilityCode", how="left")
     except:
-        attractions_pd["vacant"] = False
+        pass
+    try:
+        facilitys_pd["vacant"] = facilitys_pd["average"] > facilitys_pd["standbyTime"]
+    except:
+        facilitys_pd["vacant"] = False
     # NaNをNoneに置換
-    attractions_pd = attractions_pd[attractions_pd["parkType"] == park_type]
-    attractions_pd = attractions_pd.astype(object).where(
-        (pd.notnull(attractions_pd)), None
-    )
-    return parks_condition, attractions_pd
+    facilitys_pd = facilitys_pd[facilitys_pd["parkType"] == park_type]
+    facilitys_pd = facilitys_pd.astype(object).where((pd.notnull(facilitys_pd)), None)
+    return parks_condition, facilitys_pd
 
 
 class OverView(View):
@@ -261,33 +260,40 @@ class AttractionDetail(View):
 
 class FavoriteAttractionList(View):
     def get(self, request, park_type):
-        try:
-            parks_condition, attractions_pd = dataMerge(request, park_type)
-            attractions_pd = attractions_pd[
-                pd.isna(attractions_pd["submit_time"]) != True
-            ]
-            attractions = attractions_pd[
-                attractions_pd["parkType"] == park_type
-            ].to_dict(orient="records")
-            attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
-            attraction_groups = {
-                area: list(data)
-                for area, data in itertools.groupby(
-                    attractions, lambda x: x["area"]["id"]
+        if Favorite.objects.filter(user_id=request.user.id).exists():
+            try:
+                parks_condition, attractions_pd = dataMerge(request, park_type)
+                attractions_pd = attractions_pd[
+                    pd.isna(attractions_pd["submit_time"]) != True
+                ]
+                attractions = attractions_pd[
+                    attractions_pd["parkType"] == park_type
+                ].to_dict(orient="records")
+                attractions.sort(key=lambda x: (x["area"]["id"], x["name"]))
+                attraction_groups = {
+                    area: list(data)
+                    for area, data in itertools.groupby(
+                        attractions, lambda x: x["area"]["id"]
+                    )
+                }
+                return render(
+                    request,
+                    "information/favoriteattractionlist.html",
+                    {
+                        "attraction_groups": attraction_groups,
+                        "park_type": park_type,
+                        "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                    },
                 )
-            }
+            except:
+                return redirect("error")
+        else:
             return render(
                 request,
                 "information/favoriteattractionlist.html",
-                {
-                    "attraction_groups": attraction_groups,
-                    "park_type": park_type,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                },
+                {"weatherData": api.getWeather(),},
             )
-        except:
-            return redirect("error")
 
     def post(self, request, park_type):
         Favorite.objects.filter(facilityCode=request.POST["facility_code_on"]).delete()
