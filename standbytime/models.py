@@ -40,3 +40,29 @@ class standbyTimeDataTDS(models.Model):
 
     def __str__(self):
         return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
+
+
+class averageStandbyTimeDataTDL(models.Model):
+    class Meta:
+        verbose_name = "東京ディズニーランド平均待ち時間データ"
+        verbose_name_plural = "東京ディズニーランド平均待ち時間データリスト"
+
+    facilityCode = models.TextField(max_length=10)
+    standby_time = models.FloatField(null=True)
+    time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
+
+
+class averageStandbyTimeDataTDS(models.Model):
+    class Meta:
+        verbose_name = "東京ディズニーシー平均待ち時間データ"
+        verbose_name_plural = "東京ディズニーシー平均待ち時間データリスト"
+
+    facilityCode = models.TextField(max_length=10)
+    standby_time = models.FloatField(null=True)
+    time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"

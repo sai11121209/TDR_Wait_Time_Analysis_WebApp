@@ -22,7 +22,6 @@
     <div id="standby-time">
         <small>データ取得時刻:{{ now_time }}</small>
         <h2>{{ attraction.name }}</h2>
-        <!--製作中は表示できるようにするためTureにしていますはずします 本番 parksCondition.open-->
         {% if now_open_info %}
             {% if data_today.0|length != 1 %}
                 {% if attraction.standbyTime %}
@@ -49,6 +48,7 @@
             {% endif %}
             <h3>本日の待ち時間遷移グラフ</h3>
             <h3>本日の平均待ち時間は約{{ data_today.1 }}分です。</h3>
+            <p>動作改善のため今後仕様が変わる恐れがあります。</p>
             <div class="figure">
                 <canvas id="standby-today"></canvas>
                 <script type="text/javascript">

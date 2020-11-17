@@ -43,6 +43,8 @@ def insertdata(parkType):
                     operating_status = None
             elif "facilityStatusMessage" in attraction:
                 operating_status = attraction["facilityStatusMessage"]
+                if "一時運営中止" == operating_status:
+                    standby_time = -1
             else:
                 operating_status = attraction["operatings"][0]["operatingStatusMessage"]
                 if "準備中" == operating_status:
