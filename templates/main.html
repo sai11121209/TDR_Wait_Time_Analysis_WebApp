@@ -91,11 +91,6 @@
                     <div class="contentsWall">
                         {% block contentsWall %}
                         <div class="contentsIn">
-                            {% if attention_message %}
-                            <div class="attention_information">
-                                <p class="attention_message">a{{attention_message}}</p>
-                            </div>
-                            {% endif %}
                             {% block contents %}
                             {% endblock contents %}
                         </div>

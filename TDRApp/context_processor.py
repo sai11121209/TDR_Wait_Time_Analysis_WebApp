@@ -22,8 +22,8 @@ def maintenance(request):
     return maintenance_time_end
 
 
-def attention_information(request):
-    attention_message = os.getenv("ATTENTION_INFORMATION")
+def attention_message(request):
+    attention_message = os.getenv("ATTENTION_MESSAGE")
     if attention_message:
         attention_message = {"attention_message": attention_message}
     else:

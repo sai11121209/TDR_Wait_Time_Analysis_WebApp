@@ -76,6 +76,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "TDRApp.context_processor.version",
+                "TDRApp.context_processor.maintenance",
+                "TDRApp.context_processor.attention_message",
             ],
         },
     },
