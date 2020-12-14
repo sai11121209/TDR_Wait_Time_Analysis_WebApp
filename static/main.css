@@ -436,3 +436,6 @@ footer {
 .footerIn a {
     color: #FFF;
 }
+.attention_message {
+    text-align: center;
+}
