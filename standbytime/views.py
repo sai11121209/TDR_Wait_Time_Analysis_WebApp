@@ -172,6 +172,7 @@ class standbytime(View):
                             avgDF[timezone.now().strftime("%H:%M")]
                             >= attraction["standbyTime"]
                         )
+
                     except:
                         pass
                 else:
@@ -189,7 +190,7 @@ class standbytime(View):
                         "fp": fp,
                         "now_open_info": parks_condition,
                         "weatherData": api.getWeather(),
-                        "vacant": vacant,
+                        "vacant": vacant,  # 現在時刻で空いているか判定
                         "return_datas": redatas,
                         # 閉園時用
                         # "now_open_info": True,

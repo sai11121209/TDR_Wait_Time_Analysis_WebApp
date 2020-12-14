@@ -7,7 +7,7 @@ def version(request):
         version = {"version": version}
         patch = os.getenv("PATCHTIME")
         if patch:
-            version = {"version": version, "patch": patch}
+            version["patch"] = patch
     else:
         version = {"version": "UNSET"}
     return version

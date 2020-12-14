@@ -49,10 +49,10 @@ class averageStandbyTimeDataTDL(models.Model):
 
     facilityCode = models.TextField(max_length=10)
     standby_time = models.FloatField(null=True)
-    time = models.DateTimeField(default=timezone.now)
+    time = models.TimeField()
 
     def __str__(self):
-        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}　　　　StadbyTime:{str(self.standby_time)}"
 
 
 class averageStandbyTimeDataTDS(models.Model):
@@ -62,7 +62,7 @@ class averageStandbyTimeDataTDS(models.Model):
 
     facilityCode = models.TextField(max_length=10)
     standby_time = models.FloatField(null=True)
-    time = models.DateTimeField(default=timezone.now)
+    time = models.TimeField()
 
     def __str__(self):
-        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}"
+        return f"ID:{str(self.pk)}　　　　FacilityCode:{self.facilityCode}　　　　Time:{str(self.time)}　　　　StadbyTime:{str(self.standby_time)}"
