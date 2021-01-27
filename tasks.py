@@ -185,8 +185,8 @@ def insertdataAverage(parkType):
         average__mainData = pd.concat([average__mainData, average__subBData[i]])
     average__mainData["time"] = average__mainData["time"].dt.strftime("%H:%M")
     average__mainData = average__mainData.groupby(["time", "facilityCode"])
-    standbyTimeDataTDL.objects.all().delete()
-    standbyTimeDataTDS.objects.all().delete()
+    averageStandbyTimeDataTDL.objects.all().delete()
+    averageStandbyTimeDataTDS.objects.all().delete()
     for average__data in average__mainData:
         if parkType == "TDL":
             averageStandbyTimeDataTDL.objects.create(
@@ -194,14 +194,13 @@ def insertdataAverage(parkType):
                 standby_time=np.mean(average__data[1]["standby_time"].values),
                 time=average__data[0][0],
             )
-            print("TDL:Average Task Completed")
         else:
             averageStandbyTimeDataTDS.objects.create(
                 facilityCode=average__data[0][1],
                 standby_time=np.mean(average__data[1]["standby_time"].values),
                 time=average__data[0][0],
             )
-            print("TDS:Average Task Completed")
+    print("Average Task Completed")
     return False
 
 
