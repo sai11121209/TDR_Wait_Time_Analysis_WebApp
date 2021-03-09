@@ -11,6 +11,10 @@
 
 
 {% block contents %}
+    <div class="attention_information">
+        <h2 class="attention_message">おしらせ</h2>
+        <p class="attention_message">{{attention_message}}</p>
+    </div>
     <div id="mainTop">
     <!-- メンテナンス中 False -->
         {% if True %}
