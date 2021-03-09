@@ -186,10 +186,12 @@ def insertdataAverage(parkType):
     average__mainData["time"] = average__mainData["time"].dt.strftime("%H:%M")
     average__mainData = average__mainData.groupby(["time", "facilityCode"])
     cursor = connection.cursor()
-    averageStandbyTimeDataTDL.objects.all().delete()
-    # cursor.execute("alter table standbytime_averagestandbytimedatatdl auto_increment = 1")
-    averageStandbyTimeDataTDS.objects.all().delete()
-    # cursor.execute( "alter table standbytime_averagestandbytimedatatds auto_increment = 1")
+    if parkType == "TDL":
+        averageStandbyTimeDataTDL.objects.all().delete()
+        # cursor.execute("alter table standbytime_averagestandbytimedatatdl auto_increment = 1")
+    else:
+        averageStandbyTimeDataTDS.objects.all().delete()
+        # cursor.execute( "alter table standbytime_averagestandbytimedatatds auto_increment = 1")
     for average__data in average__mainData:
         if parkType == "TDL":
             averageStandbyTimeDataTDL.objects.create(
