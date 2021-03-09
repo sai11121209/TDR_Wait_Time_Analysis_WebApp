@@ -65,7 +65,7 @@
                         },
                         {
                             label: "スタンバイ待ち時間平均(過去2週間)",
-                            data: {{ avg_datas.values.tolist|safe }},
+                            data: {{ avg_datas.standby_time.values.tolist|safe }},
                             backgroundColor: "rgba(255,20,147,0.4)",
                             borderColor: "rgba(255,20,147,1)",
                         }
@@ -105,6 +105,7 @@
                 </table>
                 <small>※一時運営中止の場合は-1、案内終了の場合は-0.7、準備中の場合は-0.3、その他エラーによる欠損値は-0.5で出力しています。</small>
             </div>
+            {% if st_datas %}
             {% for data in st_datas %}
             <button id="{{ data.1 }}-show">
                 <span>{{ data.1 }}の待ち時間データ表示</span>
@@ -147,6 +148,7 @@
                 });
             </script>
             {% endfor %}
+            {% endif %}
             {% if info.fastpass %}
             <div class="figure">
                 <canvas id="fastpass"></canvas>

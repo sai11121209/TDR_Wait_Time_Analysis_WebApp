@@ -1,6 +1,11 @@
 import sys
 from django.shortcuts import render, redirect
-from .models import standbyTimeDataTDL, standbyTimeDataTDS
+from .models import (
+    standbyTimeDataTDL,
+    standbyTimeDataTDS,
+    averageStandbyTimeDataTDL,
+    averageStandbyTimeDataTDS,
+)
 from django.views import View
 from django.utils import timezone
 import datetime as dt
@@ -127,7 +132,7 @@ class standbytime(View):
             else:
                 parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
                 opentime = api.get_parks_calendars()[1]
-
+            print(opentime)
             maindata = self.get_standbytime_group(
                 timezone.now().date(), park_type, facility_code
             )
@@ -145,29 +150,39 @@ class standbytime(View):
                         except:
                             table_data.append([datas, 0.5])
                     data_today = [mainDF, standby_mean, table_data]
-                    st_datas = [
-                        self.make_standbytime_time_table(
-                            day, opentime, park_type, facility_code
-                        )
-                        for day in range(1, 14)
-                    ]
                     # 平均値算出部分
                     vacant = []
                     redatas = {}
+                    if park_type == "TDL":
+                        avgDF = pd.DataFrame(
+                            averageStandbyTimeDataTDL.objects.filter(
+                                time__gte=dt.datetime.strptime(
+                                    opentime["openTime"], "%H:%M"
+                                ),
+                                time__lte=dt.datetime.strptime(
+                                    opentime["closeTime"], "%H:%M"
+                                ),
+                                facilityCode=facility_code,
+                            )
+                            .order_by("time")
+                            .values()
+                        )
+                    else:
+                        avgDF = pd.DataFrame(
+                            averageStandbyTimeDataTDS.objects.filter(
+                                time__gte=dt.datetime.strptime(
+                                    opentime["openTime"], "%H:%M"
+                                ),
+                                time__lte=dt.datetime.strptime(
+                                    opentime["closeTime"], "%H:%M"
+                                ),
+                                facilityCode=facility_code,
+                            )
+                            .order_by("time")
+                            .values()
+                        )
+                    avgDF = avgDF.replace(np.nan, -1)
                     try:
-                        avgDF = st_datas[0][0]["standby_time"]
-                        for i in range(1, len(st_datas)):
-                            try:
-                                avgDF = pd.concat(
-                                    [avgDF, st_datas[i][0]["standby_time"]]
-                                )
-                            except:
-                                pass
-                        if "一時運営中止" in maindata.reverse()[0].operating_status:
-                            redatas = self.return_time(mainDF, avgDF)
-                        avgDF = avgDF.replace([-0.3, -0.5, -0.7, -1], np.nan)
-                        avgDF = avgDF.groupby("time").mean()
-                        avgDF = avgDF.replace(np.nan, -1)
                         vacant = (
                             avgDF[timezone.now().strftime("%H:%M")]
                             >= attraction["standbyTime"]
@@ -183,7 +198,7 @@ class standbytime(View):
                     {
                         "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "data_today": data_today,
-                        "st_datas": st_datas,
+                        # "st_datas": st_datas,
                         "avg_datas": avgDF,
                         "attraction": attraction,
                         "park_type": park_type,

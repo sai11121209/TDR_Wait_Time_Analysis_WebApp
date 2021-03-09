@@ -3,6 +3,7 @@ import os
 import django
 import datetime
 from django.utils import timezone
+from django.db import connection
 import api
 import pandas as pd
 
@@ -180,13 +181,15 @@ def insertdataAverage(parkType):
             for i in range(1, 14)
         ]
     print(f"{parkType}:Get Main Task Completed")
-
     for i in range(0, 13):
         average__mainData = pd.concat([average__mainData, average__subBData[i]])
     average__mainData["time"] = average__mainData["time"].dt.strftime("%H:%M")
     average__mainData = average__mainData.groupby(["time", "facilityCode"])
+    cursor = connection.cursor()
     averageStandbyTimeDataTDL.objects.all().delete()
+    cursor.execute("alter <standbytime_averagestandbytimeDatatdl> auto_increment = 1")
     averageStandbyTimeDataTDS.objects.all().delete()
+    cursor.execute("alter <standbytime_averagestandbytimeDatatds> auto_increment = 1")
     for average__data in average__mainData:
         if parkType == "TDL":
             averageStandbyTimeDataTDL.objects.create(
@@ -206,4 +209,3 @@ def insertdataAverage(parkType):
 
 if __name__ == "__main__":
     pass
-

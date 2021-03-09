@@ -8,11 +8,10 @@ import api
 import syslog
 
 sched = BlockingScheduler()
-averageStatus = {"TDL": True, "TDS": True}
 
 
 @sched.scheduled_job("interval", minutes=1)
-def timed_job_TDL():
+def timed_job_TDR():
     parkInfo = {}
     parks_calendars = api.get_parks_calendars()
     parks_conditions = api.get_parks_conditions()["schedules"]
@@ -21,30 +20,26 @@ def timed_job_TDL():
         if info["date"] == time.strftime("%Y-%m-%d"):
             parkInfo[info["parkType"]] = info
     if parks_conditions[0]["open"]:
-        averageStatus["TDL"] = True
         print("TDL:Task start")
         syslog.syslog("TDL:Task start")
         tasks.insertdata("TDL")
     else:
         print("TDL is now closed")
         syslog.syslog("TDL is now closed")
-        if averageStatus["TDL"]:
-            # 実装完了までpass
-            pass
-            # averageStatus["TDL"] = tasks.insertdataAverage("TDL")
 
     if parks_conditions[1]["open"]:
-        averageStatus["TDS"] = True
         print("TDS: Task start")
         syslog.syslog("TDS: Task start")
         tasks.insertdata("TDS")
     else:
         print("TDS is now closed")
         syslog.syslog("TDS is now closed")
-        if averageStatus["TDS"]:
-            # 実装完了までpass
-            pass
-            # averageStatus["TDS"] = tasks.insertdataAverage("TDS")
+
+
+@sched.scheduled_job("cron", hour=23, minute=59)
+def timed_avg_job_TDL():
+    tasks.insertdataAverage("TDL")
+    tasks.insertdataAverage("TDS")
 
 
 sched.start()
