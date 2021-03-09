@@ -109,118 +109,120 @@ class standbytime(View):
         return redatas
 
     def get(self, request, park_type, facility_code):
-        # try:
-        data_today = []
-        fp = []
-        attractions = pd.DataFrame(list(api.get_facilities()["attractions"]))
-        attractions_conditions = pd.DataFrame(
-            list(api.get_facilities_conditions()["attractions"])
-        )
-        attractions_pd = pd.merge(
-            attractions, attractions_conditions, on="facilityCode", how="left",
-        )
-        attraction_pd = attractions_pd[attractions_pd["facilityCode"] == facility_code]
-        attraction_pd = attraction_pd.astype(object).where(
-            (pd.notnull(attraction_pd)), None
-        )
-        attraction = attraction_pd.to_dict(orient="records")[0]
-        if park_type == "TDL":
-            parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
-            opentime = api.get_parks_calendars()[0]
-        else:
-            parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
-            opentime = api.get_parks_calendars()[1]
-        print(opentime)
-        maindata = self.get_standbytime_group(
-            timezone.now().date(), park_type, facility_code
-        )
-        if maindata:
-            if "公演中止" not in maindata.reverse()[0].operating_status:
-                mainDF, standby_mean = self.get_standbytime_time(
-                    maindata.values(), opentime
-                )
-                table_data = []
-                for datas in list(mainDF.index.values):
-                    try:
-                        table_data.append(
-                            [mainDF.loc[datas].name, mainDF.loc[datas].standby_time]
-                        )
-                    except:
-                        table_data.append([datas, 0.5])
-                data_today = [mainDF, standby_mean, table_data]
-                # 平均値算出部分
-                vacant = []
-                redatas = {}
-                if park_type == "TDL":
-                    avgDF = pd.DataFrame(
-                        averageStandbyTimeDataTDL.objects.filter(
-                            time__gte=dt.datetime.strptime(
-                                opentime["openTime"], "%H:%M"
-                            ),
-                            time__lte=dt.datetime.strptime(
-                                opentime["closeTime"], "%H:%M"
-                            ),
-                            facilityCode=facility_code,
-                        )
-                        .order_by("time")
-                        .values()
-                    )
-                else:
-                    avgDF = pd.DataFrame(
-                        averageStandbyTimeDataTDS.objects.filter(
-                            time__gte=dt.datetime.strptime(
-                                opentime["openTime"], "%H:%M"
-                            ),
-                            time__lte=dt.datetime.strptime(
-                                opentime["closeTime"], "%H:%M"
-                            ),
-                            facilityCode=facility_code,
-                        )
-                        .order_by("time")
-                        .values()
-                    )
-                avgDF = avgDF.replace(np.nan, -1)
-                try:
-                    vacant = (
-                        avgDF[timezone.now().strftime("%H:%M")]
-                        >= attraction["standbyTime"]
-                    )
-
-                except:
-                    pass
+        try:
+            data_today = []
+            fp = []
+            attractions = pd.DataFrame(list(api.get_facilities()["attractions"]))
+            attractions_conditions = pd.DataFrame(
+                list(api.get_facilities_conditions()["attractions"])
+            )
+            attractions_pd = pd.merge(
+                attractions, attractions_conditions, on="facilityCode", how="left",
+            )
+            attraction_pd = attractions_pd[
+                attractions_pd["facilityCode"] == facility_code
+            ]
+            attraction_pd = attraction_pd.astype(object).where(
+                (pd.notnull(attraction_pd)), None
+            )
+            attraction = attraction_pd.to_dict(orient="records")[0]
+            if park_type == "TDL":
+                parks_condition = api.get_parks_conditions()["schedules"][0]["open"]
+                opentime = api.get_parks_calendars()[0]
             else:
-                data_today = attraction["operatings"][0]["operatingStatusMessage"]
-            return render(
-                request,
-                "standbytime/standbytime.html",
-                {
-                    "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "data_today": data_today,
-                    # "st_datas": st_datas,
-                    "avg_datas": avgDF,
-                    "attraction": attraction,
-                    "park_type": park_type,
-                    "fp": fp,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                    "vacant": vacant,  # 現在時刻で空いているか判定
-                    "return_datas": redatas,
-                    # 閉園時用
-                    # "now_open_info": True,
-                },
+                parks_condition = api.get_parks_conditions()["schedules"][1]["open"]
+                opentime = api.get_parks_calendars()[1]
+            print(opentime)
+            maindata = self.get_standbytime_group(
+                timezone.now().date(), park_type, facility_code
             )
-        else:
-            return render(
-                request,
-                "standbytime/standbytime.html",
-                {
-                    "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "attraction_info": attraction_info,
-                    "info": info,
-                    "park_type": park_type,
-                    "now_open_info": parks_condition,
-                    "weatherData": api.getWeather(),
-                },
-            )
-        # except:
-        #    return redirect("error")
+            if maindata:
+                if "公演中止" not in maindata.reverse()[0].operating_status:
+                    mainDF, standby_mean = self.get_standbytime_time(
+                        maindata.values(), opentime
+                    )
+                    table_data = []
+                    for datas in list(mainDF.index.values):
+                        try:
+                            table_data.append(
+                                [mainDF.loc[datas].name, mainDF.loc[datas].standby_time]
+                            )
+                        except:
+                            table_data.append([datas, 0.5])
+                    data_today = [mainDF, standby_mean, table_data]
+                    # 平均値算出部分
+                    vacant = []
+                    redatas = {}
+                    if park_type == "TDL":
+                        avgDF = pd.DataFrame(
+                            averageStandbyTimeDataTDL.objects.filter(
+                                time__gte=dt.datetime.strptime(
+                                    opentime["openTime"], "%H:%M"
+                                ),
+                                time__lte=dt.datetime.strptime(
+                                    opentime["closeTime"], "%H:%M"
+                                ),
+                                facilityCode=facility_code,
+                            )
+                            .order_by("time")
+                            .values()
+                        )
+                    else:
+                        avgDF = pd.DataFrame(
+                            averageStandbyTimeDataTDS.objects.filter(
+                                time__gte=dt.datetime.strptime(
+                                    opentime["openTime"], "%H:%M"
+                                ),
+                                time__lte=dt.datetime.strptime(
+                                    opentime["closeTime"], "%H:%M"
+                                ),
+                                facilityCode=facility_code,
+                            )
+                            .order_by("time")
+                            .values()
+                        )
+                    avgDF = avgDF.replace(np.nan, -1)
+                    try:
+                        vacant = (
+                            avgDF[timezone.now().strftime("%H:%M")]
+                            >= attraction["standbyTime"]
+                        )
+
+                    except:
+                        pass
+                else:
+                    data_today = attraction["operatings"][0]["operatingStatusMessage"]
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "data_today": data_today,
+                        # "st_datas": st_datas,
+                        "avg_datas": avgDF,
+                        "attraction": attraction,
+                        "park_type": park_type,
+                        "fp": fp,
+                        "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                        "vacant": vacant,  # 現在時刻で空いているか判定
+                        "return_datas": redatas,
+                        # 閉園時用
+                        # "now_open_info": True,
+                    },
+                )
+            else:
+                return render(
+                    request,
+                    "standbytime/standbytime.html",
+                    {
+                        "now_time": timezone.now().strftime("%Y-%m-%d %H:%M:%S"),
+                        "attraction_info": attraction_info,
+                        "info": info,
+                        "park_type": park_type,
+                        "now_open_info": parks_condition,
+                        "weatherData": api.getWeather(),
+                    },
+                )
+        except:
+            return redirect("error")
