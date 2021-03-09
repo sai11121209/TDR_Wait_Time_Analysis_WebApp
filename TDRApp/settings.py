@@ -76,6 +76,8 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "TDRApp.context_processor.version",
+                "TDRApp.context_processor.maintenance",
+                "TDRApp.context_processor.attention_message",
             ],
         },
     },
@@ -132,7 +134,7 @@ except ImportError:
 if not DEBUG:
     SECRET_KEY = os.environ["SECRET_KEY"]
 
-    MAINTENANCE_MODE = os.environ["MAINTENANCE_MODE"]
+    MAINTENANCE_MODE = os.getenv("MAINTENANCE_MODE")
 
     # Database
     # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

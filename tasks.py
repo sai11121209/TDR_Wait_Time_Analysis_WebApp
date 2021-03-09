@@ -2,6 +2,8 @@ import sys
 import os
 import django
 import datetime
+from django.utils import timezone
+from django.db import connection
 import api
 import pandas as pd
 
@@ -43,6 +45,8 @@ def insertdata(parkType):
                     operating_status = None
             elif "facilityStatusMessage" in attraction:
                 operating_status = attraction["facilityStatusMessage"]
+                if "一時運営中止" == operating_status:
+                    standby_time = -1
             else:
                 operating_status = attraction["operatings"][0]["operatingStatusMessage"]
                 if "準備中" == operating_status:
@@ -114,7 +118,7 @@ def insertdata(parkType):
                 facility_fastpass_start=facility_fastpass_start,
                 facility_fastpass_end=facility_fastpass_end,
             )
-            print("TDL:Task completed")
+            print("TDL:Task Completed")
         else:
             standbyTimeDataTDS.objects.create(
                 facilityCode=attraction["facilityCode"],
@@ -126,7 +130,83 @@ def insertdata(parkType):
                 facility_fastpass_start=facility_fastpass_start,
                 facility_fastpass_end=facility_fastpass_end,
             )
-            print("TDS:Task completed")
+            print("TDS:Task Completed")
+
+
+def insertdataAverage(parkType):
+    django.setup()
+    import numpy as np
+    import datetime as dt
+    from standbytime.models import (
+        standbyTimeDataTDL,
+        standbyTimeDataTDS,
+        averageStandbyTimeDataTDL,
+        averageStandbyTimeDataTDS,
+    )
+
+    if parkType == "TDL":
+        average__mainData = pd.DataFrame(
+            standbyTimeDataTDL.objects.filter(
+                time__startswith=timezone.now().date() + dt.timedelta(days=-1),
+            )
+            .order_by("time")
+            .values("time", "facilityCode", "standby_time")
+        )
+        average__subBData = [
+            pd.DataFrame(
+                standbyTimeDataTDL.objects.filter(
+                    time__startswith=timezone.now().date() + dt.timedelta(days=-i),
+                )
+                .order_by("time")
+                .values("time", "facilityCode", "standby_time")
+            )
+            for i in range(1, 14)
+        ]
+    else:
+        average__mainData = pd.DataFrame(
+            standbyTimeDataTDS.objects.filter(
+                time__startswith=timezone.now().date() + dt.timedelta(days=-1),
+            )
+            .order_by("time")
+            .values("time", "facilityCode", "standby_time")
+        )
+        average__subBData = [
+            pd.DataFrame(
+                standbyTimeDataTDS.objects.filter(
+                    time__startswith=timezone.now().date() + dt.timedelta(days=-i),
+                )
+                .order_by("time")
+                .values("time", "facilityCode", "standby_time")
+            )
+            for i in range(1, 14)
+        ]
+    print(f"{parkType}:Get Main Task Completed")
+    for i in range(0, 13):
+        average__mainData = pd.concat([average__mainData, average__subBData[i]])
+    average__mainData["time"] = average__mainData["time"].dt.strftime("%H:%M")
+    average__mainData = average__mainData.groupby(["time", "facilityCode"])
+    cursor = connection.cursor()
+    if parkType == "TDL":
+        averageStandbyTimeDataTDL.objects.all().delete()
+        # cursor.execute("alter table standbytime_averagestandbytimedatatdl auto_increment = 1")
+    else:
+        averageStandbyTimeDataTDS.objects.all().delete()
+        # cursor.execute( "alter table standbytime_averagestandbytimedatatds auto_increment = 1")
+    for average__data in average__mainData:
+        if parkType == "TDL":
+            averageStandbyTimeDataTDL.objects.create(
+                facilityCode=average__data[0][1],
+                standby_time=np.mean(average__data[1]["standby_time"].values),
+                time=average__data[0][0],
+            )
+        else:
+            averageStandbyTimeDataTDS.objects.create(
+                facilityCode=average__data[0][1],
+                standby_time=np.mean(average__data[1]["standby_time"].values),
+                time=average__data[0][0],
+            )
+    print("Average Task Completed")
+    return False
 
 
 if __name__ == "__main__":
